@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, {Component} from 'react';
+import {Component} from 'react';
 
 const ENTER_KEYCODE = 13;
 
@@ -56,17 +56,8 @@ class EditableText extends Component {
   }
 
   render() {
-    const {
-      type,
-      className,
-      text,
-      disable,
-      autoFocus,
-      onKeyDown,
-      placeholder,
-      readOnly,
-      size,
-    } = this.props;
+    const {type, className, text, disable, autoFocus, onKeyDown, placeholder, readOnly, size} =
+      this.props;
     return (
       <input
         ref={this.getRef}

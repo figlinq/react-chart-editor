@@ -10,27 +10,7 @@ module.exports = {
     rules: [
       {
         test: /\.js?$/,
-        use: {
-          loader: 'babel-loader',
-          options: {
-            presets: ['@babel/react', '@babel/env'],
-            plugins: [
-              'react-hot-loader/babel',
-              '@babel/plugin-proposal-object-rest-spread',
-              [
-                'module-resolver',
-                {
-                  root: ['./'],
-                  alias: {
-                    components: './src/components',
-                    lib: './src/lib',
-                    styles: './src/styles',
-                  },
-                },
-              ],
-            ],
-          },
-        },
+        use: 'babel-loader',
         exclude: [/node_modules/],
       },
       {
@@ -44,10 +24,11 @@ module.exports = {
       'react-dom': '@hot-loader/react-dom',
     },
   },
-  plugins: [new webpack.IgnorePlugin(/vertx/)],
+  plugins: [new webpack.IgnorePlugin({resourceRegExp: /vertx/})],
   devServer: {
     open: true,
-    contentBase: './dev',
+    static: './dev',
   },
   devtool: 'eval-source-map',
+  target: 'browserslist',
 };
