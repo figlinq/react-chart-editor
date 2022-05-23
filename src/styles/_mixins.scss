@@ -38,6 +38,12 @@
   $trackbg: var(--scrollbar-track-background),
   $thumb-color: var(--scrollbar-thumb-color)
 ) {
+  scrollbar-color: $thumb-color $trackbg;
+  @if $width == 0px {
+    scrollbar-width: none;
+  } @else {
+    scrollbar-width: thin;
+  }
   -webkit-overflow-scrolling: touch;
   &::-webkit-scrollbar {
     background: white;
