@@ -1,6 +1,6 @@
 # react-chart-editor
 
-This is Figlinq's fork of Plotly's React Chart Editor
+This is Figlinq's fork of Plotly's React Chart Editor. See it in action here: https://create.figlinq.com/create/#/
 
 ![master](https://circleci.com/gh/plotly/react-chart-editor/tree/master.svg?style=svg&circle-token=df4574e01732846dba81d800d062be5f0fef5641)
 
