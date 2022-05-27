@@ -1,5 +1,5 @@
 {
-  "name": "react-chart-editor",
+  "name": "@figlinq/react-chart-editor",
   "description": "plotly.js chart editor react component UI",
   "version": "0.46.0",
   "author": "Figlinq",
@@ -133,10 +133,14 @@
   "main": "lib/index.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/figlinq/react-chart-editor.git"
+    "url": "git+https://github.com/figlinq/react-chart-editor.git"
   },
   "browserslist": [
     "defaults",
     "not IE 11"
-  ]
+  ],
+  "directories": {
+    "example": "examples",
+    "lib": "lib"
+  }
 }
