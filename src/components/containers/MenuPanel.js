@@ -2,7 +2,7 @@ import ModalBox from './ModalBox';
 import PropTypes from 'prop-types';
 import {Component} from 'react';
 import classnames from 'classnames';
-import {QuestionIcon, CogIcon} from 'plotly-icons';
+import {QuestionIcon, CogIcon} from '@figlinq/plotly-icons';
 
 export default class MenuPanel extends Component {
   constructor() {

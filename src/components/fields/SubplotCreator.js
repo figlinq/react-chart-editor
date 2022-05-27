@@ -4,7 +4,7 @@ import Info from './Info';
 import PropTypes from 'prop-types';
 import {EDITOR_ACTIONS, SUBPLOT_TO_ATTR, subplotName} from 'lib/constants';
 import Button from '../widgets/Button';
-import {PlusIcon} from 'plotly-icons';
+import {PlusIcon} from '@figlinq/plotly-icons';
 import {connectToContainer, traceTypeToAxisType, getSubplotTitle} from 'lib';
 import {PlotlySection} from 'components';
 

@@ -4,7 +4,7 @@ import Field from './Field';
 import Dropdown from './Dropdown';
 import PropTypes from 'prop-types';
 import Button from '../widgets/Button';
-import {PlusIcon} from 'plotly-icons';
+import {PlusIcon} from '@figlinq/plotly-icons';
 import {MULTI_VALUED} from 'lib/constants';
 
 class UnconnectedGroupCreator extends Component {

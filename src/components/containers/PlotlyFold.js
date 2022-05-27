@@ -2,7 +2,7 @@ import FoldEmpty from './FoldEmpty';
 import PropTypes from 'prop-types';
 import {Children, Component} from 'react';
 import classnames from 'classnames';
-import {CloseIcon, AngleDownIcon} from 'plotly-icons';
+import {CloseIcon, AngleDownIcon} from '@figlinq/plotly-icons';
 import {unpackPlotProps, containerConnectedContextTypes, striptags} from 'lib';
 
 export class Fold extends Component {

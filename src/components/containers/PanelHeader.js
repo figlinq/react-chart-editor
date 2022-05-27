@@ -1,7 +1,7 @@
 import Button from 'components/widgets/Button';
 import PropTypes from 'prop-types';
 import {Component} from 'react';
-import {PlusIcon, ResizeUpIcon, ResizeDownIcon} from 'plotly-icons';
+import {PlusIcon, ResizeUpIcon, ResizeDownIcon} from '@figlinq/plotly-icons';
 
 class PanelHeader extends Component {
   constructor() {

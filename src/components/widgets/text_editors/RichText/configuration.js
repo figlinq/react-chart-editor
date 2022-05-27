@@ -1,5 +1,5 @@
 import {INLINE_STYLE} from 'draft-js-utils';
-import {LinkIcon} from 'plotly-icons';
+import {LinkIcon} from '@figlinq/plotly-icons';
 import {COLORS} from 'lib/constants';
 
 export const SUPERSCRIPT = 'SUPERSCRIPT';

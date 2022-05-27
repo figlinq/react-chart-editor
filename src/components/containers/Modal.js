@@ -1,6 +1,6 @@
 import {Component} from 'react';
 import PropTypes from 'prop-types';
-import {CloseIcon} from 'plotly-icons';
+import {CloseIcon} from '@figlinq/plotly-icons';
 
 const ModalHeader = ({title, handleClose}) => (
   <div className="modal__header">

@@ -1,7 +1,7 @@
 import {Component} from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import {CheckIcon} from 'plotly-icons';
+import {CheckIcon} from '@figlinq/plotly-icons';
 
 class CheckboxGroup extends Component {
   constructor(props) {

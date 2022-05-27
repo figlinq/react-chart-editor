@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import {Children, Component, cloneElement} from 'react';
 import update from 'immutability-helper';
 import {bem} from 'lib';
-import {EmbedIconIcon} from 'plotly-icons';
+import {EmbedIconIcon} from '@figlinq/plotly-icons';
 
 class PanelErrorImpl extends Component {
   render() {

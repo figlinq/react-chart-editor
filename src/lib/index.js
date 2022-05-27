@@ -31,7 +31,7 @@ import unpackPlotProps, {
 } from './unpackPlotProps';
 import walkObject, {isPlainObject} from './walkObject';
 import {traceTypeToPlotlyInitFigure, plotlyTraceToCustomTrace} from './customTraceType';
-import * as PlotlyIcons from 'plotly-icons';
+import * as PlotlyIcons from '@figlinq/plotly-icons';
 import striptags from './striptags';
 import {capitalize, lowerCase, upperCase, removeNonWord, camelCase, pascalCase} from './strings';
 import {getColorscale} from 'react-colorscales';

@@ -10,7 +10,7 @@ import {
 import {TRACES_WITH_GL} from 'lib/constants';
 import {TraceTypeSelector, TraceTypeSelectorButton, RadioBlocks} from 'components/widgets';
 import Field from './Field';
-import {CogIcon} from 'plotly-icons';
+import {CogIcon} from '@figlinq/plotly-icons';
 
 class TraceSelector extends Component {
   constructor(props, context) {
