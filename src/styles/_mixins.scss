@@ -15,7 +15,7 @@
   } @else if $value == 'sky' {
     z-index: 1001;
   } @else if $value == 'orbit' {
-    z-index: 1003;
+    z-index: 3001;
   } @else {
     @error "'#{$value}' is not a valid z-index value";
   }
