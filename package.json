@@ -139,6 +139,10 @@
     "defaults",
     "not IE 11"
   ],
+  "volta": {
+    "node": "16.14.0",
+    "yarn": "1.22.18"
+  },
   "directories": {
     "example": "examples",
     "lib": "lib"
