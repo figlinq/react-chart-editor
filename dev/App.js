@@ -21,7 +21,7 @@ const dataSourceOptions = Object.keys(dataSources).map((name) => ({
   label: name,
 }));
 
-const config = {mapboxAccessToken: ACCESS_TOKENS.MAPBOX, editable: true};
+const config = {mapboxAccessToken: ACCESS_TOKENS.MAPBOX, editable: true, displaylogo: false};
 
 // eslint-disable-next-line no-unused-vars
 const traceTypesConfig = {
