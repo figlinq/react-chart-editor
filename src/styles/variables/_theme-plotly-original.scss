@@ -6,11 +6,11 @@
 
 // Brand Colors
 $brand: (
-  accent: var(--color-figlinq-brand),
-  accent-shade: var(--color-figlinq-brand-shade),
-  accent-shade-mid: var(--color-figlinq-brand-shade-mid),
-  brand: var(--color-figlinq-brand),
-  brand-darker: var(--color-figlinq-brand-darker),
+  accent: var(--color-dodger),
+  accent-shade: var(--color-dodger-shade),
+  accent-shade-mid: var(--color-dodger-shade-mid),
+  brand: var(--color-dodger),
+  hightlight-darker: var(--color-gray-blue-pale),
 );
 // Text Colors
 $text: (
@@ -62,7 +62,7 @@ $text-shadows: (
 );
 $scrollbar: (
   track-background: var(--color-background-base),
-  thumb-color: var(--color-rhino-medium-1),
+  thumb-color: var(--color-accent),
 );
 // Panel Styles + Colors
 $panel: (
@@ -80,11 +80,11 @@ $sidebar: (
 );
 $fold: (
   header-text-color-base: var(--color-white),
-  header-background-base: var(--color-figlinq-brand),
-  header-border-color-base: var(--color-figlinq-brand),
   header-text-color-closed: var(--color-white),
-  header-background-closed: var(--color-figlinq-brand-darker),
-  header-border-color-closed: var(--color-figlinq-brand-darker),
+  header-background-base: var(--color-rhino-dark),
+  header-background-closed: var(--color-rhino-core),
+  header-border-color-closed: var(--color-rhino-core),
+  header-border-color-base: var(--color-rhino-dark),
 );
 // Buttons
 $buttons: (
