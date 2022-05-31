@@ -20,6 +20,14 @@ $color-dodger: #119dff; // Accent
 $color-dodger-shade: #0d76bf; // Link Hover
 $color-dodger-shade-mid: #0f89df; // Primary button hover
 
+$color-figlinq-brand: #08547d;
+$color-figlinq-brand-shade: #6a89a7;
+$color-figlinq-brand-shade-mid: #436e92;
+$color-figlinq-brand-darker: #114667;
+$color-figlinq-accent: #55bbe7;
+$color-figlinq-accent-shade: #3d7893;
+$color-figlinq-accent-shade-mid: #4999bc;
+
 // --
 // Accent
 // --
@@ -45,9 +53,13 @@ $colors: (
   rhino-light-3: $color-rhino-light-3,
   rhino-light-4: $color-rhino-light-4,
   rhino-light-5: $color-rhino-light-5,
-  dodger: $color-dodger,
-  dodger-shade: $color-dodger-shade,
-  dodger-shade-mid: $color-dodger-shade,
+  figlinq-brand: $color-figlinq-brand,
+  figlinq-brand-shade: $color-figlinq-brand-shade,
+  figlinq-brand-shade-mid: $color-figlinq-brand-shade-mid,
+  figlinq-brand-darker: $color-figlinq-brand-darker,
+  figlinq-accent: $color-figlinq-accent,
+  figlinq-accent-shade: $color-figlinq-accent-shade,
+  figlinq-accent-shade-mid: $color-figlinq-accent-shade-mid,
   aqua: $color-aqua,
   aqua-shade: $color-aqua-shade,
   lavender: $color-lavender,
