@@ -67,12 +67,12 @@ $scrollbar: (
 // Panel Styles + Colors
 $panel: (
   background: var(--color-background-base),
-  width: $layout-panel-width,
+  width: var(--layout-panel-width),
 );
 // Sidebar
 $sidebar: (
   background: var(--color-background-top),
-  width: $layout-sidebar-width,
+  width: var(--layout-sidebar-width),
   group-background-base: var(--sidebar-background),
   item-background-base: var(--color-background-light),
   item-background-hover: var(--color-background-base),
