@@ -7,7 +7,7 @@
     "url": "https://github.com/figlinq/react-chart-editor/issues"
   },
   "scripts": {
-    "lint": "prettier --write \"src/**/*.js\" \"dev/**/*.js\" \"examples/**/*.js\"",
+    "prettier": "prettier --write \"src/**/*.{js,scss}\" \"dev/**/*.{js,scss}\" \"examples/**/*.{js,scss}\"",
     "make:arrows": "node scripts/makeArrows.js",
     "make:combined-translation-keys": "npm run make:translation-keys && node scripts/combineTranslationKeys.js",
     "make:lib:css": "mkdirp lib && babel-node scripts/styles.js && babel-node scripts/styles.js && babel-node scripts/postcss.js && babel-node scripts/postcss.js",
