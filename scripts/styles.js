@@ -11,14 +11,11 @@ const dist = `${BUILD_ENV}/${fileName}.css`;
 
 /**
  * Compile our scss to css!
- * --
- * the `data:...` line will inject our SASS_ENV value (hardcoded to "default") into our scss,
- * so we are able to do conditionals in scss for our env (default|ie)
  */
 fs.readFile(src, function (err, data) {
   sass.render(
     {
-      data: '$ENV: "default";\n' + data,
+      data,
       includePaths: [path.dirname(src)],
       outFile: dist,
     },
