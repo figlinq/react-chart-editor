@@ -75,6 +75,7 @@
           $size: 48px;
           width: $size !important;
           height: $size !important;
+          margin: 0 auto;
           path {
             fill: var(--color-text-light);
           }
