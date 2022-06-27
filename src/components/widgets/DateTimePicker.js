@@ -1,7 +1,7 @@
-import 'react-day-picker/lib/style.css';
+import 'react-day-picker/dist/style.css';
 import {CalendarMultiselectIcon} from '@figlinq/plotly-icons';
 import {ms2DateTime, dateTime2ms, isDateTime} from 'plotly.js/src/lib/dates';
-import DayPicker from 'react-day-picker';
+import {DayPicker} from 'react-day-picker';
 import PropTypes from 'prop-types';
 import {Component} from 'react';
 import TextInput from './TextInput';
@@ -120,7 +120,7 @@ export default class DateTimePicker extends Component {
   }
 
   parsePlotlyJSDateTime(value) {
-    const parsed = value.split(' ');
+    const parsed = value && value.split(' ');
     return {date: parsed[0], time: parsed[1] ? parsed[1] : ''};
   }
 

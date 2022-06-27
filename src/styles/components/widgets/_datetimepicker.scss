@@ -1,6 +1,16 @@
 @use '../../variables/defaults' as *;
 
 .datetimepicker-container {
+  --rdp-cell-size: 28px;
+  --rdp-accent-color: $color-figlinq-brand;
+  --rdp-background-color: #e7edff;
+  /* Switch to dark colors for dark themes */
+  --rdp-accent-color-dark: #3003e1;
+  --rdp-background-color-dark: #180270;
+  /* Outline border for focused elements */
+  --rdp-outline: 2px solid var(--rdp-accent-color);
+  /* Outline border for focused and selected elements */
+  --rdp-outline-selected: 2px solid rgba(0, 0, 0, 0.75);
   min-width: 176px;
   min-height: 70px;
   .mdi-icon {
@@ -9,6 +19,9 @@
   }
   &__content {
     margin-top: 5px;
+  }
+  .rdp-button {
+    font-size: var(--font-size-small);
   }
 }
 
