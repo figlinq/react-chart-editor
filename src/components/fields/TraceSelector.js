@@ -96,17 +96,25 @@ class TraceSelector extends Component {
       options: this.traceOptions,
       clearable: false,
     });
-    const {localize: _, advancedTraceTypeSelector} = this.context;
+    const {localize: _, advancedTraceTypeSelector, chartHelp} = this.context;
 
     const options = [
       {label: _('SVG'), value: ''},
       {label: _('WebGL'), value: 'gl'},
     ];
 
+    const exampleOnClick =
+      chartHelp &&
+      chartHelp[props.fullValue]?.examplePlot &&
+      ((e) => {
+        e.stopPropagation();
+        chartHelp[props.fullValue].examplePlot();
+      });
+
     // Check and see if the advanced selector prop is true
     if (advancedTraceTypeSelector) {
       return (
-        <div>
+        <>
           <Field {...props}>
             <div
               style={{
@@ -126,16 +134,17 @@ class TraceSelector extends Component {
                   })
                 }
               />
-              {!TRACES_WITH_GL.includes(this.props.container.type) ? (
-                ''
-              ) : (
+              {TRACES_WITH_GL.includes(this.props.container.type) && (
                 <CogIcon className="menupanel__icon" onClick={this.toggleGlControls} />
               )}
             </div>
+            {exampleOnClick && (
+              <div className="js-test-info" style={{padding: '16px 0 12px 0'}}>
+                See basic usage <a onClick={exampleOnClick}>example</a>.
+              </div>
+            )}
           </Field>
-          {!(TRACES_WITH_GL.includes(this.props.container.type) && this.state.showGlControls) ? (
-            ''
-          ) : (
+          {TRACES_WITH_GL.includes(this.props.container.type) && this.state.showGlControls && (
             <Field label={_('Rendering')}>
               <RadioBlocks
                 options={options}
@@ -144,7 +153,7 @@ class TraceSelector extends Component {
               />
             </Field>
           )}
-        </div>
+        </>
       );
     }
 
@@ -160,6 +169,7 @@ TraceSelector.contextTypes = {
   config: PropTypes.object,
   localize: PropTypes.func,
   glByDefault: PropTypes.bool,
+  chartHelp: PropTypes.object,
 };
 
 TraceSelector.propTypes = {
