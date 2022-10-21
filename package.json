@@ -1,7 +1,7 @@
 {
   "name": "@figlinq/react-chart-editor",
   "description": "plotly.js chart editor react component UI",
-  "version": "0.47.7",
+  "version": "0.47.8",
   "author": "Figlinq",
   "bugs": {
     "url": "https://github.com/figlinq/react-chart-editor/issues"
@@ -28,7 +28,7 @@
   "dependencies": {
     "@figlinq/plotly-icons": "2.0.1",
     "@plotly/draft-js-export-html": "1.2.0",
-    "classnames": "2.3.1",
+    "classnames": "2.3.2",
     "draft-js": "0.11.7",
     "draft-js-import-html": "1.4.1",
     "draft-js-utils": "1.4.1",
@@ -39,13 +39,13 @@
     "react-color": "2.19.3",
     "react-colorscales": "0.7.3",
     "react-day-picker": "7.4.10",
-    "react-dropzone": "14.2.2",
-    "react-plotly.js": "2.5.1",
+    "react-dropzone": "14.2.3",
+    "react-plotly.js": "2.6.0",
     "react-rangeslider": "2.2.0",
     "react-resizable-rotatable-draggable": "0.2.0",
-    "react-select": "5.4.0",
+    "react-select": "5.5.4",
     "react-tabs": "4.2.1",
-    "styled-components": "5.3.5",
+    "styled-components": "5.3.6",
     "tinycolor2": "1.4.2"
   },
   "devDependencies": {
@@ -144,7 +144,7 @@
   ],
   "volta": {
     "node": "16.14.0",
-    "yarn": "1.22.18"
+    "yarn": "1.22.19"
   },
   "directories": {
     "example": "examples",
