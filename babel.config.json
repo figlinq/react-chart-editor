@@ -1,4 +1,8 @@
 {
+  "env": {
+    "development": {"comments": false, "minified": true},
+    "production": {"comments": true, "minified": false}
+  },
   "presets": [
     [
       "@babel/preset-react",
@@ -23,4 +27,6 @@
       }
     ]
   ]
+  // "comments": false,
+  // "minified": true,
 }
