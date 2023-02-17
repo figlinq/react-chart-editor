@@ -2,7 +2,7 @@ import EditableText from './EditableText';
 import {Component} from 'react';
 import PropTypes from 'prop-types';
 import isNumeric from 'fast-isnumeric';
-import Slider from 'react-rangeslider';
+import Slider from '@appigram/react-rangeslider';
 import {CarretDownIcon, CarretUpIcon} from '@figlinq/plotly-icons';
 
 export const UP_ARROW = 38;
