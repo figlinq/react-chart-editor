@@ -1,4 +1,4 @@
-import 'react-day-picker/lib/style.css';
+import 'react-day-picker/dist/style.css';
 import {CalendarMultiselectIcon} from '@figlinq/plotly-icons';
 import {ms2DateTime, dateTime2ms, isDateTime} from 'plotly.js/src/lib/dates';
 import DayPicker from 'react-day-picker';

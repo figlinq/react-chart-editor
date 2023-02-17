@@ -1,7 +1,8 @@
 const webpack = require('webpack');
+const path = require('path');
 
 module.exports = (env, argv) => ({
-  entry: ['react-hot-loader/patch', './dev/index.js'],
+  entry: ['./dev/index.js'],
   output: {
     filename: 'bundle.js',
   },
@@ -19,15 +20,14 @@ module.exports = (env, argv) => ({
     ],
   },
   resolve: {
-    alias: {
-      'react-dom': '@hot-loader/react-dom',
-    },
+    modules: ['node_modules', path.resolve(__dirname, '../../node_modules')],
   },
   plugins: [new webpack.IgnorePlugin({resourceRegExp: /vertx/})],
   devServer: {
     open: false,
     static: './dev',
     client: {overlay: {errors: true, warnings: false}},
+    hot: true,
   },
   devtool: 'eval-source-map',
   target: 'browserslist',

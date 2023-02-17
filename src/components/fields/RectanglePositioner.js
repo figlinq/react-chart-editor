@@ -2,7 +2,7 @@ import Field from './Field';
 import PropTypes from 'prop-types';
 import {Component} from 'react';
 import {connectToContainer} from 'lib';
-import ResizableRect from 'react-resizable-rotatable-draggable';
+import Moveable from 'react-moveable';
 import RadioBlocks from '../widgets/RadioBlocks';
 import DualNumeric from './DualNumeric';
 
@@ -19,7 +19,15 @@ class UnconnectedRectanglePositioner extends Component {
           y: ['yaxis.domain[0]', 'yaxis.domain[1]'],
         }
       : {x: ['domain.x[0]', 'domain.x[1]'], y: ['domain.y[0]', 'domain.y[1]']};
-    this.state = {snap: true};
+    this.state = {
+      snap: true,
+      className: (Math.random() + 1).toString(36).substring(2),
+      target: null,
+    };
+  }
+
+  componentDidMount() {
+    this.setState({target: document.getElementsByClassName(`.${this.state.className}`)});
   }
 
   sendUpdate({x, y, width, height, fieldWidthPx, fieldHeightPx}) {
@@ -91,7 +99,7 @@ class UnconnectedRectanglePositioner extends Component {
             />
           </Field>
           <div
-            className="rect-container"
+            className={`rect-container ${this.state.className}`}
             style={{
               width: fieldWidthPx + 1,
               height: fieldHeightPx + 1,
@@ -111,37 +119,48 @@ class UnconnectedRectanglePositioner extends Component {
                   }}
                 />
               ))}
-            <ResizableRect
-              bounds="parent"
-              width={width}
-              height={height}
-              left={left}
-              top={top}
-              rotatable={false}
-              draggable={!this.state.snap}
-              zoomable={zoomable}
-              onResize={(style) => {
-                this.sendUpdate({
-                  fieldWidthPx,
-                  fieldHeightPx,
-                  width: style.width,
-                  height: style.height,
-                  x: style.left,
-                  y: style.top,
-                });
-              }}
-              onDrag={(deltaX, deltaY) => {
-                this.sendUpdate({
-                  fieldWidthPx,
-                  fieldHeightPx,
-                  width,
-                  height,
-                  x: left + deltaX,
-                  y: top + deltaY,
-                });
-              }}
-            />
           </div>
+          <ResizableRect
+            target={this.state.target}
+            resizable={true}
+            draggable={!this.state.snap}
+            zoomable={zoomable}
+            onResize={(onResize) => {
+              const {target, width, height, dist, delta, direction, clientX, clientY} = onResize;
+              this.sendUpdate({
+                fieldWidthPx,
+                fieldHeightPx,
+                width: width,
+                height: height,
+                x: clientX,
+                y: clientY,
+              });
+            }}
+            onDrag={(onDrag) => {
+              const {
+                target,
+                beforeDelta,
+                beforeDist,
+                left,
+                top,
+                right,
+                bottom,
+                delta,
+                dist,
+                transform,
+                clientX,
+                clientY,
+              } = onDrag;
+              this.sendUpdate({
+                fieldWidthPx,
+                fieldHeightPx,
+                width,
+                height,
+                x: left + dist[0],
+                y: top + dist[1],
+              });
+            }}
+          />
           {fullContainer.xaxis && fullContainer.xaxis.overlaying ? (
             ''
           ) : (
