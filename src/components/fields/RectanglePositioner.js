@@ -120,7 +120,7 @@ class UnconnectedRectanglePositioner extends Component {
                 />
               ))}
           </div>
-          <ResizableRect
+          <Moveable
             target={this.state.target}
             resizable={true}
             draggable={!this.state.snap}

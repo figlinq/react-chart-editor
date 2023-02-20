@@ -1,10 +1,10 @@
 {
-  "name": "@figlinq/react-chart-editor",
+  "name": "@octostarco/react-chart-editor",
   "description": "plotly.js chart editor react component UI",
   "version": "0.48.1",
   "author": "Figlinq",
   "bugs": {
-    "url": "https://github.com/figlinq/react-chart-editor/issues"
+    "url": "https://github.com/octostarco/react-chart-editor/issues"
   },
   "scripts": {
     "prettier": "prettier --write \"src/**/*.{js,scss}\" \"dev/**/*.{js,scss}\" \"examples/**/*.{js,scss}\"",
@@ -109,7 +109,7 @@
   "engines": {
     "node": ">=12.13.0"
   },
-  "homepage": "https://figlinq.github.io/react-chart-editor/",
+  "homepage": "https://octostarco.github.io/react-chart-editor/",
   "jest": {
     "roots": [
       "<rootDir>/src/"
@@ -133,7 +133,7 @@
   "main": "lib/index.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/figlinq/react-chart-editor.git"
+    "url": "git+https://github.com/octostarco/react-chart-editor.git"
   },
   "browserslist": [
     "defaults",

@@ -10,10 +10,10 @@ const pathToCombinedTranslationKeys = path.join(
   './translationKeys/combined-translation-keys.txt'
 );
 
-const plotlyJS = path.join(
-  __dirname,
-  '../node_modules/plotly.js/dist/translation-keys.txt'
-);
+const plotlyJS1 = path.join(__dirname, '../node_modules/plotly.js/dist/translation-keys.txt');
+const plotlyJS2 = path.join(__dirname, '../../../node_modules/plotly.js/dist/translation-keys.txt'); // npm workspaces
+
+const plotlyJS = fs.existsSync(plotlyJS2) ? plotlyJS2 : plotlyJS1;
 
 const editor = path.join(__dirname, './translationKeys/translation-keys.txt');
 
@@ -22,13 +22,9 @@ const minHasPaths = 4;
 
 const hasPaths = argvLen >= minHasPaths;
 
-const inputPaths = hasPaths
-  ? process.argv.slice(2, argvLen - 1)
-  : [plotlyJS, editor];
+const inputPaths = hasPaths ? process.argv.slice(2, argvLen - 1) : [plotlyJS, editor];
 
-const outputPath = hasPaths
-  ? process.argv[argvLen - 1]
-  : pathToCombinedTranslationKeys;
+const outputPath = hasPaths ? process.argv[argvLen - 1] : pathToCombinedTranslationKeys;
 
 combineTranslationKeys();
 
@@ -36,28 +32,30 @@ function combineTranslationKeys() {
   const dict = {};
   let maxLen = 0;
 
-  inputPaths.map(relPath => path.resolve(relPath)).forEach(inputPath => {
-    const lines = fs.readFileSync(inputPath, 'utf-8').split(/\r?\n/);
+  inputPaths
+    .map((relPath) => path.resolve(relPath))
+    .forEach((inputPath) => {
+      const lines = fs.readFileSync(inputPath, 'utf-8').split(/\r?\n/);
 
-    const repository = getRepository(inputPath);
+      const repository = getRepository(inputPath);
 
-    lines.forEach(line => {
-      const splitString = line.split(/\/\//);
-      const stringToTranslate = splitString[0].trim();
-      const source = splitString[1].trim();
-      maxLen = Math.max(maxLen, stringToTranslate.length);
+      lines.forEach((line) => {
+        const splitString = line.split(/\/\//);
+        const stringToTranslate = splitString[0].trim();
+        const source = splitString[1].trim();
+        maxLen = Math.max(maxLen, stringToTranslate.length);
 
-      if (!dict[stringToTranslate]) {
-        dict[stringToTranslate] = ' // ' + repository + ': ' + source;
-      } else {
-        dict[stringToTranslate] += ` && ${repository}: ${source}`;
-      }
+        if (!dict[stringToTranslate]) {
+          dict[stringToTranslate] = ' // ' + repository + ': ' + source;
+        } else {
+          dict[stringToTranslate] += ` && ${repository}: ${source}`;
+        }
+      });
     });
-  });
 
   const strings = Object.keys(dict)
     .sort()
-    .map(k => k + spaces(maxLen - k.length) + dict[k])
+    .map((k) => k + spaces(maxLen - k.length) + dict[k])
     .join('\n');
 
   fs.writeFileSync(outputPath, strings);
@@ -80,7 +78,7 @@ function spaces(len) {
   return out;
 }
 
-process.on('exit', function(code) {
+process.on('exit', function (code) {
   if (code === 1) {
     throw new Error('combineTranslationKeys failed.');
   }
