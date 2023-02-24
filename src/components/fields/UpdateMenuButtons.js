@@ -1,43 +1,30 @@
 import PropTypes from 'prop-types';
-import {Component} from 'react';
+import {useState} from 'react';
 import {Dropdown, TextEditor} from '../index';
 import Field from './Field';
 import {connectToContainer} from 'lib';
 
-class UpdateMenuButtons extends Component {
-  constructor(props, context) {
-    super(props, context);
-    this.state = {
-      currentButtonIndex: 0,
-    };
-  }
+const UpdateMenuButtons = (props, context) => {
+  const _ = context.localize;
+  const [currentButtonIndex, setCurrentButtonIndex] = useState(0);
 
-  renderDropdown() {
-    const _ = this.context.localize;
-    const options = this.props.fullValue.map((button, index) => {
-      return {label: _('Button') + ` ${index + 1}`, value: index};
-    });
-    return (
+  return (
+    <Field>
       <Dropdown
         attr="buttons"
         label={_('Button')}
-        options={options}
-        updatePlot={(index) => this.setState({currentButtonIndex: index})}
+        options={props.fullValue.map((button, index) => ({
+          label: _('Button') + ` ${index + 1}`,
+          value: index,
+        }))}
+        updatePlot={(index) => setCurrentButtonIndex(index)}
         clearable={false}
-        fullValue={this.state.currentButtonIndex}
+        fullValue={currentButtonIndex}
       />
-    );
-  }
-
-  render() {
-    return (
-      <Field>
-        {this.renderDropdown()}
-        <TextEditor attr={`buttons[${this.state.currentButtonIndex}].label`} richTextOnly />
-      </Field>
-    );
-  }
-}
+      <TextEditor attr={`buttons[${currentButtonIndex}].label`} richTextOnly />
+    </Field>
+  );
+};
 
 UpdateMenuButtons.propTypes = {
   attr: PropTypes.string,

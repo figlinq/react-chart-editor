@@ -1,5 +1,4 @@
 import Field from './Field';
-import {Component} from 'react';
 import PropTypes from 'prop-types';
 import {connectToContainer} from 'lib';
 import nestedProperty from 'plotly.js/src/lib/nested_property';
@@ -12,18 +11,12 @@ import HTML from '../widgets/text_editors/HTML';
 const TEMPLATE_STRING_REGEX = /%{([^\s%{}:]*)(:[^}]*)?}/g;
 const INDEX_IN_TEMPLATE_STRING_REGEX = /%{(meta(\[(\d+)]))}/;
 
-export class UnconnectedTextEditor extends Component {
-  hasTemplateStrings(value) {
-    if (!value) {
-      return false;
-    }
-    return value.match(TEMPLATE_STRING_REGEX);
-  }
+export const UnconnectedTextEditor = (props, context) => {
+  const hasTemplateStrings = (value) => (!value ? false : value.match(TEMPLATE_STRING_REGEX));
 
-  updatePlot(value) {
-    const {updatePlot} = this.props;
-    const templateStrings = this.hasTemplateStrings(value);
-
+  const updatePlot = (value) => {
+    const {updatePlot} = props;
+    const templateStrings = hasTemplateStrings(value);
     let adjustedValue = value;
 
     if (templateStrings) {
@@ -40,10 +33,11 @@ export class UnconnectedTextEditor extends Component {
     }
 
     updatePlot(adjustedValue);
-  }
+  };
 
-  getAdjustedFullValue(fullValue) {
-    const templateStrings = this.hasTemplateStrings(fullValue);
+  const getAdjustedFullValue = (fullValue) => {
+    const templateStrings = hasTemplateStrings(fullValue);
+
     if (templateStrings) {
       return fullValue.replace(TEMPLATE_STRING_REGEX, (match) => {
         const index = INDEX_IN_TEMPLATE_STRING_REGEX.exec(match);
@@ -58,59 +52,39 @@ export class UnconnectedTextEditor extends Component {
       });
     }
     return fullValue;
+  };
+
+  const {attr, container, htmlOnly, latexOnly, multiValued, richTextOnly} = props;
+  const {localize: _} = context;
+
+  let fullValue = getAdjustedFullValue(props.fullValue);
+  let placeholder = props.placeholder;
+
+  if (multiValued || (fullValue && (!container || !nestedProperty(container, attr)))) {
+    placeholder = fullValue;
+    fullValue = '';
   }
 
-  render() {
-    const {attr, container, htmlOnly, latexOnly, multiValued, richTextOnly} = this.props;
+  let editor;
 
-    const {localize: _} = this.context;
-
-    let fullValue = this.getAdjustedFullValue(this.props.fullValue);
-
-    let placeholder = this.props.placeholder;
-
-    if (multiValued || (fullValue && (!container || !nestedProperty(container, attr)))) {
-      placeholder = fullValue;
-      fullValue = '';
-    }
-
-    let editor;
-
-    if (latexOnly) {
-      placeholder = _('Enter LaTeX formatted text');
-      editor = (
-        <LaTeX value={fullValue} placeholder={placeholder} onChange={this.updatePlot.bind(this)} />
-      );
-    } else if (richTextOnly) {
-      editor = (
-        <RichText
-          value={fullValue}
-          placeholder={placeholder}
-          onChange={this.updatePlot.bind(this)}
-        />
-      );
-    } else if (htmlOnly) {
-      placeholder = _('Enter html formatted text');
-      editor = (
-        <HTML value={fullValue} placeholder={placeholder} onChange={this.updatePlot.bind(this)} />
-      );
-    } else {
-      editor = (
-        <MultiFormat
-          value={fullValue}
-          placeholder={placeholder}
-          onChange={this.updatePlot.bind(this)}
-        />
-      );
-    }
-
-    return (
-      <Field {...this.props}>
-        <div className="text-editor">{editor}</div>
-      </Field>
-    );
+  if (latexOnly) {
+    placeholder = _('Enter LaTeX formatted text');
+    editor = <LaTeX value={fullValue} placeholder={placeholder} onChange={updatePlot} />;
+  } else if (richTextOnly) {
+    editor = <RichText value={fullValue} placeholder={placeholder} onChange={updatePlot} />;
+  } else if (htmlOnly) {
+    placeholder = _('Enter html formatted text');
+    editor = <HTML value={fullValue} placeholder={placeholder} onChange={updatePlot} />;
+  } else {
+    editor = <MultiFormat value={fullValue} placeholder={placeholder} onChange={updatePlot} />;
   }
-}
+
+  return (
+    <Field {...props}>
+      <div className="text-editor">{editor}</div>
+    </Field>
+  );
+};
 
 UnconnectedTextEditor.propTypes = {
   ...Field.propTypes,

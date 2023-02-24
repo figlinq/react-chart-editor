@@ -1,4 +1,3 @@
-import {Component} from 'react';
 import PropTypes from 'prop-types';
 import {PanelMenuWrapper} from './components';
 import {
@@ -21,89 +20,61 @@ import {traceHasColorbar} from './default_panels/StyleColorbarsPanel';
 import Logo from './components/widgets/Logo';
 import {TRANSFORMABLE_TRACES, TRACE_TO_AXIS} from './lib/constants';
 
-class DefaultEditor extends Component {
-  constructor(props, context) {
-    super(props, context);
-    this.hasTransforms = this.hasTransforms.bind(this);
-    this.hasAxes = this.hasAxes.bind(this);
-    this.hasMenus = this.hasMenus.bind(this);
-    this.hasSliders = this.hasSliders.bind(this);
-    this.hasColorbars = this.hasColorbars.bind(this);
-    this.hasLegend = this.hasLegend.bind(this);
-  }
+const DefaultEditor = (props, context) => {
+  const hasTransforms = () => context.fullData.some((d) => TRANSFORMABLE_TRACES.includes(d.type));
 
-  hasTransforms() {
-    return this.context.fullData.some((d) => TRANSFORMABLE_TRACES.includes(d.type));
-  }
+  const hasAxes = () =>
+    Object.keys(context.fullLayout._subplots).filter(
+      (type) =>
+        !['cartesian', 'mapbox'].includes(type) && context.fullLayout._subplots[type].length > 0
+    ).length > 0;
 
-  hasAxes() {
-    return (
-      Object.keys(this.context.fullLayout._subplots).filter(
-        (type) =>
-          !['cartesian', 'mapbox'].includes(type) &&
-          this.context.fullLayout._subplots[type].length > 0
-      ).length > 0
-    );
-  }
-
-  hasMenus() {
+  const hasMenus = () => {
     const {
       fullLayout: {updatemenus = []},
-    } = this.context;
-
+    } = context;
     return updatemenus.length > 0;
-  }
+  };
 
-  hasSliders() {
+  const hasSliders = () => {
     const {
       layout: {sliders = []},
-    } = this.context;
-
+    } = context;
     return sliders.length > 0;
-  }
+  };
 
-  hasColorbars() {
-    return this.context.fullData.some((d) => traceHasColorbar({}, d));
-  }
+  const hasColorbars = () => context.fullData.some((d) => traceHasColorbar({}, d));
 
-  hasLegend() {
-    return this.context.fullData.some((t) => t.showlegend !== undefined); // eslint-disable-line no-undefined
-  }
+  const hasLegend = () =>
+    context.fullData.some((t) => t.showlegend !== undefined); /* eslint-disable-line no-undefined*/
 
-  hasMaps() {
-    return this.context.fullData.some((d) =>
-      [...TRACE_TO_AXIS.geo, ...TRACE_TO_AXIS.mapbox].includes(d.type)
-    );
-  }
+  const hasMaps = () =>
+    context.fullData.some((d) => [...TRACE_TO_AXIS.geo, ...TRACE_TO_AXIS.mapbox].includes(d.type));
 
-  render() {
-    const _ = this.context.localize;
-    const logo = this.props.logoSrc && <Logo src={this.props.logoSrc} />;
+  const _ = context.localize;
+  const logo = props.logoSrc && <Logo src={props.logoSrc} />;
 
-    return (
-      <PanelMenuWrapper menuPanelOrder={this.props.menuPanelOrder}>
-        {logo ? logo : null}
-        <GraphCreatePanel group={_('Structure')} name={_('Traces')} />
-        <GraphSubplotsPanel group={_('Structure')} name={_('Subplots')} />
-        {this.hasTransforms() && (
-          <GraphTransformsPanel group={_('Structure')} name={_('Transforms')} />
-        )}
-        <StyleLayoutPanel group={_('Style')} name={_('General')} collapsedOnStart />
-        <StyleTracesPanel group={_('Style')} name={_('Traces')} />
-        {this.hasAxes() && <StyleAxesPanel group={_('Style')} name={_('Axes')} collapsedOnStart />}
-        {this.hasMaps() && <StyleMapsPanel group={_('Style')} name={_('Maps')} />}
-        {this.hasLegend() && <StyleLegendPanel group={_('Style')} name={_('Legend')} />}
-        {this.hasColorbars() && <StyleColorbarsPanel group={_('Style')} name={_('Color Bars')} />}
-        <StyleNotesPanel group={_('Annotate')} name={_('Text')} />
-        <StyleShapesPanel group={_('Annotate')} name={_('Shapes')} />
-        <StyleImagesPanel group={_('Annotate')} name={_('Images')} />
-        {this.hasSliders() && <StyleSlidersPanel group={_('Control')} name={_('Sliders')} />}
-        {this.hasMenus() && <StyleUpdateMenusPanel group={_('Control')} name={_('Menus')} />}
-        {this.props.children ? this.props.children : null}
-      </PanelMenuWrapper>
-    );
-  }
-}
+  return (
+    <PanelMenuWrapper menuPanelOrder={props.menuPanelOrder}>
+      {logo ? logo : null}
+      <GraphCreatePanel group={_('Structure')} name={_('Traces')} />
+      <GraphSubplotsPanel group={_('Structure')} name={_('Subplots')} />
+      {hasTransforms() && <GraphTransformsPanel group={_('Structure')} name={_('Transforms')} />}
+      <StyleLayoutPanel group={_('Style')} name={_('General')} collapsedOnStart />
+      <StyleTracesPanel group={_('Style')} name={_('Traces')} />
+      {hasAxes() && <StyleAxesPanel group={_('Style')} name={_('Axes')} collapsedOnStart />}
+      {hasMaps() && <StyleMapsPanel group={_('Style')} name={_('Maps')} />}
+      {hasLegend() && <StyleLegendPanel group={_('Style')} name={_('Legend')} />}
+      {hasColorbars() && <StyleColorbarsPanel group={_('Style')} name={_('Color Bars')} />}
+      <StyleNotesPanel group={_('Annotate')} name={_('Text')} />
+      <StyleShapesPanel group={_('Annotate')} name={_('Shapes')} />
+      <StyleImagesPanel group={_('Annotate')} name={_('Images')} />
+      {hasSliders() && <StyleSlidersPanel group={_('Control')} name={_('Sliders')} />}
+      {hasMenus() && <StyleUpdateMenusPanel group={_('Control')} name={_('Menus')} />}
+      {props.children ? props.children : null}
+    </PanelMenuWrapper>
+  );
+};
 
 DefaultEditor.propTypes = {
   children: PropTypes.node,

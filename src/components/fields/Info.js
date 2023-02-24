@@ -1,17 +1,12 @@
 import Field from './Field';
-import {Component} from 'react';
 
-export default class Info extends Component {
-  render() {
-    return (
-      <Field {...this.props}>
-        <div className={`js-test-info ${this.props.className ? this.props.className : ''}`}>
-          {this.props.children}
-        </div>
-      </Field>
-    );
-  }
-}
+const Info = (props) => (
+  <Field {...props}>
+    <div className={`js-test-info ${props.className ? props.className : ''}`}>{props.children}</div>
+  </Field>
+);
+
+export default Info;
 
 Info.plotly_editor_traits = {
   no_visibility_forcing: true,
