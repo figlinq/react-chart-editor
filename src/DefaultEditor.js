@@ -20,43 +20,38 @@ import {traceHasColorbar} from './default_panels/StyleColorbarsPanel';
 import Logo from './components/widgets/Logo';
 import {TRANSFORMABLE_TRACES, TRACE_TO_AXIS} from './lib/constants';
 
-const DefaultEditor = (props, context) => {
-  const hasTransforms = () => context.fullData.some((d) => TRANSFORMABLE_TRACES.includes(d.type));
+const DefaultEditor = (
+  {logoSrc, children, menuPanelOrder},
+  {fullData, fullLayout, layout, localize: _}
+) => {
+  const hasTransforms = () => fullData.some((d) => TRANSFORMABLE_TRACES.includes(d.type));
 
   const hasAxes = () =>
-    Object.keys(context.fullLayout._subplots).filter(
-      (type) =>
-        !['cartesian', 'mapbox'].includes(type) && context.fullLayout._subplots[type].length > 0
+    Object.keys(fullLayout._subplots).filter(
+      (type) => !['cartesian', 'mapbox'].includes(type) && fullLayout._subplots[type].length > 0
     ).length > 0;
 
   const hasMenus = () => {
-    const {
-      fullLayout: {updatemenus = []},
-    } = context;
+    const {updatemenus = []} = fullLayout;
     return updatemenus.length > 0;
   };
 
   const hasSliders = () => {
-    const {
-      layout: {sliders = []},
-    } = context;
+    const {sliders = []} = layout;
     return sliders.length > 0;
   };
 
-  const hasColorbars = () => context.fullData.some((d) => traceHasColorbar({}, d));
+  const hasColorbars = () => fullData.some((d) => traceHasColorbar({}, d));
 
   const hasLegend = () =>
-    context.fullData.some((t) => t.showlegend !== undefined); /* eslint-disable-line no-undefined*/
+    fullData.some((t) => t.showlegend !== undefined); /* eslint-disable-line no-undefined*/
 
   const hasMaps = () =>
-    context.fullData.some((d) => [...TRACE_TO_AXIS.geo, ...TRACE_TO_AXIS.mapbox].includes(d.type));
-
-  const _ = context.localize;
-  const logo = props.logoSrc && <Logo src={props.logoSrc} />;
+    fullData.some((d) => [...TRACE_TO_AXIS.geo, ...TRACE_TO_AXIS.mapbox].includes(d.type));
 
   return (
-    <PanelMenuWrapper menuPanelOrder={props.menuPanelOrder}>
-      {logo ? logo : null}
+    <PanelMenuWrapper menuPanelOrder={menuPanelOrder}>
+      {Boolean(logoSrc) && <Logo src={logoSrc} />}
       <GraphCreatePanel group={_('Structure')} name={_('Traces')} />
       <GraphSubplotsPanel group={_('Structure')} name={_('Subplots')} />
       {hasTransforms() && <GraphTransformsPanel group={_('Structure')} name={_('Transforms')} />}
@@ -71,7 +66,7 @@ const DefaultEditor = (props, context) => {
       <StyleImagesPanel group={_('Annotate')} name={_('Images')} />
       {hasSliders() && <StyleSlidersPanel group={_('Control')} name={_('Sliders')} />}
       {hasMenus() && <StyleUpdateMenusPanel group={_('Control')} name={_('Menus')} />}
-      {props.children ? props.children : null}
+      {children || null}
     </PanelMenuWrapper>
   );
 };
