@@ -24,8 +24,9 @@ PanelMessage.propTypes = {
   icon: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
 };
 
-const PanelEmpty = (props) => (
+const PanelEmpty = (props, context) => (
   <div className={bem('panel', 'empty')}>
+    {context?.customConfig?.panelTopItem || null}
     <PanelMessage {...props} />
   </div>
 );
@@ -34,6 +35,10 @@ PanelEmpty.propTypes = {
   heading: PropTypes.string,
   children: PropTypes.node,
   icon: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
+};
+
+PanelEmpty.contextTypes = {
+  customConfig: PropTypes.object,
 };
 
 export default PanelEmpty;

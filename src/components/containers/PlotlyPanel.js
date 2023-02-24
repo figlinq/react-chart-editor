@@ -110,6 +110,7 @@ export class Panel extends Component {
 
     return (
       <div className={`panel${this.props.noPadding ? ' panel--no-padding' : ''}`}>
+        {this.context?.customConfig?.panelTopItem || null}
         <PanelHeader
           addAction={this.props.addAction}
           allowCollapse={this.props.showExpandCollapse && individualFoldStates.length > 1}
@@ -139,6 +140,7 @@ Panel.defaultProps = {
 
 Panel.contextTypes = {
   localize: PropTypes.func,
+  customConfig: PropTypes.object,
 };
 
 Panel.childContextTypes = {

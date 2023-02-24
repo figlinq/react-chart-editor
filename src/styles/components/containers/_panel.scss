@@ -65,6 +65,7 @@
     box-sizing: border-box;
     @include z-index(floor);
     display: flex;
+    flex-direction: column;
     &__message {
       text-align: center;
       &__icon {
