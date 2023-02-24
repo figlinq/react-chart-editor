@@ -1,32 +1,30 @@
 import DropdownWidget from '../widgets/Dropdown';
 import Field from './Field';
 import PropTypes from 'prop-types';
-import {Component} from 'react';
 import {connectToContainer} from 'lib';
 
-export class UnconnectedDropdown extends Component {
-  render() {
-    let placeholder;
-    if (this.props.multiValued) {
-      placeholder = this.props.fullValue;
-    }
+export const UnconnectedDropdown = (props) => {
+  let placeholder;
 
-    return (
-      <Field {...this.props}>
-        <DropdownWidget
-          backgroundDark={this.props.backgroundDark}
-          options={this.props.options}
-          value={this.props.fullValue}
-          onChange={this.props.updatePlot}
-          clearable={this.props.clearable}
-          placeholder={placeholder}
-          disabled={this.props.disabled}
-          components={this.props.components}
-        />
-      </Field>
-    );
+  if (props.multiValued) {
+    placeholder = props.fullValue;
   }
-}
+
+  return (
+    <Field {...props}>
+      <DropdownWidget
+        backgroundDark={props.backgroundDark}
+        options={props.options}
+        value={props.fullValue}
+        onChange={props.updatePlot}
+        clearable={props.clearable}
+        placeholder={placeholder}
+        disabled={props.disabled}
+        components={props.components}
+      />
+    </Field>
+  );
+};
 
 UnconnectedDropdown.propTypes = {
   backgroundDark: PropTypes.bool,

@@ -1,40 +1,31 @@
 import ColorscalePickerWidget from '../widgets/ColorscalePicker';
 import Field from './Field';
 import PropTypes from 'prop-types';
-import {Component} from 'react';
 import {connectToContainer, adjustColorscale} from 'lib';
 
-class UnconnectedPieColorscalePicker extends Component {
-  constructor(props) {
-    super(props);
-    this.onUpdate = this.onUpdate.bind(this);
-  }
-
-  onUpdate(colorscale, colorscaleType) {
+const UnconnectedPieColorscalePicker = (props, context) => {
+  const onUpdate = (colorscale, colorscaleType) => {
     if (Array.isArray(colorscale)) {
-      const numPieSlices = this.context.graphDiv.calcdata[0].length + 1;
+      const numPieSlices = context.graphDiv.calcdata[0].length + 1;
       const adjustedColorscale = adjustColorscale(colorscale, numPieSlices, colorscaleType, {
         repeat: true,
       });
-      this.props.updatePlot(adjustedColorscale);
+      props.updatePlot(adjustedColorscale);
     }
-  }
+  };
 
-  render() {
-    const {fullValue} = this.props;
-    const colorscale = Array.isArray(fullValue) ? fullValue : null;
+  const colorscale = Array.isArray(props.fullValue) ? props.fullValue : null;
 
-    return (
-      <Field {...this.props}>
-        <ColorscalePickerWidget
-          selected={colorscale}
-          onColorscaleChange={this.onUpdate}
-          initialCategory="categorical"
-        />
-      </Field>
-    );
-  }
-}
+  return (
+    <Field {...props}>
+      <ColorscalePickerWidget
+        selected={colorscale}
+        onColorscaleChange={onUpdate}
+        initialCategory="categorical"
+      />
+    </Field>
+  );
+};
 
 UnconnectedPieColorscalePicker.propTypes = {
   fullValue: PropTypes.any,

@@ -1,22 +1,13 @@
 import Drop from '../widgets/Dropzone';
 import Field from './Field';
 import PropTypes from 'prop-types';
-import {Component} from 'react';
 import {connectToContainer} from 'lib';
 
-export class UnconnectedDropzone extends Component {
-  render() {
-    return (
-      <Field {...this.props}>
-        <Drop
-          value={this.props.fullValue}
-          onUpdate={this.props.updatePlot}
-          fileType={this.props.fileType}
-        />
-      </Field>
-    );
-  }
-}
+export const UnconnectedDropzone = (props) => (
+  <Field {...props}>
+    <Drop value={props.fullValue} onUpdate={props.updatePlot} fileType={props.fileType} />
+  </Field>
+);
 
 UnconnectedDropzone.propTypes = {
   value: PropTypes.any,

@@ -1,8 +1,8 @@
 import Dropdown from './Dropdown';
 import ARROW_PATHS from 'plotly.js/src/components/annotations/arrow_paths';
 
-const ARROW_OPTIONS = ARROW_PATHS.map(({path}, index) => {
-  const label = (
+const ARROW_OPTIONS = ARROW_PATHS.map(({path}, index) => ({
+  label: (
     <svg width="40" height="20" style={{position: 'relative'}}>
       <line
         stroke="rgb(68, 68, 68)"
@@ -19,18 +19,12 @@ const ARROW_OPTIONS = ARROW_PATHS.map(({path}, index) => {
         style={{fill: 'rgb(68, 68, 68)', opacity: 1, strokeWidth: 0}}
       />
     </svg>
-  );
+  ),
+  value: index,
+  key: 'arrow' + index,
+}));
 
-  return {
-    label,
-    value: index,
-    key: 'arrow' + index,
-  };
-});
-
-const ArrowSelector = (props) => {
-  return <Dropdown {...props} options={ARROW_OPTIONS} />;
-};
+const ArrowSelector = (props) => <Dropdown {...props} options={ARROW_OPTIONS} />;
 
 ArrowSelector.propTypes = {
   ...Dropdown.propTypes,

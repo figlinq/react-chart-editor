@@ -13,11 +13,9 @@ const MILLISECONDS_IN_DAY = MILLISECONDS_IN_MINUTE * 60 * 24; // eslint-disable-
 const DAYS_IN_MONTH = 30;
 const MONTHS_IN_YEAR = 12; //eslint-disable-line
 
-function twoDecimalsRound(value) {
-  return Math.round(value * 100) / 100;
-}
+const twoDecimalsRound = (value) => Math.round(value * 100) / 100;
 
-function getSmallestUnit(milliseconds) {
+const getSmallestUnit = (milliseconds) => {
   const units = {
     seconds: MILLISECONDS_IN_SECOND,
     minutes: MILLISECONDS_IN_MINUTE,
@@ -38,7 +36,7 @@ function getSmallestUnit(milliseconds) {
   });
 
   return smallestUnit;
-}
+};
 
 export class UnconnectedAxisInterval extends Component {
   constructor(props) {

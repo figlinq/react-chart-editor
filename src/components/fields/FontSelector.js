@@ -1,10 +1,10 @@
 import Dropdown from './Dropdown';
 import PropTypes from 'prop-types';
 
-const FontSelector = (props, context) => (
+const FontSelector = (props, {fontOptions}) => (
   <Dropdown
     {...props}
-    options={context.fontOptions.map(({value, label}) => ({
+    options={fontOptions.map(({value, label}) => ({
       label: <span style={{fontFamily: value}}>{label}</span>,
       value,
     }))}

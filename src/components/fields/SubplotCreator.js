@@ -1,4 +1,3 @@
-import {Component} from 'react';
 import Dropdown from './Dropdown';
 import Info from './Info';
 import PropTypes from 'prop-types';
@@ -8,20 +7,20 @@ import {PlusIcon} from '@figlinq/plotly-icons';
 import {connectToContainer, traceTypeToAxisType, getSubplotTitle} from 'lib';
 import {PlotlySection} from 'components';
 
-class UnconnectedSingleSubplotCreator extends Component {
-  canAddSubplot() {
-    const currentAxisId = this.props.fullContainer[this.props.attr];
-    const currentTraceIndex = this.props.fullContainer.index;
-    return this.context.fullData.some(
-      (d) => d.index !== currentTraceIndex && d[this.props.attr] === currentAxisId
+const UnconnectedSingleSubplotCreator = (props, context) => {
+  const canAddSubplot = () => {
+    const currentAxisId = props.fullContainer[props.attr];
+    const currentTraceIndex = props.fullContainer.index;
+    return context.fullData.some(
+      (d) => d.index !== currentTraceIndex && d[props.attr] === currentAxisId
     );
-  }
+  };
 
-  addAndUpdateSubplot() {
-    const {attr, layoutAttr, updateContainer} = this.props;
+  const addAndUpdateSubplot = () => {
+    const {attr, layoutAttr, updateContainer} = props;
     const {
       fullLayout: {_subplots: subplots},
-    } = this.context;
+    } = context;
     const lastSubplotNumber =
       Number(
         subplots[layoutAttr][subplots[layoutAttr].length - 1].split(
@@ -32,55 +31,53 @@ class UnconnectedSingleSubplotCreator extends Component {
     updateContainer({
       [attr]: SUBPLOT_TO_ATTR[layoutAttr].layout + (lastSubplotNumber + 1),
     });
-  }
+  };
 
-  updateSubplot(update) {
-    const currentSubplotId = this.props.fullContainer[SUBPLOT_TO_ATTR[this.props.layoutAttr].data];
+  const updateSubplot = (update) => {
+    const currentSubplotId = props.fullContainer[SUBPLOT_TO_ATTR[props.layoutAttr].data];
     let subplotToBeGarbageCollected = null;
-
     // When we select another subplot, make sure no unused axes are left
     if (
       currentSubplotId !== update &&
-      !this.context.fullData.some(
+      !context.fullData.some(
         (trace) =>
-          trace[SUBPLOT_TO_ATTR[this.props.layoutAttr].data] === currentSubplotId &&
-          trace.index !== this.props.fullContainer.index
+          trace[SUBPLOT_TO_ATTR[props.layoutAttr].data] === currentSubplotId &&
+          trace.index !== props.fullContainer.index
       )
     ) {
       subplotToBeGarbageCollected = currentSubplotId;
     }
 
-    this.context.onUpdate({
+    context.onUpdate({
       type: EDITOR_ACTIONS.UPDATE_TRACES,
       payload: {
         subplotToBeGarbageCollected,
-        update: {[this.props.attr]: update},
-        traceIndexes: [this.props.fullContainer.index],
+        update: {
+          [props.attr]: update,
+        },
+        traceIndexes: [props.fullContainer.index],
       },
     });
-  }
+  };
 
-  render() {
-    const icon = <PlusIcon />;
-    const extraComponent = this.canAddSubplot() ? (
-      <Button variant="no-text" icon={icon} onClick={() => this.addAndUpdateSubplot()} />
-    ) : (
-      <Button variant="no-text--disabled" icon={icon} onClick={() => {}} />
-    );
+  const icon = <PlusIcon />;
+  const extraComponent = canAddSubplot() ? (
+    <Button variant="no-text" icon={icon} onClick={() => addAndUpdateSubplot()} />
+  ) : (
+    <Button variant="no-text--disabled" icon={icon} onClick={() => {}} />
+  );
 
-    return (
-      <Dropdown
-        label={this.props.label}
-        attr={this.props.attr}
-        clearable={false}
-        options={this.props.options}
-        updatePlot={(u) => this.updateSubplot(u)}
-        extraComponent={extraComponent}
-      />
-    );
-  }
-}
-
+  return (
+    <Dropdown
+      label={props.label}
+      attr={props.attr}
+      clearable={false}
+      options={props.options}
+      updatePlot={(u) => updateSubplot(u)}
+      extraComponent={extraComponent}
+    />
+  );
+};
 UnconnectedSingleSubplotCreator.propTypes = {
   attr: PropTypes.string,
   layoutAttr: PropTypes.string,
@@ -100,45 +97,44 @@ UnconnectedSingleSubplotCreator.contextTypes = {
 
 const SingleSubplotCreator = connectToContainer(UnconnectedSingleSubplotCreator);
 
-class UnconnectedSubplotCreator extends Component {
-  render() {
-    const subplotType = traceTypeToAxisType(this.props.container.type);
-    if (!['geo', 'mapbox', 'polar', 'gl3d', 'ternary'].some((t) => t === subplotType)) {
-      return null;
-    }
+const UnconnectedSubplotCreator = (props, context) => {
+  const subplotType = traceTypeToAxisType(props.container.type);
 
-    const isFirstTraceOfAxisType =
-      this.context.data.filter((d) => traceTypeToAxisType(d.type) === subplotType).length === 1;
-    if (isFirstTraceOfAxisType) {
-      return null;
-    }
-
-    const {fullLayout, localize: _} = this.context;
-
-    function getOptions(subplotType) {
-      return fullLayout._subplots[subplotType].map((subplotId) => ({
-        label: getSubplotTitle(subplotId, subplotType, _),
-        value: subplotId,
-      }));
-    }
-
-    return (
-      <PlotlySection name={_('Subplots to Use')}>
-        <SingleSubplotCreator
-          attr={SUBPLOT_TO_ATTR[subplotType].data}
-          layoutAttr={subplotType}
-          label={subplotName(SUBPLOT_TO_ATTR[subplotType].layout, _)}
-          options={getOptions(subplotType)}
-        />
-        <Info>
-          {_('You can style and position your subplots in the ')}
-          <a onClick={() => this.context.setPanel('Structure', 'Subplots')}>{_('Subplots')}</a>
-          {_(' panel.')}
-        </Info>
-      </PlotlySection>
-    );
+  if (!['geo', 'mapbox', 'polar', 'gl3d', 'ternary'].some((t) => t === subplotType)) {
+    return null;
   }
-}
+
+  const isFirstTraceOfAxisType =
+    context.data.filter((d) => traceTypeToAxisType(d.type) === subplotType).length === 1;
+
+  if (isFirstTraceOfAxisType) {
+    return null;
+  }
+
+  const {fullLayout, localize: _} = context;
+
+  const getOptions = (subplotType) =>
+    fullLayout._subplots[subplotType].map((subplotId) => ({
+      label: getSubplotTitle(subplotId, subplotType, _),
+      value: subplotId,
+    }));
+
+  return (
+    <PlotlySection name={_('Subplots to Use')}>
+      <SingleSubplotCreator
+        attr={SUBPLOT_TO_ATTR[subplotType].data}
+        layoutAttr={subplotType}
+        label={subplotName(SUBPLOT_TO_ATTR[subplotType].layout, _)}
+        options={getOptions(subplotType)}
+      />
+      <Info>
+        {_('You can style and position your subplots in the ')}
+        <a onClick={() => context.setPanel('Structure', 'Subplots')}>{_('Subplots')}</a>
+        {_(' panel.')}
+      </Info>
+    </PlotlySection>
+  );
+};
 
 UnconnectedSubplotCreator.propTypes = {
   container: PropTypes.object,
