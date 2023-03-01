@@ -64,6 +64,30 @@ $colorpicker-width: 185px;
     }
   }
 
+  &__swatches {
+    div {
+      div:first-of-type {
+        box-shadow: none !important;
+      }
+      .compact-picker {
+        padding-top: 0 !important;
+        padding-left: 0 !important;
+        width: 190px !important;
+        div > span > div {
+          margin-right: 3px !important;
+          margin-bottom: 3px !important;
+        }
+        div > span:nth-of-type(5n) > div {
+          margin-right: 8px !important;
+        }
+        // hide fields - they're redundant
+        .flexbox-fix {
+          display: none !important;
+        }
+      }
+    }
+  }
+
   /* Wrapper style for Hue and Alpha sliders and swatch */
   &__controls {
     .colorpicker__sliders {
