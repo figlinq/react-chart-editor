@@ -1,11 +1,8 @@
 import PropTypes from 'prop-types';
-import {Component} from 'react';
 
-export default class Logo extends Component {
-  render() {
-    return <img className="sidebar__logo" src={this.props.src} />;
-  }
-}
+const Logo = ({src}) => <img className="sidebar__logo" src={src} />;
+
+export default Logo;
 
 Logo.plotly_editor_traits = {sidebar_element: true};
 
