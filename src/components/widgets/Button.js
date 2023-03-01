@@ -1,39 +1,21 @@
 import PropTypes from 'prop-types';
-import {Component} from 'react';
 import {bem} from 'lib';
 
-class Button extends Component {
-  constructor(props) {
-    super(props);
-  }
+const Button = (props) => {
+  const {children, className, icon, label, variant, ...rest} = props;
+  const classes = `button ${variant ? `button--${variant}` : 'button--default'} ${
+    className || ''
+  }}`;
 
-  render() {
-    const {children, className, icon, label, variant, ...rest} = this.props;
-
-    let classes = `button`;
-
-    if (variant) {
-      classes += ` button--${variant}`;
-    } else {
-      classes += ` button--default`;
-    }
-
-    if (className) {
-      classes += ` ${className}`;
-    }
-
-    const Icon = icon ? <div className={bem('button', 'icon')}>{icon}</div> : null;
-
-    return (
-      <button className={classes} {...rest}>
-        <div className={bem('button', 'wrapper')}>
-          {Icon}
-          <div className="button__label">{label ? label : children}</div>
-        </div>
-      </button>
-    );
-  }
-}
+  return (
+    <button className={classes} {...rest}>
+      <div className={bem('button', 'wrapper')}>
+        {Boolean(icon) && <div className={bem('button', 'icon')}>{icon}</div>}
+        <div className="button__label">{label ? label : children}</div>
+      </div>
+    </button>
+  );
+};
 
 Button.propTypes = {
   children: PropTypes.node,
