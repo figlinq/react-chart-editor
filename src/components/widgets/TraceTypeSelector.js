@@ -233,31 +233,25 @@ TraceTypeSelector.contextTypes = {
   chartHelp: PropTypes.object,
 };
 
-export class TraceTypeSelectorButton extends Component {
-  render() {
-    const {
-      handleClick,
-      container,
-      traceTypesConfig: {traces},
-    } = this.props;
+export const TraceTypeSelectorButton = (props, {localize: _}) => {
+  const {
+    handleClick,
+    container,
+    traceTypesConfig: {traces},
+  } = props;
+  const inferredType = plotlyTraceToCustomTrace(container);
+  const {label, icon, value} = traces(_).find((type) => type.value === inferredType);
+  const Icon = renderTraceIcon(icon ? icon : value);
 
-    const {localize: _} = this.context;
-
-    const inferredType = plotlyTraceToCustomTrace(container);
-    const {label, icon, value} = traces(_).find((type) => type.value === inferredType);
-
-    const Icon = renderTraceIcon(icon ? icon : value);
-
-    return (
-      <div className="trace-type-select-button" onClick={handleClick ? handleClick : null}>
-        <div className="trace-type-select-button__icon">
-          <Icon />
-        </div>
-        {label}
+  return (
+    <div className="trace-type-select-button" onClick={handleClick ? handleClick : null}>
+      <div className="trace-type-select-button__icon">
+        <Icon />
       </div>
-    );
-  }
-}
+      {label}
+    </div>
+  );
+};
 
 TraceTypeSelectorButton.propTypes = {
   handleClick: PropTypes.func.isRequired,

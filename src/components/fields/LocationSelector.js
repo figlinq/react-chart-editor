@@ -16,37 +16,34 @@ const LocationmodeVisible = connectToContainer(UnconnectedDropdown, {
   },
 });
 
-const UnconnectedLocation = (props, context) => {
-  const {localize: _} = context;
-  return (
-    <>
-      <DataSelector label={_('Locations')} attr="locations" />
-      <LocationmodeVisible
-        label={_('Location Format')}
-        attr="locationmode"
-        clearable={false}
-        options={[
-          {
-            label: _('GeoJSON feature'),
-            value: 'geojson-id',
-          },
-          {
-            label: _('Country Names'),
-            value: 'country names',
-          },
-          {
-            label: _('Country Abbreviations (ISO-3)'),
-            value: 'ISO-3',
-          },
-          {
-            label: _('USA State Abbreviations (e.g. NY)'),
-            value: 'USA-states',
-          },
-        ]}
-      />
-    </>
-  );
-};
+const UnconnectedLocation = (props, {localize: _}) => (
+  <>
+    <DataSelector label={_('Locations')} attr="locations" />
+    <LocationmodeVisible
+      label={_('Location Format')}
+      attr="locationmode"
+      clearable={false}
+      options={[
+        {
+          label: _('GeoJSON feature'),
+          value: 'geojson-id',
+        },
+        {
+          label: _('Country Names'),
+          value: 'country names',
+        },
+        {
+          label: _('Country Abbreviations (ISO-3)'),
+          value: 'ISO-3',
+        },
+        {
+          label: _('USA State Abbreviations (e.g. NY)'),
+          value: 'USA-states',
+        },
+      ]}
+    />
+  </>
+);
 
 UnconnectedLocation.propTypes = {
   attr: PropTypes.string,

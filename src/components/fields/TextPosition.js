@@ -2,70 +2,67 @@ import Dropdown from './Dropdown';
 import RadioBlocks from '../widgets/RadioBlocks';
 import Field from './Field';
 import PropTypes from 'prop-types';
-import {Component} from 'react';
+import {useState} from 'react';
 import {connectToContainer} from 'lib';
 import Info from './Info';
 import DataSelector from './DataSelector';
 
-export class UnconnectedTextPosition extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      posType: typeof props.fullValue === 'string' ? 'simple' : 'custom',
-    };
-  }
-
-  render() {
-    const _ = this.context.localize;
-    const radioOptions = [
-      {label: _('All'), value: 'simple'},
-      {label: _('Custom'), value: 'custom'},
-    ];
-    const control =
-      this.state.posType === 'simple' ? (
-        <>
-          <Info>
+export const UnconnectedTextPosition = (props, {localize: _}) => {
+  const [posType, setPosType] = useState(typeof props.fullValue === 'string' ? 'simple' : 'custom');
+  const radioOptions = [
+    {
+      label: _('All'),
+      value: 'simple',
+    },
+    {
+      label: _('Custom'),
+      value: 'custom',
+    },
+  ];
+  const control =
+    posType === 'simple' ? (
+      <>
+        <Info>
+          {_('This will position all text values on the plot according to the selected position.')}
+        </Info>
+        <Dropdown options={props.options} attr="textposition" clearable={false} />
+      </>
+    ) : (
+      <>
+        <Info>
+          <div>
             {_(
-              'This will position all text values on the plot according to the selected position.'
+              'This will position text values individually, according to the provided data positions array. '
             )}
-          </Info>
-          <Dropdown options={this.props.options} attr="textposition" clearable={false} />
-        </>
-      ) : (
-        <>
-          <Info>
-            <div>
-              {_(
-                'This will position text values individually, according to the provided data positions array. '
-              )}
-            </div>
-          </Info>
-          <DataSelector attr="textposition" />
-          <Info>
-            <div>{_('("Top", "Middle", "Bottom") + ("Left", "Center", "Right")')}</div>
-          </Info>
-        </>
-      );
-
-    return (
-      <Field {...this.props}>
-        <RadioBlocks
-          options={radioOptions}
-          activeOption={this.state.posType}
-          onOptionChange={(value) => {
-            this.setState({posType: value});
-            if (value === 'simple') {
-              this.props.updatePlot('middle center');
-            } else {
-              this.props.updateContainer({textpositionsrc: null});
-            }
-          }}
-        />
-        {control}
-      </Field>
+          </div>
+        </Info>
+        <DataSelector attr="textposition" />
+        <Info>
+          <div>{_('("Top", "Middle", "Bottom") + ("Left", "Center", "Right")')}</div>
+        </Info>
+      </>
     );
-  }
-}
+  return (
+    <Field {...props}>
+      <RadioBlocks
+        options={radioOptions}
+        activeOption={posType}
+        onOptionChange={(value) => {
+          setPosType(value);
+
+          if (value === 'simple') {
+            props.updatePlot('middle center');
+          } else {
+            props.updateContainer({
+              textpositionsrc: null,
+            });
+          }
+        }}
+      />
+      {control}
+    </Field>
+  );
+};
 
 UnconnectedTextPosition.propTypes = {
   ...Field.propTypes,

@@ -13,21 +13,15 @@ import {
 } from 'lib';
 import {PlotlySection} from 'components';
 
-const UnconnectedAxisCreator = (props, context) => {
+const UnconnectedAxisCreator = (props, {fullData, onUpdate, fullLayout: {_subplots: subplots}}) => {
   const canAddAxis = () => {
     const currentAxisId = props.fullContainer[props.attr];
     const currentTraceIndex = props.fullContainer.index;
-    return context.fullData.some(
-      (d) => d.index !== currentTraceIndex && d[props.attr] === currentAxisId
-    );
+    return fullData.some((d) => d.index !== currentTraceIndex && d[props.attr] === currentAxisId);
   };
 
   const addAndUpdateAxis = () => {
     const {attr, updateContainer} = props;
-    const {
-      onUpdate,
-      fullLayout: {_subplots: subplots},
-    } = context;
     const lastAxisNumber = Number(subplots[attr][subplots[attr].length - 1].charAt(1)) || 1;
 
     updateContainer({
@@ -61,14 +55,14 @@ const UnconnectedAxisCreator = (props, context) => {
     // When we select another axis, make sure no unused axes are left
     if (
       currentAxisId !== update &&
-      !context.fullData.some(
+      !fullData.some(
         (trace) => trace[props.attr] === currentAxisId && trace.index !== props.fullContainer.index
       )
     ) {
       axesToBeGarbageCollected.push(currentAxisId);
     }
 
-    context.onUpdate({
+    onUpdate({
       type: EDITOR_ACTIONS.UPDATE_TRACES,
       payload: {
         axesToBeGarbageCollected,

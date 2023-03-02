@@ -3,15 +3,13 @@ import PlotlyFold from './PlotlyFold';
 import PropTypes from 'prop-types';
 import {connectAxesToLayout} from 'lib';
 
-const AxesFold = (props) => {
-  const {children, options} = props;
-  return options.length && children ? (
+const AxesFold = (props) =>
+  Boolean(props.options.length && props.children) && (
     <PlotlyFold {...props}>
-      {options.length === 1 ? null : <AxesSelector axesOptions={options} />}
-      {children}
+      {props.options.length === 1 ? null : <AxesSelector axesOptions={props.options} />}
+      {props.children}
     </PlotlyFold>
-  ) : null;
-};
+  );
 
 AxesFold.propTypes = {
   children: PropTypes.any,
