@@ -6,19 +6,12 @@ import {connectToContainer} from 'lib';
 
 export class UnconnectedNumeric extends Component {
   render() {
-    let fullValue = this.props.fullValue;
-    let placeholder;
-    if (this.props.multiValued) {
-      placeholder = fullValue;
-      fullValue = '';
-    }
-
     return (
       <Field {...this.props}>
         <NumericInput
-          value={fullValue}
+          value={this.props.multiValued ? '' : this.props.fullValue}
           defaultValue={this.props.defaultValue}
-          placeholder={placeholder}
+          placeholder={this.props.multiValued ? this.props.fullValue : ''}
           step={this.props.step}
           stepmode={this.props.stepmode}
           min={this.props.min}

@@ -25,21 +25,17 @@ const Field = (
   },
   {attr, description, showFieldTooltips, localize: _}
 ) => {
-  let fieldClass;
-  if (!label) {
-    fieldClass = classnames('field__no-title', {
-      'field__no-title--center': center,
-    });
-  } else {
-    fieldClass = classnames('field__widget', {
-      'field__widget--units': Boolean(units),
-    });
-  }
+  const fieldClass = !label
+    ? classnames('field__no-title', {
+        'field__no-title--center': center,
+      })
+    : classnames('field__widget', {
+        'field__widget--units': Boolean(units),
+      });
 
-  let tooltip = attr;
-  if (description) {
-    tooltip += ' – ' + description.replace(/`/g, '"').replace(/\*/g, '"');
-  }
+  const tooltip = description
+    ? `${attr} – ${description.replace(/`/g, '"').replace(/\*/g, '"')}`
+    : attr;
 
   const containerClassName = classnames(bem('field'), {
     [fieldContainerClassName]: Boolean(fieldContainerClassName),
@@ -49,13 +45,7 @@ const Field = (
       {Boolean(label) && (
         <div
           className={bem('field', 'title')}
-          style={
-            labelWidth
-              ? {
-                  minWidth: labelWidth + 'px',
-                }
-              : {}
-          }
+          style={labelWidth ? {minWidth: labelWidth + 'px'} : {}}
         >
           {showFieldTooltips ? (
             <div

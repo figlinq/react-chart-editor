@@ -2,17 +2,17 @@ import PropTypes from 'prop-types';
 
 const FoldEmpty = ({children, icon: Icon, messagePrimary, messageSecondary}) => (
   <div className="fold__content__empty">
-    {Icon ? (
+    {Boolean(Icon) && (
       <div className="fold__content__empty__icon">
         <Icon />
       </div>
-    ) : null}
-    {messagePrimary ? (
+    )}
+    {Boolean(messagePrimary) && (
       <div className="fold__content__empty__message__primary">{messagePrimary}</div>
-    ) : null}
-    {messageSecondary ? (
+    )}
+    {Boolean(messageSecondary) && (
       <div className="fold__content__empty__message__secondary">{messageSecondary}</div>
-    ) : null}
+    )}
     {children || null}
   </div>
 );

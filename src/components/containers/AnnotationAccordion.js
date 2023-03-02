@@ -6,56 +6,38 @@ import {connectAnnotationToLayout, getParsedTemplateString} from 'lib';
 
 const AnnotationFold = connectAnnotationToLayout(PlotlyFold);
 
-const AnnotationAccordion = (props, context) => {
-  const {
-    layout: {annotations = [], meta = []},
-    localize: _,
-  } = context;
-  const {canAdd, children, canReorder} = props;
+const AnnotationAccordion = (
+  {canAdd, children, canReorder},
+  {layout: {annotations = [], meta = []}, localize: _}
+) => {
   const content =
     annotations.length &&
-    annotations.map((ann, i) => {
-      return (
-        <AnnotationFold
-          key={i}
-          annotationIndex={i}
-          name={getParsedTemplateString(ann.text, {
-            meta,
-          })}
-          canDelete={canAdd}
-        >
-          {children}
-        </AnnotationFold>
-      );
-    });
+    annotations.map((ann, i) => (
+      <AnnotationFold
+        key={i}
+        annotationIndex={i}
+        name={getParsedTemplateString(ann.text, {meta})}
+        canDelete={canAdd}
+      >
+        {children}
+      </AnnotationFold>
+    ));
   const addAction = {
     label: _('Annotation'),
     handler: ({layout, updateContainer}) => {
-      let annotationIndex;
-
-      if (Array.isArray(layout.annotations)) {
-        annotationIndex = layout.annotations.length;
-      } else {
-        annotationIndex = 0;
-      }
-
-      const key = `annotations[${annotationIndex}]`;
-      const value = {
-        text: _('new text'),
-      };
-
+      const annotationIndex = Array.isArray(layout.annotations) ? layout.annotations.length : 0;
       if (updateContainer) {
         updateContainer({
-          [key]: value,
+          [`annotations[${annotationIndex}]`]: {
+            text: _('new text'),
+          },
         });
       }
     },
   };
   return (
     <LayoutPanel addAction={canAdd ? addAction : null} canReorder={canReorder}>
-      {content ? (
-        content
-      ) : (
+      {content || (
         <PanelMessage heading={_('Call out your data.')}>
           <p>
             {_(

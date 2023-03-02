@@ -3,28 +3,20 @@ import Field from './Field';
 import PropTypes from 'prop-types';
 import {connectToContainer} from 'lib';
 
-export const UnconnectedDropdown = (props) => {
-  let placeholder;
-
-  if (props.multiValued) {
-    placeholder = props.fullValue;
-  }
-
-  return (
-    <Field {...props}>
-      <DropdownWidget
-        backgroundDark={props.backgroundDark}
-        options={props.options}
-        value={props.fullValue}
-        onChange={props.updatePlot}
-        clearable={props.clearable}
-        placeholder={placeholder}
-        disabled={props.disabled}
-        components={props.components}
-      />
-    </Field>
-  );
-};
+export const UnconnectedDropdown = (props) => (
+  <Field {...props}>
+    <DropdownWidget
+      backgroundDark={props.backgroundDark}
+      options={props.options}
+      value={props.fullValue}
+      onChange={props.updatePlot}
+      clearable={props.clearable}
+      placeholder={props.multiValued ? props.fullValue : ''}
+      disabled={props.disabled}
+      components={props.components}
+    />
+  </Field>
+);
 
 UnconnectedDropdown.propTypes = {
   backgroundDark: PropTypes.bool,

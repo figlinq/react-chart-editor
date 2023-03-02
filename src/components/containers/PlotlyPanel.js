@@ -6,24 +6,6 @@ import update from 'immutability-helper';
 import {bem} from 'lib';
 import {EmbedIconIcon} from '@figlinq/plotly-icons';
 
-class PanelErrorImpl extends Component {
-  render() {
-    const {localize: _} = this.context;
-
-    return (
-      <PanelEmpty icon={EmbedIconIcon} heading={_('Well this is embarrassing.')}>
-        <p>{_('This panel could not be displayed due to an error.')}</p>
-      </PanelEmpty>
-    );
-  }
-}
-
-PanelErrorImpl.contextTypes = {
-  localize: PropTypes.func,
-};
-
-const PanelError = PanelErrorImpl;
-
 export class Panel extends Component {
   constructor(props) {
     super(props);
@@ -37,7 +19,7 @@ export class Panel extends Component {
 
   getChildContext() {
     return {
-      deleteContainer: this.props.deleteAction ? this.props.deleteAction : null,
+      deleteContainer: this.props.deleteAction || null,
     };
   }
 
@@ -62,7 +44,7 @@ export class Panel extends Component {
     let numFolds = 0;
 
     Children.forEach(this.props.children, (child) => {
-      if (((child && child.type && child.type.plotly_editor_traits) || {}).foldable) {
+      if ((child?.type?.plotly_editor_traits || {}).foldable) {
         numFolds++;
       }
     });
@@ -87,28 +69,13 @@ export class Panel extends Component {
   render() {
     const {individualFoldStates, hasError} = this.state;
     const {canReorder} = this.props;
+    const {localize: _} = this.context;
 
-    if (hasError) {
-      return <PanelError />;
-    }
-
-    const newChildren = Children.map(this.props.children, (child, index) => {
-      if (((child && child.type && child.type.plotly_editor_traits) || {}).foldable) {
-        return cloneElement(child, {
-          key: index,
-          folded: individualFoldStates[index] || false,
-          toggleFold: () => this.toggleFold(index),
-          canMoveUp: canReorder && individualFoldStates.length > 1 && index > 0,
-          canMoveDown:
-            canReorder &&
-            individualFoldStates.length > 1 &&
-            index !== individualFoldStates.length - 1,
-        });
-      }
-      return child;
-    });
-
-    return (
+    return hasError ? (
+      <PanelEmpty icon={EmbedIconIcon} heading={_('Well this is embarrassing.')}>
+        <p>{_('This panel could not be displayed due to an error.')}</p>
+      </PanelEmpty>
+    ) : (
       <div className={`panel${this.props.noPadding ? ' panel--no-padding' : ''}`}>
         {this.context?.customConfig?.panelTopItem || null}
         <PanelHeader
@@ -117,7 +84,22 @@ export class Panel extends Component {
           toggleFolds={this.toggleFolds}
           hasOpen={individualFoldStates.some((s) => s === false)}
         />
-        <div className={bem('panel', 'content')}>{newChildren}</div>
+        <div className={bem('panel', 'content')}>
+          {Children.map(this.props.children, (child, index) =>
+            (child?.type?.plotly_editor_traits || {}).foldable
+              ? cloneElement(child, {
+                  key: index,
+                  folded: individualFoldStates[index] || false,
+                  toggleFold: () => this.toggleFold(index),
+                  canMoveUp: canReorder && individualFoldStates.length > 1 && index > 0,
+                  canMoveDown:
+                    canReorder &&
+                    individualFoldStates.length > 1 &&
+                    index !== individualFoldStates.length - 1,
+                })
+              : child
+          )}
+        </div>
       </div>
     );
   }
