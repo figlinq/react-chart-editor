@@ -64,30 +64,6 @@ $colorpicker-width: 185px;
     }
   }
 
-  &__swatches {
-    div {
-      div:first-of-type {
-        box-shadow: none !important;
-      }
-      .compact-picker {
-        padding-top: 0 !important;
-        padding-left: 0 !important;
-        width: 190px !important;
-        div > span > div {
-          margin-right: 3px !important;
-          margin-bottom: 3px !important;
-        }
-        div > span:nth-of-type(5n) > div {
-          margin-right: 8px !important;
-        }
-        // hide fields - they're redundant
-        .flexbox-fix {
-          display: none !important;
-        }
-      }
-    }
-  }
-
   /* Wrapper style for Hue and Alpha sliders and swatch */
   &__controls {
     .colorpicker__sliders {
@@ -116,6 +92,42 @@ $colorpicker-width: 185px;
         border-radius: var(--border-radius-small);
         border: 1px solid #eee;
       }
+    }
+  }
+}
+
+.sketch-picker {
+  padding: 10px 0 0 0 !important;
+  border: none !important;
+  box-shadow: none !important;
+
+  input,
+  label {
+    color: var(--color-text-base) !important;
+  }
+
+  input {
+    box-shadow: var(--color-border-light) 0px 0px 0px 1px inset !important;
+    &:focus-visible {
+      outline-color: var(--color-brand-accent) !important;
+    }
+  }
+
+  // hide square next to hue and alpha sliders
+  div:nth-child(2) > div:nth-child(2) {
+    display: none !important;
+  }
+
+  // style swatches at the bottom
+  .flexbox-fix:last-of-type {
+    border-top: none !important;
+    padding-top: 0 !important;
+    div {
+      margin-right: 3px !important;
+      margin-bottom: 3px !important;
+    }
+    div:nth-of-type(5n) {
+      margin-right: 8px !important;
     }
   }
 }

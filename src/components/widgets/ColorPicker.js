@@ -1,43 +1,13 @@
 import {useState} from 'react';
 import PropTypes from 'prop-types';
 import tinycolor from 'tinycolor2';
-import {CustomPicker as customPicker, CompactPicker} from 'react-color';
-import Fields from 'react-color/lib/components/sketch/SketchFields';
-import {Hue, Saturation} from 'react-color/lib/components/common';
+import {SketchPicker} from '@hello-pangea/color-picker';
 import {COLOR_PICKER_SWATCH} from 'lib/constants';
 
 // Utility functions for converting ColorPicker color objects or raw strings into TinyColor objects.
 const extractRGB = (c) => c.rgb || c;
 const getColorSource = (c) => (c.source === 'hex' ? c.hex : extractRGB(c));
 const toTinyColor = (c) => tinycolor(getColorSource(c));
-
-const Custom = (props) => (
-  <div className="colorpicker__outer">
-    <div className="colorpicker__controls +flex">
-      <div className="colorpicker__sliders">
-        <div className="colorpicker__slider">
-          <Hue {...props} />
-        </div>
-      </div>
-    </div>
-    <div className="colorpicker__saturation">
-      <Saturation {...props} />
-    </div>
-    <div className="colorpicker__custom-input">
-      <Fields {...props} onChange={props.onChangeComplete} />
-    </div>
-    <div className="colorpicker__swatches">
-      <CompactPicker {...props} colors={COLOR_PICKER_SWATCH} />
-    </div>
-  </div>
-);
-
-Custom.propTypes = {
-  rgb: PropTypes.object,
-  onChangeComplete: PropTypes.func,
-};
-
-const CustomColorPicker = customPicker(Custom);
 
 const ColorPicker = (props) => {
   const [isVisible, setIsVisible] = useState(false);
@@ -88,7 +58,12 @@ const ColorPicker = (props) => {
       </div>
 
       {isVisible && (
-        <CustomColorPicker color={rgbString} onChangeComplete={onSelectedColorChange} />
+        <SketchPicker
+          color={rgbString}
+          onChangeComplete={onSelectedColorChange}
+          presetColors={COLOR_PICKER_SWATCH}
+          width={190}
+        />
       )}
     </>
   );
