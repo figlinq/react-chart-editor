@@ -114,7 +114,7 @@ $colorpicker-width: 185px;
   }
 
   // hide square next to hue and alpha sliders
-  div:nth-child(2) > div:nth-child(2) {
+  > div:nth-child(2) > div:nth-child(2) {
     display: none !important;
   }
 
