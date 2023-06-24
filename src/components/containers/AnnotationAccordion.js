@@ -3,6 +3,7 @@ import {LayoutPanel} from './derived';
 import {PanelMessage} from './PanelEmpty';
 import PropTypes from 'prop-types';
 import {connectAnnotationToLayout, getParsedTemplateString} from 'lib';
+import {EDITOR_ACTIONS} from 'lib/constants';
 
 const AnnotationFold = connectAnnotationToLayout(PlotlyFold);
 
@@ -27,11 +28,14 @@ const AnnotationAccordion = (
     handler: ({layout, updateContainer}) => {
       const annotationIndex = Array.isArray(layout.annotations) ? layout.annotations.length : 0;
       if (updateContainer) {
-        updateContainer({
-          [`annotations[${annotationIndex}]`]: {
-            text: _('new text'),
+        updateContainer(
+          {
+            [`annotations[${annotationIndex}]`]: {
+              text: _('new text'),
+            },
           },
-        });
+          EDITOR_ACTIONS.ADD_ANNOTATION
+        );
       }
     },
   };

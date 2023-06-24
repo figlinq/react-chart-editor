@@ -29,16 +29,21 @@ export const getMultiValueText = (key, _) => {
 };
 
 export const EDITOR_ACTIONS = {
-  UPDATE_TRACES: 'plotly-editor-update-traces',
+  ADD_TRANSFORM: 'plotly-editor-add-transform',
+  DELETE_TRANSFORM: 'plotly-editor-delete-transform',
   ADD_TRACE: 'plotly-editor-add-trace',
   DELETE_TRACE: 'plotly-editor-delete-trace',
-  UPDATE_LAYOUT: 'plotly-editor-update-layout',
+  UPDATE_TRACES: 'plotly-editor-update-traces',
+  ADD_ANNOTATION: 'plotly-editor-add-annotation',
   DELETE_ANNOTATION: 'plotly-editor-delete-annotation',
+  ADD_SHAPE: 'plotly-editor-add-shape',
   DELETE_SHAPE: 'plotly-editor-delete-shape',
+  ADD_IMAGE: 'plotly-editor-add-image',
   DELETE_IMAGE: 'plotly-editor-delete-image',
+  ADD_RANGESELECTOR: 'plotly-editor-add-rangeselector',
   DELETE_RANGESELECTOR: 'plotly-editor-delete-rangeselector',
-  DELETE_TRANSFORM: 'plotly-editor-delete-transform',
   MOVE_TO: 'plotly-editor-move-to',
+  UPDATE_LAYOUT: 'plotly-editor-update-layout',
 };
 
 export const DEFAULT_FONTS = [

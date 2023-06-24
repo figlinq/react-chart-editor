@@ -3,6 +3,7 @@ import PlotlyFold from './PlotlyFold';
 import {LayoutPanel} from './derived';
 import {connectImageToLayout} from 'lib';
 import {PanelMessage} from './PanelEmpty';
+import {EDITOR_ACTIONS} from 'lib/constants';
 
 const ImageFold = connectImageToLayout(PlotlyFold);
 
@@ -34,7 +35,7 @@ const ImageAccordion = ({canAdd, children, canReorder}, {layout: {images = []}, 
       };
 
       if (updateContainer) {
-        updateContainer({[key]: value});
+        updateContainer({[key]: value}, EDITOR_ACTIONS.ADD_IMAGE);
       }
     },
   };

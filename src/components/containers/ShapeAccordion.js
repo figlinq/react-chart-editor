@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import PlotlyFold from './PlotlyFold';
 import {LayoutPanel} from './derived';
 import {connectShapeToLayout} from 'lib';
-import {COLORS} from 'lib/constants';
+import {COLORS, EDITOR_ACTIONS} from 'lib/constants';
 import {PanelMessage} from './PanelEmpty';
 
 const ShapeFold = connectShapeToLayout(PlotlyFold);
@@ -34,7 +34,7 @@ const ShapeAccordion = ({canAdd, children, canReorder}, {layout: {shapes = []}, 
       };
 
       if (updateContainer) {
-        updateContainer({[key]: value});
+        updateContainer({[key]: value}, EDITOR_ACTIONS.ADD_SHAPE);
       }
     },
   };

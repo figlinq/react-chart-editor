@@ -77,6 +77,7 @@ class EditorControls extends Component {
     const {graphDiv} = this.props;
 
     switch (type) {
+      case EDITOR_ACTIONS.ADD_TRANSFORM:
       case EDITOR_ACTIONS.UPDATE_TRACES:
         if (this.props.beforeUpdateTraces) {
           this.props.beforeUpdateTraces(payload);
@@ -127,6 +128,10 @@ class EditorControls extends Component {
         }
         break;
 
+      case EDITOR_ACTIONS.ADD_ANNOTATION:
+      case EDITOR_ACTIONS.ADD_IMAGE:
+      case EDITOR_ACTIONS.ADD_SHAPE:
+      case EDITOR_ACTIONS.ADD_RANGESELECTOR:
       case EDITOR_ACTIONS.UPDATE_LAYOUT:
         shamefullyAdjustGeo(graphDiv, payload);
 

@@ -4,11 +4,10 @@ import nestedProperty from 'plotly.js/src/lib/nested_property';
 import {deepCopyPublic, setMultiValuedContainer} from './multiValues';
 import {capitalize, getAllAxes, getDisplayName, getAxisTitle} from '../lib';
 
-function computeAxesOptions(axes, props, context) {
-  const _ = context.localize;
+function computeAxesOptions(axes, {axisFilter}, {localize: _}) {
   let filteredAxes = axes;
-  if (props.axisFilter) {
-    filteredAxes = axes.filter(props.axisFilter);
+  if (axisFilter) {
+    filteredAxes = axes.filter(axisFilter);
   }
 
   const options = [];
@@ -109,7 +108,7 @@ export default function connectAxesToLayout(WrappedComponent) {
       this.setState({axesTarget});
     }
 
-    updateContainer(update) {
+    updateContainer(update, type) {
       const newUpdate = {};
       const {axesTarget} = this.state;
 
@@ -134,7 +133,7 @@ export default function connectAxesToLayout(WrappedComponent) {
         }
       }
 
-      this.context.updateContainer(newUpdate);
+      this.context.updateContainer(newUpdate, type);
     }
 
     render() {
