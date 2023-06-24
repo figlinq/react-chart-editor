@@ -5,12 +5,12 @@ import {
   getDisplayName,
   plotlyTraceToCustomTrace,
   renderTraceIcon,
-  traceTypeToAxisType,
   getFullTrace,
   getParsedTemplateString,
+  itemsToBeGarbageCollected,
 } from '../lib';
 import {deepCopyPublic, setMultiValuedContainer} from './multiValues';
-import {EDITOR_ACTIONS, SUBPLOT_TO_ATTR} from 'lib/constants';
+import {EDITOR_ACTIONS} from 'lib/constants';
 
 export default function connectTraceToPlot(WrappedComponent) {
   class TraceConnectedComponent extends Component {
@@ -80,41 +80,44 @@ export default function connectTraceToPlot(WrappedComponent) {
     }
 
     updateTrace(update, type = EDITOR_ACTIONS.UPDATE_TRACES) {
-      if (this.context.onUpdate) {
-        const splitTraceGroup = this.props.fullDataArrayPosition
-          ? this.props.fullDataArrayPosition.map((p) => this.context.fullData[p]._group)
+      const {traceIndexes, fullDataArrayPosition} = this.props;
+      const {fullData, onUpdate} = this.context;
+
+      if (onUpdate) {
+        const splitTraceGroup = fullDataArrayPosition
+          ? fullDataArrayPosition.map((p) => fullData[p]._group)
           : null;
 
         const containsAnSrc = Object.keys(update).filter((a) => a.endsWith('src')).length > 0;
 
         if (Array.isArray(update)) {
           update.forEach((u, i) => {
-            this.context.onUpdate({
+            onUpdate({
               type,
               payload: {
                 update: u,
-                traceIndexes: [this.props.traceIndexes[i]],
+                traceIndexes: [traceIndexes[i]],
                 splitTraceGroup: splitTraceGroup ? splitTraceGroup[i] : null,
               },
             });
           });
         } else if (splitTraceGroup && !containsAnSrc) {
-          this.props.traceIndexes.forEach((t, i) => {
-            this.context.onUpdate({
+          traceIndexes.forEach((t, i) => {
+            onUpdate({
               type,
               payload: {
                 update,
-                traceIndexes: [this.props.traceIndexes[i]],
+                traceIndexes: [traceIndexes[i]],
                 splitTraceGroup: splitTraceGroup ? splitTraceGroup[i] : null,
               },
             });
           });
         } else {
-          this.context.onUpdate({
+          onUpdate({
             type,
             payload: {
               update,
-              traceIndexes: this.props.traceIndexes,
+              traceIndexes,
             },
           });
         }
@@ -122,61 +125,22 @@ export default function connectTraceToPlot(WrappedComponent) {
     }
 
     deleteTrace() {
-      const currentTrace = this.context.fullData[this.props.traceIndexes[0]];
-      if (!currentTrace && this.context.onUpdate) {
-        this.context.onUpdate({
+      const {traceIndexes} = this.props;
+      const {fullData, onUpdate} = this.context;
+      const currentTrace = fullData[traceIndexes[0]];
+
+      if (onUpdate) {
+        const update = {
           type: EDITOR_ACTIONS.DELETE_TRACE,
-          payload: {
-            traceIndexes: this.props.traceIndexes,
-          },
-        });
-        return;
-      }
-      const axesToBeGarbageCollected = [];
-      let subplotToBeGarbageCollected = null;
-      const subplotType = traceTypeToAxisType(currentTrace.type);
-
-      if (subplotType) {
-        const subplotNames =
-          subplotType === 'cartesian'
-            ? [currentTrace.xaxis || 'xaxis', currentTrace.yaxis || 'yaxis']
-            : currentTrace[SUBPLOT_TO_ATTR[subplotType].data] || SUBPLOT_TO_ATTR[subplotType].data;
-
-        const isSubplotUsedAnywhereElse = (subplotType, subplotName) =>
-          this.context.fullData.some(
-            (trace) =>
-              (trace[SUBPLOT_TO_ATTR[subplotType].data] === subplotName ||
-                ((subplotType === 'xaxis' || subplotType === 'yaxis') && subplotName.charAt(1)) ===
-                  '' ||
-                (subplotName.split(subplotType)[1] === '' &&
-                  trace[SUBPLOT_TO_ATTR[subplotType].data] === null)) &&
-              trace.index !== this.props.traceIndexes[0]
-          );
-
-        // When we delete a subplot, make sure no unused axes/subplots are left
-        if (subplotType === 'cartesian') {
-          if (!isSubplotUsedAnywhereElse('xaxis', subplotNames[0])) {
-            axesToBeGarbageCollected.push(subplotNames[0]);
-          }
-          if (!isSubplotUsedAnywhereElse('yaxis', subplotNames[1])) {
-            axesToBeGarbageCollected.push(subplotNames[1]);
-          }
-        } else {
-          if (!isSubplotUsedAnywhereElse(subplotType, subplotNames)) {
-            subplotToBeGarbageCollected = subplotNames;
-          }
+          payload: {traceIndexes},
+        };
+        if (currentTrace) {
+          update.payload = {
+            ...update.payload,
+            ...itemsToBeGarbageCollected(traceIndexes[0], fullData),
+          };
         }
-      }
-
-      if (this.context.onUpdate) {
-        this.context.onUpdate({
-          type: EDITOR_ACTIONS.DELETE_TRACE,
-          payload: {
-            axesToBeGarbageCollected,
-            subplotToBeGarbageCollected,
-            traceIndexes: this.props.traceIndexes,
-          },
-        });
+        onUpdate(update);
       }
     }
 
