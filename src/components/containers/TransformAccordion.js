@@ -3,6 +3,7 @@ import PlotlyPanel from './PlotlyPanel';
 import PropTypes from 'prop-types';
 import {connectTransformToTrace} from 'lib';
 import {PanelMessage} from './PanelEmpty';
+import {EDITOR_ACTIONS} from 'lib/constants';
 
 const TransformFold = connectTransformToTrace(PlotlyFold);
 
@@ -101,9 +102,12 @@ const TransformAccordion = (props, context) => {
               payload.styles = [];
             }
 
-            updateContainer({
-              [key]: payload,
-            });
+            updateContainer(
+              {
+                [key]: payload,
+              },
+              EDITOR_ACTIONS.ADD_TRANSFORM
+            );
           }
         },
       };

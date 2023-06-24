@@ -79,7 +79,7 @@ export default function connectTraceToPlot(WrappedComponent) {
       return this.childContext;
     }
 
-    updateTrace(update) {
+    updateTrace(update, type = EDITOR_ACTIONS.UPDATE_TRACES) {
       if (this.context.onUpdate) {
         const splitTraceGroup = this.props.fullDataArrayPosition
           ? this.props.fullDataArrayPosition.map((p) => this.context.fullData[p]._group)
@@ -90,7 +90,7 @@ export default function connectTraceToPlot(WrappedComponent) {
         if (Array.isArray(update)) {
           update.forEach((u, i) => {
             this.context.onUpdate({
-              type: EDITOR_ACTIONS.UPDATE_TRACES,
+              type,
               payload: {
                 update: u,
                 traceIndexes: [this.props.traceIndexes[i]],
@@ -101,7 +101,7 @@ export default function connectTraceToPlot(WrappedComponent) {
         } else if (splitTraceGroup && !containsAnSrc) {
           this.props.traceIndexes.forEach((t, i) => {
             this.context.onUpdate({
-              type: EDITOR_ACTIONS.UPDATE_TRACES,
+              type,
               payload: {
                 update,
                 traceIndexes: [this.props.traceIndexes[i]],
@@ -111,7 +111,7 @@ export default function connectTraceToPlot(WrappedComponent) {
           });
         } else {
           this.context.onUpdate({
-            type: EDITOR_ACTIONS.UPDATE_TRACES,
+            type,
             payload: {
               update,
               traceIndexes: this.props.traceIndexes,
