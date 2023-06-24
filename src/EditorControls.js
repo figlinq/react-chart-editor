@@ -74,13 +74,33 @@ class EditorControls extends Component {
   }
 
   handleUpdate({type, payload}) {
-    const {graphDiv} = this.props;
+    const {
+      graphDiv,
+      beforeUpdateTraces,
+      mapBoxAccess,
+      afterUpdateTraces,
+      onUpdate,
+      beforeUpdateLayout,
+      afterUpdateLayout,
+      beforeAddTrace,
+      afterAddTrace,
+      beforeDeleteTrace,
+      afterDeleteTrace,
+      makeDefaultTrace,
+      glByDefault,
+      beforeDeleteAnnotation,
+      afterDeleteAnnotation,
+      beforeDeleteShape,
+      afterDeleteShape,
+      beforeDeleteImage,
+      afterDeleteImage,
+    } = this.props;
 
     switch (type) {
       case EDITOR_ACTIONS.ADD_TRANSFORM:
       case EDITOR_ACTIONS.UPDATE_TRACES:
-        if (this.props.beforeUpdateTraces) {
-          this.props.beforeUpdateTraces(payload);
+        if (beforeUpdateTraces) {
+          beforeUpdateTraces(payload);
         }
 
         shamefullyAdjustSizeref(graphDiv, payload);
@@ -89,7 +109,7 @@ class EditorControls extends Component {
         shamefullyAdjustAxisRef(graphDiv, payload);
         shamefullyAddTableColumns(graphDiv, payload);
         shamefullyAdjustSplitStyleTargetContainers(graphDiv, payload);
-        if (!this.props.mapBoxAccess) {
+        if (!mapBoxAccess) {
           shamefullyAdjustMapbox(graphDiv, payload);
         }
 
@@ -116,15 +136,11 @@ class EditorControls extends Component {
           }
         }
 
-        if (this.props.afterUpdateTraces) {
-          this.props.afterUpdateTraces(payload);
+        if (afterUpdateTraces) {
+          afterUpdateTraces(payload);
         }
-        if (this.props.onUpdate) {
-          this.props.onUpdate(
-            graphDiv.data.slice(),
-            graphDiv.layout,
-            graphDiv._transitionData._frames
-          );
+        if (onUpdate) {
+          onUpdate(graphDiv.data.slice(), graphDiv.layout, graphDiv._transitionData._frames);
         }
         break;
 
@@ -135,8 +151,8 @@ class EditorControls extends Component {
       case EDITOR_ACTIONS.UPDATE_LAYOUT:
         shamefullyAdjustGeo(graphDiv, payload);
 
-        if (this.props.beforeUpdateLayout) {
-          this.props.beforeUpdateLayout(payload);
+        if (beforeUpdateLayout) {
+          beforeUpdateLayout(payload);
         }
         for (const attr in payload.update) {
           const prop = nestedProperty(graphDiv.layout, attr);
@@ -145,11 +161,11 @@ class EditorControls extends Component {
             prop.set(value);
           }
         }
-        if (this.props.afterUpdateLayout) {
-          this.props.afterUpdateLayout(payload);
+        if (afterUpdateLayout) {
+          afterUpdateLayout(payload);
         }
-        if (this.props.onUpdate) {
-          this.props.onUpdate(
+        if (onUpdate) {
+          onUpdate(
             graphDiv.data,
             Object.assign({}, graphDiv.layout),
             graphDiv._transitionData._frames
@@ -158,18 +174,18 @@ class EditorControls extends Component {
         break;
 
       case EDITOR_ACTIONS.ADD_TRACE:
-        if (this.props.beforeAddTrace) {
-          this.props.beforeAddTrace(payload);
+        if (beforeAddTrace) {
+          beforeAddTrace(payload);
         }
 
         // can't use default prop because plotly.js mutates it:
         // https://github.com/plotly/react-chart-editor/issues/509
         if (graphDiv.data.length === 0) {
           graphDiv.data.push(
-            this.props.makeDefaultTrace
-              ? this.props.makeDefaultTrace()
+            makeDefaultTrace
+              ? makeDefaultTrace()
               : {
-                  type: `scatter${this.props.glByDefault ? 'gl' : ''}`,
+                  type: `scatter${glByDefault ? 'gl' : ''}`,
                   mode: 'markers',
                 }
           );
@@ -184,52 +200,44 @@ class EditorControls extends Component {
           );
         }
 
-        if (this.props.afterAddTrace) {
-          this.props.afterAddTrace(payload);
+        if (afterAddTrace) {
+          afterAddTrace(payload);
         }
-        if (this.props.onUpdate) {
-          this.props.onUpdate(
-            graphDiv.data.slice(),
-            graphDiv.layout,
-            graphDiv._transitionData._frames
-          );
+        if (onUpdate) {
+          onUpdate(graphDiv.data.slice(), graphDiv.layout, graphDiv._transitionData._frames);
         }
         break;
 
       case EDITOR_ACTIONS.DELETE_TRACE:
         if (payload.traceIndexes && payload.traceIndexes.length) {
-          if (this.props.beforeDeleteTrace) {
-            this.props.beforeDeleteTrace(payload);
+          if (beforeDeleteTrace) {
+            beforeDeleteTrace(payload);
           }
 
           shamefullyAdjustAxisRef(graphDiv, payload);
           shamefullyDeleteRelatedAnalysisTransforms(graphDiv, payload);
 
           graphDiv.data.splice(payload.traceIndexes[0], 1);
-          if (this.props.afterDeleteTrace) {
-            this.props.afterDeleteTrace(payload);
+          if (afterDeleteTrace) {
+            afterDeleteTrace(payload);
           }
-          if (this.props.onUpdate) {
-            this.props.onUpdate(
-              graphDiv.data.slice(),
-              graphDiv.layout,
-              graphDiv._transitionData._frames
-            );
+          if (onUpdate) {
+            onUpdate(graphDiv.data.slice(), graphDiv.layout, graphDiv._transitionData._frames);
           }
         }
         break;
 
       case EDITOR_ACTIONS.DELETE_ANNOTATION:
         if (isNumeric(payload.annotationIndex)) {
-          if (this.props.beforeDeleteAnnotation) {
-            this.props.beforeDeleteAnnotation(payload);
+          if (beforeDeleteAnnotation) {
+            beforeDeleteAnnotation(payload);
           }
           graphDiv.layout.annotations.splice(payload.annotationIndex, 1);
-          if (this.props.afterDeleteAnnotation) {
-            this.props.afterDeleteAnnotation(payload);
+          if (afterDeleteAnnotation) {
+            afterDeleteAnnotation(payload);
           }
-          if (this.props.onUpdate) {
-            this.props.onUpdate(
+          if (onUpdate) {
+            onUpdate(
               graphDiv.data,
               Object.assign({}, graphDiv.layout),
               graphDiv._transitionData._frames
@@ -240,15 +248,15 @@ class EditorControls extends Component {
 
       case EDITOR_ACTIONS.DELETE_SHAPE:
         if (isNumeric(payload.shapeIndex)) {
-          if (this.props.beforeDeleteShape) {
-            this.props.beforeDeleteShape(payload);
+          if (beforeDeleteShape) {
+            beforeDeleteShape(payload);
           }
           graphDiv.layout.shapes.splice(payload.shapeIndex, 1);
-          if (this.props.afterDeleteShape) {
-            this.props.afterDeleteShape(payload);
+          if (afterDeleteShape) {
+            afterDeleteShape(payload);
           }
-          if (this.props.onUpdate) {
-            this.props.onUpdate(
+          if (onUpdate) {
+            onUpdate(
               graphDiv.data,
               Object.assign({}, graphDiv.layout),
               graphDiv._transitionData._frames
@@ -259,15 +267,15 @@ class EditorControls extends Component {
 
       case EDITOR_ACTIONS.DELETE_IMAGE:
         if (isNumeric(payload.imageIndex)) {
-          if (this.props.beforeDeleteImage) {
-            this.props.beforeDeleteImage(payload);
+          if (beforeDeleteImage) {
+            beforeDeleteImage(payload);
           }
           graphDiv.layout.images.splice(payload.imageIndex, 1);
-          if (this.props.afterDeleteImage) {
-            this.props.afterDeleteImage(payload);
+          if (afterDeleteImage) {
+            afterDeleteImage(payload);
           }
-          if (this.props.onUpdate) {
-            this.props.onUpdate(
+          if (onUpdate) {
+            onUpdate(
               graphDiv.data,
               Object.assign({}, graphDiv.layout),
               graphDiv._transitionData._frames
@@ -282,8 +290,8 @@ class EditorControls extends Component {
             payload.rangeselectorIndex,
             1
           );
-          if (this.props.onUpdate) {
-            this.props.onUpdate(
+          if (onUpdate) {
+            onUpdate(
               graphDiv.data,
               Object.assign({}, graphDiv.layout),
               graphDiv._transitionData._frames
@@ -295,8 +303,8 @@ class EditorControls extends Component {
       case EDITOR_ACTIONS.DELETE_MAPBOXLAYER:
         if (isNumeric(payload.mapboxLayerIndex)) {
           graphDiv.layout[payload.mapboxId].layers.splice(payload.mapboxLayerIndex, 1);
-          if (this.props.onUpdate) {
-            this.props.onUpdate(
+          if (onUpdate) {
+            onUpdate(
               graphDiv.data,
               Object.assign({}, graphDiv.layout),
               graphDiv._transitionData._frames
@@ -312,12 +320,8 @@ class EditorControls extends Component {
           } else {
             graphDiv.data[payload.traceIndex].transforms.splice(payload.transformIndex, 1);
           }
-          if (this.props.onUpdate) {
-            this.props.onUpdate(
-              graphDiv.data.slice(),
-              graphDiv.layout,
-              graphDiv._transitionData._frames
-            );
+          if (onUpdate) {
+            onUpdate(graphDiv.data.slice(), graphDiv.layout, graphDiv._transitionData._frames);
           }
         }
         break;
@@ -360,8 +364,8 @@ class EditorControls extends Component {
             ? Object.assign({}, graphDiv.layout)
             : graphDiv.layout;
 
-          if (this.props.onUpdate) {
-            this.props.onUpdate(updatedData, updatedLayout, graphDiv._transitionData._frames);
+          if (onUpdate) {
+            onUpdate(updatedData, updatedLayout, graphDiv._transitionData._frames);
           }
         }
         break;

@@ -36,6 +36,7 @@ import striptags from './striptags';
 import {capitalize, lowerCase, upperCase, removeNonWord, camelCase, pascalCase} from './strings';
 import {getColorscale} from 'react-colorscales';
 import {templateString} from 'plotly.js/src/lib';
+import {SUBPLOT_TO_ATTR} from './constants';
 
 const TOO_LIGHT_FACTOR = 0.8;
 
@@ -44,10 +45,7 @@ const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
 const getDisplayName = (WrappedComponent) =>
   WrappedComponent.displayName || WrappedComponent.name || 'Component';
 
-const tooLight = (color) => {
-  const hslColor = tinyColor(color).toHsl();
-  return hslColor.l > TOO_LIGHT_FACTOR;
-};
+const tooLight = (color) => tinyColor(color).toHsl().l > TOO_LIGHT_FACTOR;
 
 const renderTraceIcon = (trace, prefix = 'Plot') => {
   if (!trace) {
@@ -159,7 +157,7 @@ const maybeAdjustSrc = (src, srcAttributePath, traceType, config) => {
 };
 
 const adjustColorscale = (colorscale, numberOfNeededColors, colorscaleType, config) => {
-  if (config && config.repeat) {
+  if (config?.repeat) {
     if (numberOfNeededColors < colorscale.length) {
       return colorscale.slice(0, numberOfNeededColors);
     }
@@ -176,15 +174,15 @@ const adjustColorscale = (colorscale, numberOfNeededColors, colorscaleType, conf
   return getColorscale(colorscale, numberOfNeededColors, null, null, colorscaleType);
 };
 
-const getFullTrace = (props, context) => {
+const getFullTrace = ({fullDataArrayPosition, traceIndexes}, {fullData, data}) => {
   let fullTrace = {};
-  if (context.fullData && context.data) {
-    if (props.fullDataArrayPosition) {
+  if (fullData && data) {
+    if (fullDataArrayPosition) {
       // fullDataArrayPosition will be supplied in panels that have the canGroup prop
-      fullTrace = context.fullData[props.fullDataArrayPosition[0]];
+      fullTrace = fullData[fullDataArrayPosition[0]];
     } else {
       // for all other panels, we'll find fullTrace with the data index
-      fullTrace = context.fullData.filter((t) => t && props.traceIndexes[0] === t.index)[0];
+      fullTrace = fullData.filter((t) => t && traceIndexes[0] === t.index)[0];
     }
 
     // For transformed traces, we actually want to read in _fullInput because
@@ -192,15 +190,54 @@ const getFullTrace = (props, context) => {
     // This is true except for fit transforms, where reading in fullData is
     // what we want
     if (
-      fullTrace &&
-      fullTrace.transforms &&
+      fullTrace?.transforms &&
       !fullTrace.transforms.some((t) => ['moving-average', 'fits'].includes(t.type)) &&
-      !props.fullDataArrayPosition
+      !fullDataArrayPosition
     ) {
       fullTrace = fullTrace._fullInput;
     }
   }
   return fullTrace;
+};
+
+const isSubplotUsedAnywhereElse = (subplotType, subplotName, fullData, traceIndex) =>
+  fullData.some(
+    (trace) =>
+      (trace[SUBPLOT_TO_ATTR[subplotType].data] === subplotName ||
+        ((subplotType === 'xaxis' || subplotType === 'yaxis') && subplotName.charAt(1)) === '' ||
+        (subplotName.split(subplotType)[1] === '' &&
+          trace[SUBPLOT_TO_ATTR[subplotType].data] === null)) &&
+      trace.index !== traceIndex
+  );
+
+const itemsToBeGarbageCollected = (traceIndexToDelete, fullData) => {
+  const currentTrace = fullData?.[traceIndexToDelete];
+
+  const subplotType = traceTypeToAxisType(currentTrace?.type);
+  const items = {axesToBeGarbageCollected: []};
+
+  if (currentTrace && subplotType) {
+    const subplotNames =
+      subplotType === 'cartesian'
+        ? [currentTrace.xaxis || 'xaxis', currentTrace.yaxis || 'yaxis']
+        : currentTrace[SUBPLOT_TO_ATTR[subplotType].data] || SUBPLOT_TO_ATTR[subplotType].data;
+
+    // When we delete a subplot, make sure no unused axes/subplots are left
+    if (subplotType === 'cartesian') {
+      if (!isSubplotUsedAnywhereElse('xaxis', subplotNames[0], fullData, traceIndexToDelete)) {
+        items.axesToBeGarbageCollected.push(subplotNames[0]);
+      }
+      if (!isSubplotUsedAnywhereElse('yaxis', subplotNames[1], fullData, traceIndexToDelete)) {
+        items.axesToBeGarbageCollected.push(subplotNames[1]);
+      }
+    } else {
+      if (!isSubplotUsedAnywhereElse(subplotType, subplotNames, fullData, traceIndexToDelete)) {
+        items.subplotToBeGarbageCollected = subplotNames;
+      }
+    }
+  }
+
+  return items;
 };
 
 const getParsedTemplateString = (originalString, context) => {
@@ -243,6 +280,8 @@ export {
   getAxisTitle,
   getDisplayName,
   getFullTrace,
+  isSubplotUsedAnywhereElse,
+  itemsToBeGarbageCollected,
   getSubplotTitle,
   isPlainObject,
   hasValidCustomConfigVisibilityRules,
