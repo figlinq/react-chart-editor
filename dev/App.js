@@ -4,12 +4,15 @@ import plotly from 'plotly.js/dist/plotly-with-meta';
 import '../src/styles/main.scss';
 import AceEditor from 'react-ace';
 import Select from 'react-select';
-import PlotlyEditor, {DefaultEditor, Panel} from '../src';
+import PlotlyEditor, {Button, DefaultEditor, Panel} from '../src';
 import Inspector from 'react-inspector';
 import dataSources from './dataSources';
 
 // https://github.com/plotly/react-chart-editor#mapbox-access-tokens
 import ACCESS_TOKENS from '../accessTokens';
+
+// Have actual buttons for testing undo/redo
+const SHOW_UNDO_REDO = true;
 
 // import {customConfigTest} from '../src/__stories__';
 
@@ -167,6 +170,22 @@ class App extends Component {
   render() {
     return (
       <div className="app">
+        {SHOW_UNDO_REDO && (
+          <div>
+            <Button
+              label="Undo"
+              onClick={() => {
+                this.PlotlyEditor.current.undo();
+              }}
+            />
+            <Button
+              label="Redo"
+              onClick={() => {
+                this.PlotlyEditor.current.redo();
+              }}
+            />
+          </div>
+        )}
         <PlotlyEditor
           data={this.state.data}
           layout={this.state.layout}

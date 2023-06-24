@@ -93,6 +93,7 @@ PlotlyEditor.propTypes = {
   fontOptions: PropTypes.array,
   chartHelp: PropTypes.object,
   customConfig: PropTypes.object,
+  showUndoRedoButtons: PropTypes.bool,
 };
 
 PlotlyEditor.defaultProps = {
