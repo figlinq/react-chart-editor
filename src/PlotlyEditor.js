@@ -1,4 +1,4 @@
-import {Component} from 'react';
+import {Component, forwardRef} from 'react';
 import createPlotComponent from 'react-plotly.js/factory';
 import EditorControls from './EditorControls';
 import PropTypes from 'prop-types';
@@ -24,6 +24,7 @@ class PlotlyEditor extends Component {
       <div className="plotly_editor">
         {!this.props.hideControls && (
           <EditorControls
+            ref={this.props.innerRef}
             graphDiv={this.state.graphDiv}
             dataSources={this.props.dataSources}
             dataSourceOptions={this.props.dataSourceOptions}
@@ -93,7 +94,7 @@ PlotlyEditor.propTypes = {
   fontOptions: PropTypes.array,
   chartHelp: PropTypes.object,
   customConfig: PropTypes.object,
-  showUndoRedoButtons: PropTypes.bool,
+  innerRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
 };
 
 PlotlyEditor.defaultProps = {
@@ -102,4 +103,4 @@ PlotlyEditor.defaultProps = {
   fontOptions: DEFAULT_FONTS,
 };
 
-export default PlotlyEditor;
+export default forwardRef((props, ref) => <PlotlyEditor innerRef={ref} {...props} />);
