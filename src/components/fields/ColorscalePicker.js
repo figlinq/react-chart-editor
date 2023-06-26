@@ -54,8 +54,6 @@ UnconnectedColorscalePicker.propTypes = {
 };
 
 UnconnectedColorscalePicker.contextTypes = {
-  container: PropTypes.object,
-  graphDiv: PropTypes.object,
   onUpdate: PropTypes.func,
 };
 
