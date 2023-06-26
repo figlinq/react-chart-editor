@@ -1,4 +1,4 @@
-import {Component} from 'react';
+import {Component, createRef} from 'react';
 import {hot} from 'react-hot-loader/root';
 import plotly from 'plotly.js/dist/plotly-with-meta';
 import '../src/styles/main.scss';
@@ -120,6 +120,8 @@ class App extends Component {
     this.loadMock = this.loadMock.bind(this);
     this.loadJSON = this.loadJSON.bind(this);
     this.updateState = this.updateState.bind(this);
+
+    this.PlotlyEditor = createRef();
   }
 
   UNSAFE_componentWillMount() {
@@ -187,6 +189,7 @@ class App extends Component {
           </div>
         )}
         <PlotlyEditor
+          ref={this.PlotlyEditor}
           data={this.state.data}
           layout={this.state.layout}
           frames={this.state.frames}
