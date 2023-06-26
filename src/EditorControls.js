@@ -1,4 +1,5 @@
 import DefaultEditor from './DefaultEditor';
+import {addedDiff} from 'deep-object-diff';
 import PropTypes from 'prop-types';
 import {Component} from 'react';
 import {
@@ -20,12 +21,15 @@ import {
   shamefullyAdjustAxisDirection,
   shamefullyAdjustMapbox,
 } from './shame';
-import {EDITOR_ACTIONS} from './lib/constants';
+import {EDITOR_ACTIONS, OPERATION_TYPE} from './lib/constants';
 import isNumeric from 'fast-isnumeric';
 import nestedProperty from 'plotly.js/src/lib/nested_property';
 import {categoryLayout, traceTypes} from 'lib/traceTypes';
 import {ModalProvider} from 'components/containers';
 import {DEFAULT_FONTS} from 'lib/constants';
+import ActionBuffer from 'lib/actionBuffer';
+
+const actionBuffer = new ActionBuffer();
 
 class EditorControls extends Component {
   constructor(props, context) {
@@ -73,7 +77,23 @@ class EditorControls extends Component {
     };
   }
 
-  handleUpdate({type, payload}) {
+  undo() {
+    console.log('undo');
+    const action = actionBuffer.undo();
+    if (action) {
+      this.handleUpdate(action, OPERATION_TYPE.UNDO);
+    }
+  }
+
+  redo() {
+    console.log('redo');
+    const action = actionBuffer.redo();
+    if (action) {
+      this.handleUpdate(action, OPERATION_TYPE.REDO);
+    }
+  }
+
+  handleUpdate({type, payload}, opType = OPERATION_TYPE.UPDATE) {
     const {
       graphDiv,
       beforeUpdateTraces,
@@ -96,6 +116,18 @@ class EditorControls extends Component {
       afterDeleteImage,
     } = this.props;
 
+    console.log(
+      'handleUpdate',
+      {type, payload},
+      'graphDiv.data',
+      graphDiv.data,
+      'graphDiv.layout',
+      graphDiv.layout
+    );
+
+    const oldGraphDiv = structuredClone({layout: graphDiv.layout, data: graphDiv.data});
+    let layoutDiff;
+
     switch (type) {
       case EDITOR_ACTIONS.ADD_TRANSFORM:
       case EDITOR_ACTIONS.UPDATE_TRACES:
@@ -113,28 +145,25 @@ class EditorControls extends Component {
           shamefullyAdjustMapbox(graphDiv, payload);
         }
 
-        for (let i = 0; i < payload.traceIndexes.length; i++) {
+        payload.traceIndexes.forEach((traceIndex) => {
           for (const attr in payload.update) {
-            const traceIndex = payload.traceIndexes[i];
-
             const splitTraceGroup = payload.splitTraceGroup
               ? payload.splitTraceGroup.toString()
               : null;
 
-            let props = [nestedProperty(graphDiv.data[traceIndex], attr)];
             const value = payload.update[attr];
-
-            if (splitTraceGroup) {
-              props = shamefullyCreateSplitStyleProps(graphDiv, attr, traceIndex, splitTraceGroup);
-            }
+            const props = splitTraceGroup
+              ? shamefullyCreateSplitStyleProps(graphDiv, attr, traceIndex, splitTraceGroup)
+              : [nestedProperty(graphDiv.data[traceIndex], attr)];
 
             props.forEach((p) => {
-              if (value !== void 0) {
+              // Not sure why we check for void 0, so will allow setting to undefined only for undo/redo cases to play safe
+              if (value !== void 0 || opType !== OPERATION_TYPE.UPDATE) {
                 p.set(value);
               }
             });
           }
-        }
+        });
 
         if (afterUpdateTraces) {
           afterUpdateTraces(payload);
@@ -145,8 +174,8 @@ class EditorControls extends Component {
         break;
 
       case EDITOR_ACTIONS.ADD_ANNOTATION:
-      case EDITOR_ACTIONS.ADD_IMAGE:
       case EDITOR_ACTIONS.ADD_SHAPE:
+      case EDITOR_ACTIONS.ADD_IMAGE:
       case EDITOR_ACTIONS.ADD_RANGESELECTOR:
       case EDITOR_ACTIONS.UPDATE_LAYOUT:
         shamefullyAdjustGeo(graphDiv, payload);
@@ -157,7 +186,8 @@ class EditorControls extends Component {
         for (const attr in payload.update) {
           const prop = nestedProperty(graphDiv.layout, attr);
           const value = payload.update[attr];
-          if (value !== void 0) {
+          // Not sure why we check for void 0, so will allow setting to undefined only for undo/redo cases to play safe
+          if (value !== void 0 || opType !== OPERATION_TYPE.UPDATE) {
             prop.set(value);
           }
         }
@@ -165,11 +195,7 @@ class EditorControls extends Component {
           afterUpdateLayout(payload);
         }
         if (onUpdate) {
-          onUpdate(
-            graphDiv.data,
-            Object.assign({}, graphDiv.layout),
-            graphDiv._transitionData._frames
-          );
+          onUpdate(graphDiv.data, {...graphDiv.layout}, graphDiv._transitionData._frames);
         }
         break;
 
@@ -193,11 +219,33 @@ class EditorControls extends Component {
           const prevTrace = graphDiv.data[graphDiv.data.length - 1];
           const prevTraceType = plotlyTraceToCustomTrace(prevTrace);
           graphDiv.data.push(
-            traceTypeToPlotlyInitFigure(
-              prevTraceType,
-              prevTrace.type && prevTrace.type.endsWith('gl') ? 'gl' : ''
-            )
+            traceTypeToPlotlyInitFigure(prevTraceType, prevTrace?.type?.endsWith('gl') ? 'gl' : '')
           );
+        }
+
+        if (afterAddTrace) {
+          afterAddTrace(payload);
+        }
+        if (onUpdate) {
+          onUpdate(graphDiv.data.slice(), graphDiv.layout, graphDiv._transitionData._frames);
+        }
+        break;
+
+      case EDITOR_ACTIONS.RESTORE_TRACE:
+        if (beforeAddTrace) {
+          beforeAddTrace(payload);
+        }
+
+        payload.traceIndexes.forEach((traceIndex, i) => {
+          graphDiv.data.splice(traceIndex, 0, payload.traces[i]);
+        });
+
+        for (const attr in payload.update) {
+          const prop = nestedProperty(graphDiv.layout, attr);
+          const value = payload.update[attr];
+          if (value !== void 0) {
+            prop.set(value);
+          }
         }
 
         if (afterAddTrace) {
@@ -216,6 +264,8 @@ class EditorControls extends Component {
 
           shamefullyAdjustAxisRef(graphDiv, payload.traceIndexes[0]);
           shamefullyDeleteRelatedAnalysisTransforms(graphDiv, payload);
+
+          layoutDiff = addedDiff(graphDiv.layout, oldGraphDiv.layout);
 
           graphDiv.data.splice(payload.traceIndexes[0], 1);
           if (afterDeleteTrace) {
@@ -237,11 +287,7 @@ class EditorControls extends Component {
             afterDeleteAnnotation(payload);
           }
           if (onUpdate) {
-            onUpdate(
-              graphDiv.data,
-              Object.assign({}, graphDiv.layout),
-              graphDiv._transitionData._frames
-            );
+            onUpdate(graphDiv.data, {...graphDiv.layout}, graphDiv._transitionData._frames);
           }
         }
         break;
@@ -256,11 +302,7 @@ class EditorControls extends Component {
             afterDeleteShape(payload);
           }
           if (onUpdate) {
-            onUpdate(
-              graphDiv.data,
-              Object.assign({}, graphDiv.layout),
-              graphDiv._transitionData._frames
-            );
+            onUpdate(graphDiv.data, {...graphDiv.layout}, graphDiv._transitionData._frames);
           }
         }
         break;
@@ -275,11 +317,7 @@ class EditorControls extends Component {
             afterDeleteImage(payload);
           }
           if (onUpdate) {
-            onUpdate(
-              graphDiv.data,
-              Object.assign({}, graphDiv.layout),
-              graphDiv._transitionData._frames
-            );
+            onUpdate(graphDiv.data, {...graphDiv.layout}, graphDiv._transitionData._frames);
           }
         }
         break;
@@ -291,11 +329,7 @@ class EditorControls extends Component {
             1
           );
           if (onUpdate) {
-            onUpdate(
-              graphDiv.data,
-              Object.assign({}, graphDiv.layout),
-              graphDiv._transitionData._frames
-            );
+            onUpdate(graphDiv.data, {...graphDiv.layout}, graphDiv._transitionData._frames);
           }
         }
         break;
@@ -304,11 +338,7 @@ class EditorControls extends Component {
         if (isNumeric(payload.mapboxLayerIndex)) {
           graphDiv.layout[payload.mapboxId].layers.splice(payload.mapboxLayerIndex, 1);
           if (onUpdate) {
-            onUpdate(
-              graphDiv.data,
-              Object.assign({}, graphDiv.layout),
-              graphDiv._transitionData._frames
-            );
+            onUpdate(graphDiv.data, {...graphDiv.layout}, graphDiv._transitionData._frames);
           }
         }
         break;
@@ -361,7 +391,7 @@ class EditorControls extends Component {
             ? graphDiv.data.slice()
             : graphDiv.data;
           const updatedLayout = payload.path.startsWith('layout')
-            ? Object.assign({}, graphDiv.layout)
+            ? {...graphDiv.layout}
             : graphDiv.layout;
 
           if (onUpdate) {
@@ -373,6 +403,17 @@ class EditorControls extends Component {
       default:
         throw new Error(this.localize('must specify an action type to handleEditorUpdate'));
     }
+
+    console.log('layoutDiff', layoutDiff);
+
+    if (opType === OPERATION_TYPE.UPDATE) {
+      actionBuffer.clearRedo();
+    }
+    actionBuffer[opType === OPERATION_TYPE.UNDO ? 'addToRedo' : 'addToUndo'](
+      {type, payload: layoutDiff ? {...payload, update: layoutDiff} : payload},
+      oldGraphDiv,
+      graphDiv
+    );
   }
 
   render() {
