@@ -4,7 +4,7 @@ import SidebarGroup from './sidebar/SidebarGroup';
 import {bem} from 'lib';
 import sortMenu from 'lib/sortMenu';
 
-class PanelsWithSidebar extends Component {
+class PanelMenuWrapper extends Component {
   constructor(props) {
     super(props);
 
@@ -99,13 +99,13 @@ class PanelsWithSidebar extends Component {
   }
 }
 
-PanelsWithSidebar.propTypes = {
+PanelMenuWrapper.propTypes = {
   children: PropTypes.node,
   menuPanelOrder: PropTypes.array,
 };
 
-PanelsWithSidebar.childContextTypes = {
+PanelMenuWrapper.childContextTypes = {
   setPanel: PropTypes.func,
 };
 
-export default PanelsWithSidebar;
+export default PanelMenuWrapper;
