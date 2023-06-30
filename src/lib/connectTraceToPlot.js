@@ -7,7 +7,6 @@ import {
   renderTraceIcon,
   getFullTrace,
   getParsedTemplateString,
-  itemsToBeGarbageCollected,
 } from '../lib';
 import {deepCopyPublic, setMultiValuedContainer} from './multiValues';
 import {EDITOR_ACTIONS} from 'lib/constants';
@@ -126,21 +125,13 @@ export default function connectTraceToPlot(WrappedComponent) {
 
     deleteTrace() {
       const {traceIndexes} = this.props;
-      const {fullData, onUpdate} = this.context;
-      const currentTrace = fullData[traceIndexes[0]];
+      const {onUpdate} = this.context;
 
       if (onUpdate) {
-        const update = {
+        onUpdate({
           type: EDITOR_ACTIONS.DELETE_TRACE,
           payload: {traceIndexes},
-        };
-        if (currentTrace) {
-          update.payload = {
-            ...update.payload,
-            ...itemsToBeGarbageCollected(traceIndexes[0], fullData),
-          };
-        }
-        onUpdate(update);
+        });
       }
     }
 
