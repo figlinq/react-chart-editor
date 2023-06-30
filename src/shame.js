@@ -3,6 +3,7 @@
  */
 import {getFromId} from 'plotly.js/src/plots/cartesian/axis_ids';
 import nestedProperty from 'plotly.js/src/lib/nested_property';
+import {itemsToBeGarbageCollected} from 'lib';
 
 // Temporary fix for:
 // https://github.com/plotly/react-chart-editor/issues/103
@@ -44,7 +45,9 @@ function clearAxisTypes(gd, traces) {
   }
 }
 
-export const shamefullyAdjustAxisRef = (graphDiv, payload) => {
+export const shamefullyAdjustAxisRef = (graphDiv, traceIndex) => {
+  const payload = itemsToBeGarbageCollected(traceIndex, graphDiv._fullData);
+
   if (payload.axesToBeGarbageCollected) {
     payload.axesToBeGarbageCollected.forEach((a) => {
       const axis = a.charAt(0);
