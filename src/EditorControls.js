@@ -214,7 +214,7 @@ class EditorControls extends Component {
             beforeDeleteTrace(payload);
           }
 
-          shamefullyAdjustAxisRef(graphDiv, payload);
+          shamefullyAdjustAxisRef(graphDiv, payload.traceIndexes[0]);
           shamefullyDeleteRelatedAnalysisTransforms(graphDiv, payload);
 
           graphDiv.data.splice(payload.traceIndexes[0], 1);
