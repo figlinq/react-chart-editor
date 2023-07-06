@@ -1,9 +1,10 @@
-import {Component} from 'react';
+import {Component, createRef} from 'react';
 import plotly from 'plotly.js/dist/plotly';
 import PlotlyEditor from '@figlinq/react-chart-editor';
 import '@figlinq/react-chart-editor/lib/react-chart-editor.css';
 import Nav from './Nav';
 import dataSources from './dataSources';
+import {Button} from '@figlinq/react-chart-editor/lib/components';
 
 const dataSourceOptions = Object.keys(dataSources).map((name) => ({
   value: name,
@@ -25,6 +26,7 @@ class App extends Component {
     };
 
     this.loadMock = this.loadMock.bind(this);
+    this.PlotlyEditor = createRef();
   }
 
   UNSAFE_componentWillMount() {
@@ -52,7 +54,22 @@ class App extends Component {
   render() {
     return (
       <div className="app">
+        <div>
+          <Button
+            label="Undo"
+            onClick={() => {
+              this.PlotlyEditor.current.undo();
+            }}
+          />
+          <Button
+            label="Redo"
+            onClick={() => {
+              this.PlotlyEditor.current.redo();
+            }}
+          />
+        </div>
         <PlotlyEditor
+          ref={this.PlotlyEditor}
           data={this.state.data}
           layout={this.state.layout}
           config={config}
