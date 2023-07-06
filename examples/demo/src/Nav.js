@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import Dropdown from 'react-chart-editor/lib/components/widgets/Dropdown';
+import Dropdown from '@figlinq/react-chart-editor/lib/components/widgets/Dropdown';
 
 const Nav = ({mocks, currentMockIndex, loadMock}) => (
   <div className="mock-nav">

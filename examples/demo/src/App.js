@@ -1,7 +1,7 @@
 import {Component} from 'react';
 import plotly from 'plotly.js/dist/plotly';
-import PlotlyEditor from 'react-chart-editor';
-import 'react-chart-editor/lib/react-chart-editor.css';
+import PlotlyEditor from '@figlinq/react-chart-editor';
+import '@figlinq/react-chart-editor/lib/react-chart-editor.css';
 import Nav from './Nav';
 import dataSources from './dataSources';
 
