@@ -1,6 +1,6 @@
 {
   "name": "demo",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "dependencies": {
     "plotly.js": "2.16.4",
@@ -17,7 +17,7 @@
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build"
   },
-  "homepage": "http://plotly.github.io/react-chart-editor",
+  "homepage": "http://figlinq.github.io/react-chart-editor",
   "devDependencies": {
     "gh-pages": "^5.0.0"
   }
