@@ -5,7 +5,7 @@
   "dependencies": {
     "plotly.js": "2.16.4",
     "react": "16.14.0",
-    "react-chart-editor": "latest",
+    "@figlinq/react-chart-editor": "latest",
     "react-dom": "16.14.0",
     "react-scripts": "5.0.1"
   },
