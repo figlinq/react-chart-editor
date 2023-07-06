@@ -1,6 +1,13 @@
 {
-  "main.css": "static/css/main.a6997d68.css",
-  "main.css.map": "static/css/main.a6997d68.css.map",
-  "main.js": "static/js/main.c77b843b.js",
-  "main.js.map": "static/js/main.c77b843b.js.map"
+  "files": {
+    "main.css": "/react-chart-editor/static/css/main.08570eba.css",
+    "main.js": "/react-chart-editor/static/js/main.1041e4cb.js",
+    "index.html": "/react-chart-editor/index.html",
+    "main.08570eba.css.map": "/react-chart-editor/static/css/main.08570eba.css.map",
+    "main.1041e4cb.js.map": "/react-chart-editor/static/js/main.1041e4cb.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.08570eba.css",
+    "static/js/main.1041e4cb.js"
+  ]
 }
