@@ -1,9 +1,16 @@
+import {diff} from 'deep-object-diff';
 import isNumeric from 'fast-isnumeric';
 import nestedProperty from 'plotly.js/src/lib/nested_property';
-import {EDITOR_ACTIONS, INVERSE_ACTIONS} from './constants';
+import {EDITOR_ACTIONS, INVERSE_ACTIONS, OPERATION_TYPE} from './constants';
+
+const isEmpty = (obj) => !obj || Object.keys(obj).length === 0;
 
 // Get index from a string like 'annotations[0]'
 const extractIndex = (arrayString) => parseInt(arrayString.match(/\[(\d+)\]/)[1], 10);
+
+const isAxisDomainUpdate = (payload) =>
+  payload?.update && Object.keys(payload.update)?.every((k) => k.includes('domain'));
+const isHole = (payload) => payload?.update?.hole;
 
 export default class ActionBuffer {
   constructor() {
@@ -16,8 +23,8 @@ export default class ActionBuffer {
     return this;
   }
 
-  reverseAction({type, payload}, oldGraphDiv, graphDiv) {
-    const action = {type: INVERSE_ACTIONS[type], payload: {}};
+  reverseAction({type, payload}, oldGraphDiv, graphDiv, operationType) {
+    let action = {type: INVERSE_ACTIONS[type], payload: {}};
 
     switch (action.type) {
       case EDITOR_ACTIONS.ADD_TRACE: {
@@ -58,16 +65,32 @@ export default class ActionBuffer {
         break;
       }
       case EDITOR_ACTIONS.UPDATE_TRACES: {
-        const update = {};
-        for (const attr in payload.update) {
-          if (payload.update.hasOwnProperty(attr)) {
-            update[attr] = nestedProperty(oldGraphDiv.data[payload.traceIndexes[0]], attr).get();
+        // Are we undoing axis domain update on Pie chart? skip.
+        // This is a workaround for too many undo actions being created for subplot draggable UI
+        if (
+          ((isAxisDomainUpdate(payload) && isAxisDomainUpdate(this.getLastUndo()?.payload)) ||
+            (isHole(payload) && isHole(this.getLastUndo()?.payload))) &&
+          payload.traceIndexes[0] === this.getLastUndo()?.payload.traceIndexes[0]
+        ) {
+          action = null;
+        } else {
+          const update = {};
+          for (const attr in payload.update) {
+            if (payload.update.hasOwnProperty(attr)) {
+              update[attr] = nestedProperty(oldGraphDiv.data[payload.traceIndexes[0]], attr).get();
+            }
+          }
+          // If all attrs in the action are same as in oldGraphDiv, skip
+          if (isEmpty(diff(update, payload.update))) {
+            console.log('Empty trace update - skip');
+            action = null;
+          } else {
+            action.payload = {
+              traceIndexes: payload.traceIndexes,
+              update,
+            };
           }
         }
-        action.payload = {
-          traceIndexes: payload.traceIndexes,
-          update,
-        };
         break;
       }
       case EDITOR_ACTIONS.UPDATE_LAYOUT: {
@@ -76,16 +99,29 @@ export default class ActionBuffer {
         if (isNumeric(payload.rangeselectorIndex)) {
           const attr = `${payload.axisId}.rangeselector.buttons[${payload.rangeselectorIndex}]`;
           update[attr] = nestedProperty(oldGraphDiv.layout, attr).get();
+          action.payload = {
+            update,
+          };
+        } else if (isAxisDomainUpdate(payload) && isAxisDomainUpdate(this.getLastUndo()?.payload)) {
+          // Are we undoing axis domain update? skip.
+          // This is a workaround for too many undo actions being created for subplot draggable UI
+          action = null;
         } else {
           for (const attr in payload.update) {
             if (payload.update.hasOwnProperty(attr)) {
               update[attr] = nestedProperty(oldGraphDiv.layout, attr).get();
             }
           }
+          // If all attrs in the action are same as in oldGraphDiv, skip
+          if (isEmpty(diff(update, payload.update))) {
+            console.log('Empty layout update - skip');
+            action = null;
+          } else {
+            action.payload = {
+              update,
+            };
+          }
         }
-        action.payload = {
-          update,
-        };
         break;
       }
       case EDITOR_ACTIONS.ADD_ANNOTATION: {
@@ -137,16 +173,36 @@ export default class ActionBuffer {
         break;
       }
     }
-    console.log('reverse action created:', action);
+    console.log(
+      'reverse action created:',
+      action,
+      'previous action:',
+      this.getLastUndo(),
+      diff(action, this.getLastUndo())
+    );
+
+    // Optimization for sliders and other draggable UI - if action returns to same state as last undo, skip
+    if (
+      operationType === OPERATION_TYPE.UNDO &&
+      action &&
+      this.getLastUndo() &&
+      isEmpty(diff(action, this.getLastUndo()))
+    ) {
+      console.log('skipping undo action');
+      action = null;
+    }
     return action;
   }
 
   addToUndo(action, oldGraphDiv, graphDiv) {
-    this.undoStack.push(this.reverseAction(action, oldGraphDiv, graphDiv));
+    const undoAction = this.reverseAction(action, oldGraphDiv, graphDiv, OPERATION_TYPE.UNDO);
+    if (undoAction) {
+      this.undoStack.push(undoAction);
+    }
   }
 
   addToRedo(action, oldGraphDiv, graphDiv) {
-    this.redoStack.push(this.reverseAction(action, oldGraphDiv, graphDiv));
+    this.redoStack.push(this.reverseAction(action, oldGraphDiv, graphDiv, OPERATION_TYPE.REDO));
   }
 
   // Add to undo or redo based on current operation type
@@ -175,6 +231,10 @@ export default class ActionBuffer {
 
   undo() {
     return this.undoAvailable() ? this.undoStack.pop() : null;
+  }
+
+  getLastUndo() {
+    return this.undoAvailable() ? this.undoStack[this.undoStack.length - 1] : null;
   }
 
   redo() {
