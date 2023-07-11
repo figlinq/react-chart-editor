@@ -170,9 +170,9 @@ export const TickFormat = connectToContainer(UnconnectedDropdownCustom, {
 export const ShowInLegend = connectToContainer(UnconnectedVisibilitySelect, {
   modifyPlotProps: (props, context, plotProps) => {
     if (
-      context.container.type &&
-      context.container.type !== 'sunburst' &&
-      context.container.type !== 'treemap'
+      context?.container?.type &&
+      context?.container?.type !== 'sunburst' &&
+      context?.container?.type !== 'treemap'
     ) {
       plotProps.isVisible = context.fullLayout.showlegend;
     }
