@@ -24,22 +24,14 @@ const UnconnectedAxisCreator = (props, {fullData, onUpdate, fullLayout: {_subplo
     const {attr, updateContainer} = props;
     const lastAxisNumber = Number(subplots[attr][subplots[attr].length - 1].charAt(1)) || 1;
 
-    updateContainer({
-      [attr]: attr.charAt(0) + (lastAxisNumber + 1),
-    });
-
-    let side = null;
-    if (attr === 'yaxis') {
-      side = 'right';
-    } else if (attr === 'xaxis') {
-      side = 'top';
-    }
+    updateContainer({[attr]: attr.charAt(0) + (lastAxisNumber + 1)});
 
     onUpdate({
       type: EDITOR_ACTIONS.UPDATE_LAYOUT,
       payload: {
         update: {
-          [`${attr + (lastAxisNumber + 1)}.side`]: side,
+          [`${attr + (lastAxisNumber + 1)}.side`]:
+            attr === 'yaxis' ? 'right' : attr === 'xaxis' ? 'top' : null,
           [`${attr + (lastAxisNumber + 1)}.overlaying`]: !(attr === 'yaxis' || attr === 'xaxis')
             ? null
             : subplots[attr][subplots[attr].length - 1],

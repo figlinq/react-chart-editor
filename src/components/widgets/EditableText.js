@@ -1,84 +1,75 @@
 import PropTypes from 'prop-types';
-import {Component} from 'react';
+import {useRef} from 'react';
 
 const ENTER_KEYCODE = 13;
 
-// A generic component to handle text that can be edited when the user
-// clicks on it.
-class EditableText extends Component {
-  constructor(props) {
-    super(props);
+// A generic component to handle text that can be edited when the user clicks on it.
+const EditableText = ({
+  type,
+  className,
+  text,
+  disable,
+  autoFocus,
+  placeholder,
+  readOnly,
+  size,
+  onKeyDown,
+  onChange,
+  onUpdate,
+  onWheel,
+}) => {
+  const inputRef = useRef();
 
-    this.handleFocus = this.handleFocus.bind(this);
-    this.handleChange = this.handleChange.bind(this);
-    this.handleUpdate = this.handleUpdate.bind(this);
-    this.handleKeyPress = this.handleKeyPress.bind(this);
-    this.handleWheel = this.handleWheel.bind(this);
-    this.getRef = this.getRef.bind(this);
-  }
-
-  getRef(c) {
-    this._ref = c;
-  }
-
-  // Selects/highlights all of the text in the filename input
-  handleFocus(event) {
+  const handleFocus = (event) => {
     event.target.select();
-  }
+  };
 
-  handleChange(event) {
-    const {onChange} = this.props;
-
+  const handleChange = (event) => {
     if (onChange) {
       onChange(event.target.value);
     }
-  }
+  };
 
-  handleUpdate(event) {
-    const {onUpdate} = this.props;
-
+  const handleUpdate = (event) => {
     if (onUpdate) {
       onUpdate(event.target.value);
     }
-  }
+  };
 
-  handleKeyPress(event) {
+  const handleKeyDown = (event) => {
     // This will force handleUpdate to be called via the input's onBlur
     if ((event.keyCode || event.which) === ENTER_KEYCODE) {
-      this._ref.blur();
+      inputRef.current.blur();
+    } else {
+      onKeyDown(event);
     }
-  }
+  };
 
-  handleWheel(event) {
-    if (this.props.onWheel && document.activeElement === this._ref) {
-      this.props.onWheel(event);
+  const handleWheel = (event) => {
+    if (onWheel && document.activeElement === inputRef.current) {
+      onWheel(event);
     }
-  }
+  };
 
-  render() {
-    const {type, className, text, disable, autoFocus, onKeyDown, placeholder, readOnly, size} =
-      this.props;
-    return (
-      <input
-        ref={this.getRef}
-        type={type}
-        className={className || ''}
-        value={text}
-        onFocus={this.handleFocus}
-        onChange={this.handleChange}
-        onBlur={this.handleUpdate}
-        disabled={disable}
-        autoFocus={autoFocus}
-        onKeyPress={this.handleKeyPress}
-        onKeyDown={onKeyDown}
-        onWheel={this.handleWheel}
-        placeholder={placeholder}
-        readOnly={readOnly}
-        size={size}
-      />
-    );
-  }
-}
+  return (
+    <input
+      ref={inputRef}
+      type={type}
+      className={className || ''}
+      value={text}
+      onFocus={handleFocus}
+      onChange={handleChange}
+      onBlur={handleUpdate}
+      disabled={disable}
+      autoFocus={autoFocus}
+      onKeyDown={handleKeyDown}
+      onWheel={handleWheel}
+      placeholder={placeholder}
+      readOnly={readOnly}
+      size={size}
+    />
+  );
+};
 
 EditableText.propTypes = {
   // Called with input value on changes (as the user types)

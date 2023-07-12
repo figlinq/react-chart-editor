@@ -128,6 +128,8 @@ class EditorControls extends Component {
     const oldGraphDiv = structuredClone({layout: graphDiv.layout, data: graphDiv.data});
     let layoutDiff;
 
+    let {data: updatedData, layout: updatedLayout} = graphDiv;
+
     switch (type) {
       case EDITOR_ACTIONS.ADD_TRANSFORM:
       case EDITOR_ACTIONS.UPDATE_TRACES:
@@ -168,9 +170,7 @@ class EditorControls extends Component {
         if (afterUpdateTraces) {
           afterUpdateTraces(payload);
         }
-        if (onUpdate) {
-          onUpdate(graphDiv.data.slice(), graphDiv.layout, graphDiv._transitionData._frames);
-        }
+        updatedData = graphDiv.data.slice();
         break;
 
       case EDITOR_ACTIONS.ADD_ANNOTATION:
@@ -194,9 +194,7 @@ class EditorControls extends Component {
         if (afterUpdateLayout) {
           afterUpdateLayout(payload);
         }
-        if (onUpdate) {
-          onUpdate(graphDiv.data, {...graphDiv.layout}, graphDiv._transitionData._frames);
-        }
+        updatedLayout = {...graphDiv.layout};
         break;
 
       case EDITOR_ACTIONS.ADD_TRACE:
@@ -226,9 +224,7 @@ class EditorControls extends Component {
         if (afterAddTrace) {
           afterAddTrace(payload);
         }
-        if (onUpdate) {
-          onUpdate(graphDiv.data.slice(), graphDiv.layout, graphDiv._transitionData._frames);
-        }
+        updatedData = graphDiv.data.slice();
         break;
 
       case EDITOR_ACTIONS.RESTORE_TRACE:
@@ -251,9 +247,7 @@ class EditorControls extends Component {
         if (afterAddTrace) {
           afterAddTrace(payload);
         }
-        if (onUpdate) {
-          onUpdate(graphDiv.data.slice(), graphDiv.layout, graphDiv._transitionData._frames);
-        }
+        updatedData = graphDiv.data.slice();
         break;
 
       case EDITOR_ACTIONS.DELETE_TRACE:
@@ -271,9 +265,7 @@ class EditorControls extends Component {
           if (afterDeleteTrace) {
             afterDeleteTrace(payload);
           }
-          if (onUpdate) {
-            onUpdate(graphDiv.data.slice(), graphDiv.layout, graphDiv._transitionData._frames);
-          }
+          updatedData = graphDiv.data.slice();
         }
         break;
 
@@ -286,9 +278,7 @@ class EditorControls extends Component {
           if (afterDeleteAnnotation) {
             afterDeleteAnnotation(payload);
           }
-          if (onUpdate) {
-            onUpdate(graphDiv.data, {...graphDiv.layout}, graphDiv._transitionData._frames);
-          }
+          updatedLayout = {...graphDiv.layout};
         }
         break;
 
@@ -301,9 +291,7 @@ class EditorControls extends Component {
           if (afterDeleteShape) {
             afterDeleteShape(payload);
           }
-          if (onUpdate) {
-            onUpdate(graphDiv.data, {...graphDiv.layout}, graphDiv._transitionData._frames);
-          }
+          updatedLayout = {...graphDiv.layout};
         }
         break;
 
@@ -316,9 +304,7 @@ class EditorControls extends Component {
           if (afterDeleteImage) {
             afterDeleteImage(payload);
           }
-          if (onUpdate) {
-            onUpdate(graphDiv.data, {...graphDiv.layout}, graphDiv._transitionData._frames);
-          }
+          updatedLayout = {...graphDiv.layout};
         }
         break;
 
@@ -328,18 +314,14 @@ class EditorControls extends Component {
             payload.rangeselectorIndex,
             1
           );
-          if (onUpdate) {
-            onUpdate(graphDiv.data, {...graphDiv.layout}, graphDiv._transitionData._frames);
-          }
+          updatedLayout = {...graphDiv.layout};
         }
         break;
 
       case EDITOR_ACTIONS.DELETE_MAPBOXLAYER:
         if (isNumeric(payload.mapboxLayerIndex)) {
           graphDiv.layout[payload.mapboxId].layers.splice(payload.mapboxLayerIndex, 1);
-          if (onUpdate) {
-            onUpdate(graphDiv.data, {...graphDiv.layout}, graphDiv._transitionData._frames);
-          }
+          updatedLayout = {...graphDiv.layout};
         }
         break;
 
@@ -350,9 +332,7 @@ class EditorControls extends Component {
           } else {
             graphDiv.data[payload.traceIndex].transforms.splice(payload.transformIndex, 1);
           }
-          if (onUpdate) {
-            onUpdate(graphDiv.data.slice(), graphDiv.layout, graphDiv._transitionData._frames);
-          }
+          updatedData = graphDiv.data.slice();
         }
         break;
 
@@ -387,21 +367,19 @@ class EditorControls extends Component {
             move(graphDiv.layout[payload.mapboxId].layers);
           }
 
-          const updatedData = payload.path.startsWith('data')
-            ? graphDiv.data.slice()
-            : graphDiv.data;
-          const updatedLayout = payload.path.startsWith('layout')
+          updatedData = payload.path.startsWith('data') ? graphDiv.data.slice() : graphDiv.data;
+          updatedLayout = payload.path.startsWith('layout')
             ? {...graphDiv.layout}
             : graphDiv.layout;
-
-          if (onUpdate) {
-            onUpdate(updatedData, updatedLayout, graphDiv._transitionData._frames);
-          }
         }
         break;
 
       default:
         throw new Error(this.localize('must specify an action type to handleEditorUpdate'));
+    }
+
+    if (onUpdate) {
+      onUpdate(updatedData, updatedLayout, graphDiv._transitionData._frames);
     }
 
     console.log('layoutDiff', layoutDiff);
