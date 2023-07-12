@@ -25,11 +25,9 @@ export default class NumericInput extends Component {
   }
 
   getNumericInputClassName(value) {
-    return isNumeric(value) || value === ''
-      ? `numeric-input__number ${this.props.editableClassName ? this.props.editableClassName : ''}`
-      : `numeric-input__number +error ${
-          this.props.editableClassName ? this.props.editableClassName : ''
-        }`;
+    return `numeric-input__number ${this.props.editableClassName || ''} ${
+      !isNumeric(value) && value !== '' ? '+error' : ''
+    }`;
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {

@@ -3,47 +3,34 @@
 /**
  * Capitalize string
  */
-function capitalize(s) {
-  return !s ? '' : s.charAt(0).toUpperCase() + s.substring(1);
-}
+export const capitalize = (s) => (!s ? '' : s.charAt(0).toUpperCase() + s.substring(1));
 
 /**
  * "Safer" String.toLowerCase()
  */
-function lowerCase(str) {
-  return str.toLowerCase();
-}
+export const lowerCase = (str) => str.toLowerCase();
 
 /**
  * "Safer" String.toUpperCase()
  */
-function upperCase(str) {
-  return str.toUpperCase();
-}
+export const upperCase = (str) => str.toUpperCase();
 
 /**
  * Remove non-word chars.
  */
-function removeNonWord(str) {
-  return str.replace(/[^0-9a-zA-Z\xC0-\xFF \-]/g, '');
-}
+export const removeNonWord = (str) => str.replace(/[^0-9a-zA-Z\xC0-\xFF \-]/g, '');
 
 /**
  * Convert string to camelCase text.
  */
-function camelCase(string) {
-  return string
+export const camelCase = (string) =>
+  string
     .replace(/\-/g, ' ')
     .replace(/(\d)(?=(\d{1})+$)/g, '$1 ')
     .replace(/\s[a-z]/g, upperCase)
     .replace(/\s+/g, '')
     .replace(/^[A-Z]/g, lowerCase);
-}
 
-function pascalCase(str) {
-  return camelCase(str).replace(/^[a-z]/, upperCase);
-}
-
-export {capitalize, lowerCase, upperCase, removeNonWord, camelCase, pascalCase};
+export const pascalCase = (str) => camelCase(str).replace(/^[a-z]/, upperCase);
 
 /* eslint-enable */

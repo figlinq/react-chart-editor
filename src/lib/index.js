@@ -1,53 +1,53 @@
-import bem from './bem';
-import connectCartesianSubplotToLayout from './connectCartesianSubplotToLayout';
-import connectNonCartesianSubplotToLayout from './connectNonCartesianSubplotToLayout';
-import connectAnnotationToLayout from './connectAnnotationToLayout';
-import connectShapeToLayout from './connectShapeToLayout';
-import connectSliderToLayout from './connectSliderToLayout';
-import connectImageToLayout from './connectImageToLayout';
-import connectUpdateMenuToLayout from './connectUpdateMenuToLayout';
-import connectRangeSelectorToAxis from './connectRangeSelectorToAxis';
-import connectLayersToMapbox from './connectLayersToMapbox';
-import connectTransformToTrace from './connectTransformToTrace';
-import connectAggregationToTransform from './connectAggregationToTransform';
-import connectAxesToLayout from './connectAxesToLayout';
-import connectLayoutToPlot from './connectLayoutToPlot';
-import connectToContainer, {containerConnectedContextTypes} from './connectToContainer';
-import {computeTraceOptionsFromSchema} from './computeTraceOptionsFromSchema';
-import connectTraceToPlot from './connectTraceToPlot';
-import dereference from './dereference';
+export bem from './bem';
+export connectCartesianSubplotToLayout from './connectCartesianSubplotToLayout';
+export connectNonCartesianSubplotToLayout from './connectNonCartesianSubplotToLayout';
+export connectAnnotationToLayout from './connectAnnotationToLayout';
+export connectShapeToLayout from './connectShapeToLayout';
+export connectSliderToLayout from './connectSliderToLayout';
+export connectImageToLayout from './connectImageToLayout';
+export connectUpdateMenuToLayout from './connectUpdateMenuToLayout';
+export connectRangeSelectorToAxis from './connectRangeSelectorToAxis';
+export connectLayersToMapbox from './connectLayersToMapbox';
+export connectTransformToTrace from './connectTransformToTrace';
+export connectAggregationToTransform from './connectAggregationToTransform';
+export connectAxesToLayout from './connectAxesToLayout';
+export connectLayoutToPlot from './connectLayoutToPlot';
+export connectToContainer, {containerConnectedContextTypes} from './connectToContainer';
+export {computeTraceOptionsFromSchema} from './computeTraceOptionsFromSchema';
+export connectTraceToPlot from './connectTraceToPlot';
+export dereference from './dereference';
 import getAllAxes, {
   axisIdToAxisName,
   traceTypeToAxisType,
   getAxisTitle,
   getSubplotTitle,
 } from './getAllAxes';
-import localize, {localizeString} from './localize';
+export localize, {localizeString} from './localize';
 import tinyColor from 'tinycolor2';
-import unpackPlotProps, {
+export unpackPlotProps, {
   computeCustomConfigVisibility,
   hasValidCustomConfigVisibilityRules,
   isVisibleGivenCustomConfig,
 } from './unpackPlotProps';
-import walkObject, {isPlainObject} from './walkObject';
-import {traceTypeToPlotlyInitFigure, plotlyTraceToCustomTrace} from './customTraceType';
+export walkObject, {isPlainObject} from './walkObject';
+export {traceTypeToPlotlyInitFigure, plotlyTraceToCustomTrace} from './customTraceType';
 import * as PlotlyIcons from '@figlinq/plotly-icons';
-import striptags from './striptags';
+export striptags from './striptags';
 import {capitalize, lowerCase, upperCase, removeNonWord, camelCase, pascalCase} from './strings';
 import {getColorscale} from 'react-colorscales';
 import {templateString} from 'plotly.js/src/lib';
 import {SUBPLOT_TO_ATTR} from './constants';
 
-const TOO_LIGHT_FACTOR = 0.8;
+export const TOO_LIGHT_FACTOR = 0.8;
 
-const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
+export const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
 
-const getDisplayName = (WrappedComponent) =>
+export const getDisplayName = (WrappedComponent) =>
   WrappedComponent.displayName || WrappedComponent.name || 'Component';
 
-const tooLight = (color) => tinyColor(color).toHsl().l > TOO_LIGHT_FACTOR;
+export const tooLight = (color) => tinyColor(color).toHsl().l > TOO_LIGHT_FACTOR;
 
-const renderTraceIcon = (trace, prefix = 'Plot') => {
+export const renderTraceIcon = (trace, prefix = 'Plot') => {
   if (!trace) {
     return null;
   }
@@ -59,7 +59,7 @@ const renderTraceIcon = (trace, prefix = 'Plot') => {
   return PlotlyIcons[componentName] ? PlotlyIcons[componentName] : PlotlyIcons.PlotLineIcon;
 };
 
-const transpose = (originalArray) => {
+export const transpose = (originalArray) => {
   // if we want to transpose a uni dimensional array
   if (originalArray.every((a) => !Array.isArray(a))) {
     return originalArray.map((a) => [a]);
@@ -99,7 +99,7 @@ const transpose = (originalArray) => {
   return newArray;
 };
 
-const specialTableCase = (traceType, srcAttributePath) =>
+export const specialTableCase = (traceType, srcAttributePath) => {
   /* Just more user friendly
    * Table traces have many configuration options,
    * The below attributes can be 2d or 1d and will affect the plot differently
@@ -118,7 +118,7 @@ const specialTableCase = (traceType, srcAttributePath) =>
     'columnwidthsrc',
   ].some((a) => srcAttributePath.endsWith(a));
 
-const maybeTransposeData = (data, srcAttributePath, traceType) => {
+export const maybeTransposeData = (data, srcAttributePath, traceType) => {
   if (!data || (Array.isArray(data) && data.length === 0)) {
     return null;
   }
@@ -144,7 +144,7 @@ const maybeTransposeData = (data, srcAttributePath, traceType) => {
   return data;
 };
 
-const maybeAdjustSrc = (src, srcAttributePath, traceType, config) => {
+export const maybeAdjustSrc = (src, srcAttributePath, traceType, config) => {
   if (!src || (Array.isArray(src) && src.length === 0)) {
     return null;
   }
@@ -156,7 +156,7 @@ const maybeAdjustSrc = (src, srcAttributePath, traceType, config) => {
   return config && config.fromSrc ? config.fromSrc(src, traceType, srcAttributePath) : src;
 };
 
-const adjustColorscale = (colorscale, numberOfNeededColors, colorscaleType, config) => {
+export const adjustColorscale = (colorscale, numberOfNeededColors, colorscaleType, config) => {
   if (config?.repeat) {
     if (numberOfNeededColors < colorscale.length) {
       return colorscale.slice(0, numberOfNeededColors);
@@ -174,7 +174,7 @@ const adjustColorscale = (colorscale, numberOfNeededColors, colorscaleType, conf
   return getColorscale(colorscale, numberOfNeededColors, null, null, colorscaleType);
 };
 
-const getFullTrace = ({fullDataArrayPosition, traceIndexes}, {fullData, data}) => {
+export const getFullTrace = ({fullDataArrayPosition, traceIndexes}, {fullData, data}) => {
   let fullTrace = {};
   if (fullData && data) {
     if (fullDataArrayPosition) {
@@ -200,7 +200,7 @@ const getFullTrace = ({fullDataArrayPosition, traceIndexes}, {fullData, data}) =
   return fullTrace;
 };
 
-const isSubplotUsedAnywhereElse = (subplotType, subplotName, fullData, traceIndex) =>
+export const isSubplotUsedAnywhereElse = (subplotType, subplotName, fullData, traceIndex) =>
   fullData.some(
     (trace) =>
       (trace[SUBPLOT_TO_ATTR[subplotType].data] === subplotName ||
@@ -210,7 +210,7 @@ const isSubplotUsedAnywhereElse = (subplotType, subplotName, fullData, traceInde
       trace.index !== traceIndex
   );
 
-const itemsToBeGarbageCollected = (traceIndexToDelete, fullData) => {
+export const itemsToBeGarbageCollected = (traceIndexToDelete, fullData) => {
   const currentTrace = fullData?.[traceIndexToDelete];
 
   const subplotType = traceTypeToAxisType(currentTrace?.type);
@@ -240,7 +240,7 @@ const itemsToBeGarbageCollected = (traceIndexToDelete, fullData) => {
   return items;
 };
 
-const getParsedTemplateString = (originalString, context) => {
+export const getParsedTemplateString = (originalString, context) => {
   let text = originalString;
 
   if (originalString && context) {
@@ -251,57 +251,15 @@ const getParsedTemplateString = (originalString, context) => {
 };
 
 export {
-  adjustColorscale,
-  computeCustomConfigVisibility,
-  axisIdToAxisName,
-  bem,
-  camelCase,
-  capitalize,
-  clamp,
-  computeTraceOptionsFromSchema,
-  connectAggregationToTransform,
-  connectAnnotationToLayout,
-  connectAxesToLayout,
-  connectCartesianSubplotToLayout,
-  connectImageToLayout,
-  connectLayoutToPlot,
-  connectNonCartesianSubplotToLayout,
-  connectRangeSelectorToAxis,
-  connectLayersToMapbox,
-  connectShapeToLayout,
-  connectSliderToLayout,
-  connectToContainer,
-  connectTraceToPlot,
-  connectTransformToTrace,
-  connectUpdateMenuToLayout,
-  containerConnectedContextTypes,
-  dereference,
   getAllAxes,
-  getAxisTitle,
-  getDisplayName,
-  getFullTrace,
-  isSubplotUsedAnywhereElse,
-  itemsToBeGarbageCollected,
-  getSubplotTitle,
-  isPlainObject,
-  hasValidCustomConfigVisibilityRules,
-  localize,
-  localizeString,
-  lowerCase,
-  maybeAdjustSrc,
-  maybeTransposeData,
-  getParsedTemplateString,
-  pascalCase,
-  plotlyTraceToCustomTrace,
-  removeNonWord,
-  renderTraceIcon,
-  striptags,
-  tooLight,
+  axisIdToAxisName,
   traceTypeToAxisType,
-  traceTypeToPlotlyInitFigure,
-  transpose,
-  unpackPlotProps,
+  getAxisTitle,
+  getSubplotTitle,
+  capitalize,
+  lowerCase,
   upperCase,
-  isVisibleGivenCustomConfig,
-  walkObject,
+  removeNonWord,
+  camelCase,
+  pascalCase,
 };

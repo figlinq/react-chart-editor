@@ -105,8 +105,7 @@ class TraceSelector extends Component {
     ];
 
     const exampleOnClick =
-      chartHelp &&
-      chartHelp[props.fullValue]?.examplePlot &&
+      chartHelp?.[props.fullValue]?.examplePlot &&
       ((e) => {
         e.stopPropagation();
         chartHelp[props.fullValue].examplePlot();

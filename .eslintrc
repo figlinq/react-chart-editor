@@ -1,6 +1,7 @@
 {
   "extends": ["eslint:recommended", "prettier"],
   "parser": "@babel/eslint-parser",
+  "ignorePatterns": ["examples/demo/build/**"],
   "parserOptions": {
     "ecmaVersion": 13,
     "sourceType": "module",

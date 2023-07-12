@@ -53,9 +53,7 @@ export const UnconnectedTextPosition = (props, {localize: _}) => {
           if (value === 'simple') {
             props.updatePlot('middle center');
           } else {
-            props.updateContainer({
-              textpositionsrc: null,
-            });
+            props.updateContainer({textpositionsrc: null});
           }
         }}
       />
