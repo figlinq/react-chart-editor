@@ -7,20 +7,17 @@ import Button from '../widgets/Button';
 import {connectToContainer, traceTypeToAxisType, getSubplotTitle} from 'lib';
 import {PlotlySection} from 'components';
 
-const UnconnectedSingleSubplotCreator = (props, context) => {
+const UnconnectedSingleSubplotCreator = (
+  {attr, label, layoutAttr, fullContainer, updateContainer, options},
+  {fullData, fullLayout: {_subplots: subplots}, onUpdate}
+) => {
   const canAddSubplot = () => {
-    const currentAxisId = props.fullContainer[props.attr];
-    const currentTraceIndex = props.fullContainer.index;
-    return context.fullData.some(
-      (d) => d.index !== currentTraceIndex && d[props.attr] === currentAxisId
-    );
+    const currentAxisId = fullContainer[attr];
+    const currentTraceIndex = fullContainer.index;
+    return fullData.some((d) => d.index !== currentTraceIndex && d[attr] === currentAxisId);
   };
 
   const addAndUpdateSubplot = () => {
-    const {attr, layoutAttr, updateContainer} = props;
-    const {
-      fullLayout: {_subplots: subplots},
-    } = context;
     const lastSubplotNumber =
       Number(
         subplots[layoutAttr][subplots[layoutAttr].length - 1].split(
@@ -34,28 +31,24 @@ const UnconnectedSingleSubplotCreator = (props, context) => {
   };
 
   const updateSubplot = (update) => {
-    const currentSubplotId = props.fullContainer[SUBPLOT_TO_ATTR[props.layoutAttr].data];
-    let subplotToBeGarbageCollected = null;
+    const currentSubplotId = fullContainer[SUBPLOT_TO_ATTR[layoutAttr].data];
     // When we select another subplot, make sure no unused axes are left
-    if (
+    const subplotToBeGarbageCollected =
       currentSubplotId !== update &&
-      !context.fullData.some(
+      !fullData.some(
         (trace) =>
-          trace[SUBPLOT_TO_ATTR[props.layoutAttr].data] === currentSubplotId &&
-          trace.index !== props.fullContainer.index
+          trace[SUBPLOT_TO_ATTR[layoutAttr].data] === currentSubplotId &&
+          trace.index !== fullContainer.index
       )
-    ) {
-      subplotToBeGarbageCollected = currentSubplotId;
-    }
+        ? currentSubplotId
+        : null;
 
-    context.onUpdate({
+    onUpdate({
       type: EDITOR_ACTIONS.UPDATE_TRACES,
       payload: {
         subplotToBeGarbageCollected,
-        update: {
-          [props.attr]: update,
-        },
-        traceIndexes: [props.fullContainer.index],
+        update: {[attr]: update},
+        traceIndexes: [fullContainer.index],
       },
     });
   };
@@ -68,11 +61,11 @@ const UnconnectedSingleSubplotCreator = (props, context) => {
 
   return (
     <Dropdown
-      label={props.label}
-      attr={props.attr}
+      label={label}
+      attr={attr}
       clearable={false}
-      options={props.options}
-      updatePlot={(u) => updateSubplot(u)}
+      options={options}
+      updatePlot={updateSubplot}
       extraComponent={extraComponent}
     />
   );
@@ -89,28 +82,25 @@ UnconnectedSingleSubplotCreator.propTypes = {
 
 UnconnectedSingleSubplotCreator.contextTypes = {
   fullLayout: PropTypes.object,
-  data: PropTypes.array,
   fullData: PropTypes.array,
   onUpdate: PropTypes.func,
 };
 
 const SingleSubplotCreator = connectToContainer(UnconnectedSingleSubplotCreator);
 
-const UnconnectedSubplotCreator = (props, context) => {
-  const subplotType = traceTypeToAxisType(props.container.type);
+const UnconnectedSubplotCreator = ({container}, {data, fullLayout, setPanel, localize: _}) => {
+  const subplotType = traceTypeToAxisType(container.type);
 
   if (!['geo', 'mapbox', 'polar', 'gl3d', 'ternary'].some((t) => t === subplotType)) {
     return null;
   }
 
   const isFirstTraceOfAxisType =
-    context.data.filter((d) => traceTypeToAxisType(d.type) === subplotType).length === 1;
+    data.filter((d) => traceTypeToAxisType(d.type) === subplotType).length === 1;
 
   if (isFirstTraceOfAxisType) {
     return null;
   }
-
-  const {fullLayout, localize: _} = context;
 
   const getOptions = (subplotType) =>
     fullLayout._subplots[subplotType].map((subplotId) => ({
@@ -128,7 +118,7 @@ const UnconnectedSubplotCreator = (props, context) => {
       />
       <Info>
         {_('You can style and position your subplots in the ')}
-        <a onClick={() => context.setPanel('Structure', 'Subplots')}>{_('Subplots')}</a>
+        <a onClick={() => setPanel('Structure', 'Subplots')}>{_('Subplots')}</a>
         {_(' panel.')}
       </Info>
     </PlotlySection>
@@ -137,7 +127,6 @@ const UnconnectedSubplotCreator = (props, context) => {
 
 UnconnectedSubplotCreator.propTypes = {
   container: PropTypes.object,
-  fullContainer: PropTypes.object,
 };
 
 UnconnectedSubplotCreator.contextTypes = {

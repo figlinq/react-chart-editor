@@ -10,9 +10,7 @@ export const UnconnectedDualNumericFraction = (props) => {
   };
 
   const updatePlot2 = (value) => {
-    props.updateContainer({
-      [props.attr2]: props.percentage ? value / 100 : value,
-    });
+    props.updateContainer({[props.attr2]: props.percentage ? value / 100 : value});
   };
 
   const {percentage, multiValued, attr2, step, min, max} = props;

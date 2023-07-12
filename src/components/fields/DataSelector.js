@@ -72,9 +72,6 @@ export class UnconnectedDataSelector extends Component {
       return;
     }
 
-    const update = {};
-    let data;
-
     const adjustedValue =
       Array.isArray(value) &&
       value.length === 1 &&
@@ -82,18 +79,18 @@ export class UnconnectedDataSelector extends Component {
         ? value[0]
         : value;
 
-    if (Array.isArray(adjustedValue)) {
-      data = adjustedValue
-        .filter((v) => Array.isArray(this.dataSources[v]))
-        .map((v) => this.dataSources[v]);
-    } else {
-      data = this.dataSources[adjustedValue] || null;
-    }
+    const data = Array.isArray(adjustedValue)
+      ? adjustedValue
+          .filter((v) => Array.isArray(this.dataSources[v]))
+          .map((v) => this.dataSources[v])
+      : this.dataSources[adjustedValue] || null;
 
-    update[this.props.attr] = maybeTransposeData(data, this.srcAttr, this.props.container.type);
-    update[this.srcAttr] = maybeAdjustSrc(adjustedValue, this.srcAttr, this.props.container.type, {
-      fromSrc: this.context.srcConverters ? this.context.srcConverters.fromSrc : null,
-    });
+    const update = {
+      [this.props.attr]: maybeTransposeData(data, this.srcAttr, this.props.container.type),
+      [this.srcAttr]: maybeAdjustSrc(adjustedValue, this.srcAttr, this.props.container.type, {
+        fromSrc: this.context.srcConverters ? this.context.srcConverters.fromSrc : null,
+      }),
+    };
 
     if (this.props.container.type) {
       // this means we're at the top level of the trace

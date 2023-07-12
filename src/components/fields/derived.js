@@ -41,24 +41,19 @@ export const AxisAnchorDropdown = connectToContainer(UnconnectedDropdown, {
 });
 
 export const AxisOverlayDropdown = connectToContainer(UnconnectedDropdown, {
-  modifyPlotProps: (props, context, plotProps) => {
-    const {localize: _} = context;
+  modifyPlotProps: (props, {fullLayout, fullContainer, localize: _}, plotProps) => {
     let options = [];
 
     if (props.attr.startsWith('xaxis')) {
-      options = context.fullLayout._subplots.xaxis.map((axis) => {
-        return {
-          label: getAxisTitle(context.fullLayout[axisIdToAxisName(axis)]),
-          value: axis,
-        };
-      });
+      options = fullLayout._subplots.xaxis.map((axis) => ({
+        label: getAxisTitle(fullLayout[axisIdToAxisName(axis)]),
+        value: axis,
+      }));
     } else if (props.attr.startsWith('yaxis')) {
-      options = context.fullLayout._subplots.yaxis.map((axis) => {
-        return {
-          label: getAxisTitle(context.fullLayout[axisIdToAxisName(axis)]),
-          value: axis,
-        };
-      });
+      options = fullLayout._subplots.yaxis.map((axis) => ({
+        label: getAxisTitle(fullLayout[axisIdToAxisName(axis)]),
+        value: axis,
+      }));
     }
 
     options.unshift({label: _('None'), value: false});
@@ -66,11 +61,7 @@ export const AxisOverlayDropdown = connectToContainer(UnconnectedDropdown, {
     // filter out the current axisID, can't overlay over itself
     plotProps.options = options.filter(
       (option) =>
-        context.fullContainer &&
-        context.fullContainer.xaxis &&
-        context.fullContainer.yaxis &&
-        context.fullContainer.xaxis._id !== option.value &&
-        context.fullContainer.yaxis._id !== option.value
+        fullContainer?.xaxis?._id !== option.value && fullContainer?.yaxis?._id !== option.value
     );
 
     plotProps.clearable = false;
@@ -90,7 +81,7 @@ export const RangesliderVisible = connectToContainer(UnconnectedRadio, {
 
 export const AxisSide = connectToContainer(UnconnectedRadio, {
   modifyPlotProps: (props, context, plotProps) => {
-    const _ = context.localize;
+    const {localize: _} = context;
 
     if (plotProps.fullValue === 'left' || plotProps.fullValue === 'right') {
       plotProps.options = [
@@ -228,8 +219,7 @@ export const DTicks = connectToContainer(UnconnectedAxisRangeValue, {
   modifyPlotProps: (props, context, plotProps) => {
     const {fullContainer} = plotProps;
     if (
-      fullContainer &&
-      fullContainer._name &&
+      fullContainer?._name &&
       (fullContainer._name.startsWith('lat') || fullContainer._name.startsWith('lon'))
     ) {
       // don't mess with visibility on geo axes
@@ -246,14 +236,13 @@ export const DTicksInterval = connectToContainer(UnconnectedAxisInterval, {
   modifyPlotProps: (props, context, plotProps) => {
     const {fullContainer} = plotProps;
     if (
-      fullContainer &&
-      fullContainer._name &&
+      fullContainer?._name &&
       (fullContainer._name.startsWith('lat') || fullContainer._name.startsWith('lon'))
     ) {
       // don't mess with visibility on geo axes
       return plotProps;
     }
-    if (plotProps.isVisible && fullContainer && fullContainer.tickmode !== 'linear') {
+    if (plotProps.isVisible && fullContainer?.tickmode !== 'linear') {
       plotProps.isVisible = false;
     }
     return plotProps;
@@ -337,11 +326,7 @@ export const NumericReciprocal = connectToContainer(UnconnectedNumeric, {
     }
 
     plotProps.updatePlot = (v) => {
-      if (isNumeric(v)) {
-        updatePlot(1 / v);
-      } else {
-        updatePlot(v);
-      }
+      updatePlot(isNumeric(v) ? 1 / v : v);
     };
 
     plotProps.min = 0;
@@ -694,16 +679,12 @@ export const FillDropdown = connectToContainer(UnconnectedDropdown, {
 export const MapboxSourceArray = connectToContainer(Text, {
   modifyPlotProps: (props, context, plotProps) => {
     const {fullValue, updatePlot} = plotProps;
-    if (plotProps.fullValue && plotProps.fullValue.length > 0) {
+    if (plotProps?.fullValue?.length > 0) {
       plotProps.fullValue = fullValue[0];
     }
 
     plotProps.updatePlot = (v) => {
-      if (v.length) {
-        updatePlot([v]);
-      } else {
-        updatePlot([]);
-      }
+      updatePlot(v.length ? [v] : []);
     };
   },
 });
