@@ -379,18 +379,16 @@ class EditorControls extends Component {
     }
 
     if (onUpdate) {
-      onUpdate(updatedData, updatedLayout, graphDiv._transitionData._frames);
+      onUpdate(updatedData, updatedLayout, graphDiv._transitionData._frames, opType);
     }
 
     console.log('layoutDiff', layoutDiff);
 
-    if (opType === OPERATION_TYPE.UPDATE) {
-      actionBuffer.clearRedo();
-    }
-    actionBuffer[opType === OPERATION_TYPE.UNDO ? 'addToRedo' : 'addToUndo'](
+    actionBuffer.add(
       {type, payload: layoutDiff ? {...payload, update: layoutDiff} : payload},
       oldGraphDiv,
-      graphDiv
+      graphDiv,
+      opType
     );
   }
 
