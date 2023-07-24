@@ -12,18 +12,32 @@ const isAxisDomainUpdate = (payload) =>
   payload?.update && Object.keys(payload.update)?.every((k) => k.includes('domain'));
 const isHole = (payload) => payload?.update?.hole;
 
+const isRangeUpdate = (update) => update && Object.keys(update)?.every((k) => k.includes('range'));
+
+const skipRelayout = (update) =>
+  isRangeUpdate(update) ||
+  Object.keys(update)?.includes('dragmode') ||
+  Object.keys(update)?.includes('selections') ||
+  Object.keys(update)?.includes('scene.camera') ||
+  Object.keys(update)?.includes('autosize');
+
 export default class ActionBuffer {
-  constructor() {
+  constructor({graphDiv}) {
     if (ActionBuffer.instance) {
       return ActionBuffer.instance;
     }
     ActionBuffer.instance = this;
+
     this.undoStack = [];
     this.redoStack = [];
+
+    // Store the graphDiv layout after every action - needed for relayout undo
+    this.oldGraphDivLayout = structuredClone(graphDiv.layout);
+
     return this;
   }
 
-  reverseAction({type, payload}, oldGraphDiv, graphDiv, operationType) {
+  reverseAction({type, payload}, oldGraphDiv, graphDiv, operationType, optimizeSliders = true) {
     let action = {type: INVERSE_ACTIONS[type], payload: {}};
 
     switch (action.type) {
@@ -183,6 +197,7 @@ export default class ActionBuffer {
 
     // Optimization for sliders and other draggable UI - if action returns to same state as last undo, skip
     if (
+      optimizeSliders &&
       operationType === OPERATION_TYPE.UNDO &&
       action &&
       this.getLastUndo() &&
@@ -210,11 +225,30 @@ export default class ActionBuffer {
     if (currentOperationType === OPERATION_TYPE.UPDATE) {
       this.clearRedo();
     }
+    this.oldGraphDivLayout = structuredClone(graphDiv.layout);
     this[currentOperationType === OPERATION_TYPE.UNDO ? 'addToRedo' : 'addToUndo'](
       action,
       oldGraphDiv,
       graphDiv
     );
+  }
+
+  // Special case for relayout
+  addToUndoRelayout(update, graphDiv) {
+    // Range selection and a few other operations don't make it into layout, so no need to undo
+    if (!skipRelayout(update)) {
+      const undoAction = this.reverseAction(
+        {type: EDITOR_ACTIONS.UPDATE_LAYOUT, payload: {update}},
+        {layout: this.oldGraphDivLayout},
+        graphDiv,
+        OPERATION_TYPE.UNDO,
+        false // don't optimize away things like multiple consecutive title updates);
+      );
+      if (undoAction) {
+        this.undoStack.push(undoAction);
+      }
+    }
+    this.oldGraphDivLayout = structuredClone(graphDiv?.layout || {});
   }
 
   undoAvailable() {
