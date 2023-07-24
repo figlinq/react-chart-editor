@@ -29,8 +29,6 @@ import {ModalProvider} from 'components/containers';
 import {DEFAULT_FONTS} from 'lib/constants';
 import ActionBuffer from 'lib/actionBuffer';
 
-const actionBuffer = new ActionBuffer();
-
 class EditorControls extends Component {
   constructor(props, context) {
     super(props, context);
@@ -41,6 +39,8 @@ class EditorControls extends Component {
     if (this.props.plotly) {
       this.plotSchema = this.props.plotly.PlotSchema.get();
     }
+
+    this.actionBuffer = new ActionBuffer({graphDiv: this.props.graphDiv});
   }
 
   getChildContext() {
@@ -79,7 +79,7 @@ class EditorControls extends Component {
 
   undo() {
     console.log('undo');
-    const action = actionBuffer.undo();
+    const action = this.actionBuffer.undo();
     if (action) {
       this.handleUpdate(action, OPERATION_TYPE.UNDO);
     }
@@ -87,7 +87,7 @@ class EditorControls extends Component {
 
   redo() {
     console.log('redo');
-    const action = actionBuffer.redo();
+    const action = this.actionBuffer.redo();
     if (action) {
       this.handleUpdate(action, OPERATION_TYPE.REDO);
     }
@@ -384,7 +384,7 @@ class EditorControls extends Component {
 
     console.log('layoutDiff', layoutDiff);
 
-    actionBuffer.add(
+    this.actionBuffer.add(
       {type, payload: layoutDiff ? {...payload, update: layoutDiff} : payload},
       oldGraphDiv,
       graphDiv,
