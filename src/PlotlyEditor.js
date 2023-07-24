@@ -2,7 +2,10 @@ import {Component, forwardRef} from 'react';
 import createPlotComponent from 'react-plotly.js/factory';
 import EditorControls from './EditorControls';
 import PropTypes from 'prop-types';
+import ActionBuffer from 'lib/actionBuffer';
 import {DEFAULT_FONTS} from 'lib/constants';
+
+const actionBuffer = new ActionBuffer({graphDiv: {layout: {}}});
 
 class PlotlyEditor extends Component {
   constructor(props) {
@@ -10,6 +13,7 @@ class PlotlyEditor extends Component {
     this.state = {graphDiv: {}};
     this.PlotComponent = createPlotComponent(props.plotly);
     this.handleRender = this.handleRender.bind(this);
+    this.handleRelayout = this.handleRelayout.bind(this);
   }
 
   handleRender(fig, graphDiv) {
@@ -17,6 +21,10 @@ class PlotlyEditor extends Component {
     if (this.props.onRender) {
       this.props.onRender(graphDiv.data, graphDiv.layout, graphDiv._transitionData._frames);
     }
+
+  handleRelayout(update) {
+    console.log('handleRelayout update:', JSON.stringify(update));
+    actionBuffer.addToUndoRelayout(update, this.state?.graphDiv || {});
   }
 
   render() {
@@ -38,7 +46,7 @@ class PlotlyEditor extends Component {
             srcConverters={this.props.srcConverters}
             makeDefaultTrace={this.props.makeDefaultTrace}
             glByDefault={this.props.glByDefault}
-            mapBoxAccess={Boolean(this.props.config && this.props.config.mapboxAccessToken)}
+            mapBoxAccess={Boolean(this.props.config?.mapboxAccessToken)}
             fontOptions={this.props.fontOptions}
             chartHelp={this.props.chartHelp}
             customConfig={this.props.customConfig}
@@ -56,6 +64,7 @@ class PlotlyEditor extends Component {
             debug={this.props.debug}
             onInitialized={this.handleRender}
             onUpdate={this.handleRender}
+            onRelayout={this.handleRelayout}
             style={{width: '100%', height: '100%'}}
             divId={this.props.divId}
           />
