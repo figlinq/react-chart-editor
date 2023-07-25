@@ -3,12 +3,13 @@ import {Children, cloneElement, Component} from 'react';
 import SidebarGroup from './sidebar/SidebarGroup';
 import {bem} from 'lib';
 import sortMenu from 'lib/sortMenu';
+import {Button} from './widgets';
 
 class PanelMenuWrapper extends Component {
   constructor(props) {
     super(props);
 
-    const opts = this.computeMenuOptions(props);
+    const opts = this.computeMenuOptions(props.children, props.menuPanelOrder);
     const firstSidebarGroup = opts.filter((o) => o.panels)[0];
 
     this.state = {
@@ -31,10 +32,9 @@ class PanelMenuWrapper extends Component {
   }
 
   renderSection(section, i) {
-    if (section.type && (section.type.plotly_editor_traits || {}).sidebar_element) {
-      return cloneElement(section, {key: i});
-    }
-    return (
+    return section.type && (section.type.plotly_editor_traits || {}).sidebar_element ? (
+      cloneElement(section, {key: i})
+    ) : (
       <SidebarGroup
         key={i}
         selectedGroup={this.state.group}
@@ -46,8 +46,7 @@ class PanelMenuWrapper extends Component {
     );
   }
 
-  computeMenuOptions(props) {
-    const {children, menuPanelOrder} = props;
+  computeMenuOptions(children, menuPanelOrder) {
     const sections = [];
     const groupLookup = {};
     let groupIndex;
@@ -82,11 +81,21 @@ class PanelMenuWrapper extends Component {
   }
 
   render() {
-    const menuOpts = this.computeMenuOptions(this.props);
+    const {children, menuPanelOrder} = this.props;
+    const {showUndoRedo, undo, redo} = this.context;
+    const menuOpts = this.computeMenuOptions(children, menuPanelOrder);
 
     return (
       <div className={bem('editor_controls', 'wrapper')}>
-        <div className={bem('sidebar')}>{menuOpts.map(this.renderSection)}</div>
+        <div className={bem('sidebar')}>
+          {showUndoRedo && (
+            <div className={bem('sidebar', 'buttons')}>
+              <Button label="Undo" onClick={() => undo()} />
+              <Button label="Redo" onClick={redo} />
+            </div>
+          )}
+          {menuOpts.map(this.renderSection)}
+        </div>
         {Children.map(this.props.children, (child, i) =>
           child === null ||
           this.state.group !== child.props.group ||
@@ -106,6 +115,12 @@ PanelMenuWrapper.propTypes = {
 
 PanelMenuWrapper.childContextTypes = {
   setPanel: PropTypes.func,
+};
+
+PanelMenuWrapper.contextTypes = {
+  showUndoRedo: PropTypes.bool,
+  undo: PropTypes.func,
+  redo: PropTypes.func,
 };
 
 export default PanelMenuWrapper;

@@ -55,10 +55,25 @@ button {
 
   // If a button is placed in the sidebar,
   // it should grow to the width of the available space.
-  @at-root .sidebar .button {
-    width: calc(100% - var(--spacing-base-unit));
-    margin-left: var(--spacing-half-unit);
-    margin-right: var(--spacing-half-unit);
+  @at-root .sidebar {
+    .button {
+      width: calc(100% - var(--spacing-base-unit));
+      margin-left: var(--spacing-half-unit);
+      margin-right: var(--spacing-half-unit);
+      height: 26px;
+    }
+    .sidebar__buttons {
+      .button {
+        margin-left: 0;
+        margin-right: 0;
+        width: 50%;
+        padding: 2px;
+        border-radius: 0;
+        .button__label {
+          padding-left: 2px;
+        }
+      }
+    }
   }
 
   &--no-text {

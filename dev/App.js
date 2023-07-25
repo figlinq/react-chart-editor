@@ -11,8 +11,8 @@ import dataSources from './dataSources';
 // https://github.com/plotly/react-chart-editor#mapbox-access-tokens
 import ACCESS_TOKENS from '../accessTokens';
 
-// Have actual buttons for testing undo/redo
-const SHOW_UNDO_REDO = true;
+// Have actual buttons outside the component for testing undo/redo
+const SHOW_EXTERNAL_UNDO_REDO = false;
 
 // import {customConfigTest} from '../src/__stories__';
 
@@ -172,7 +172,7 @@ class App extends Component {
   render() {
     return (
       <div className="app">
-        {SHOW_UNDO_REDO && (
+        {SHOW_EXTERNAL_UNDO_REDO && (
           <div>
             <Button
               label="Undo"
@@ -203,6 +203,7 @@ class App extends Component {
           debug
           advancedTraceTypeSelector
           showFieldTooltips
+          // showUndoRedo
           // glByDefault
           // traceTypesConfig={traceTypesConfig}
           // makeDefaultTrace={() => ({type: 'scattergl', mode: 'markers'})}
