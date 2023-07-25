@@ -50,6 +50,7 @@ class PlotlyEditor extends Component {
             fontOptions={this.props.fontOptions}
             chartHelp={this.props.chartHelp}
             customConfig={this.props.customConfig}
+            showUndoRedo={this.props.showUndoRedo}
           >
             {this.props.children}
           </EditorControls>
@@ -103,6 +104,7 @@ PlotlyEditor.propTypes = {
   fontOptions: PropTypes.array,
   chartHelp: PropTypes.object,
   customConfig: PropTypes.object,
+  showUndoRedo: PropTypes.bool,
   innerRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
 };
 

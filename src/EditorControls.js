@@ -74,6 +74,9 @@ class EditorControls extends Component {
       hasValidCustomConfigVisibilityRules: hasValidCustomConfigVisibilityRules(
         this.props.customConfig
       ),
+      showUndoRedo: this.props.showUndoRedo,
+      undo: this.undo.bind(this),
+      redo: this.redo.bind(this),
     };
   }
 
@@ -402,8 +405,7 @@ class EditorControls extends Component {
         }
       >
         <ModalProvider>
-          {this.props.graphDiv &&
-            this.props.graphDiv._fullLayout &&
+          {this.props.graphDiv?._fullLayout &&
             (this.props.children ? this.props.children : <DefaultEditor />)}
         </ModalProvider>
       </div>
@@ -449,6 +451,7 @@ EditorControls.propTypes = {
   fontOptions: PropTypes.array,
   chartHelp: PropTypes.object,
   customConfig: PropTypes.object,
+  showUndoRedo: PropTypes.bool,
 };
 
 EditorControls.defaultProps = {
@@ -492,6 +495,9 @@ EditorControls.childContextTypes = {
   chartHelp: PropTypes.object,
   customConfig: PropTypes.object,
   hasValidCustomConfigVisibilityRules: PropTypes.bool,
+  showUndoRedo: PropTypes.bool,
+  undo: PropTypes.func,
+  redo: PropTypes.func,
 };
 
 export default EditorControls;
