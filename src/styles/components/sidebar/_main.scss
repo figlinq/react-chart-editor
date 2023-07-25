@@ -160,4 +160,9 @@
     height: 50px;
     margin: 10px;
   }
+  &__buttons {
+    display: flex;
+    flex-direction: row;
+    width: var(--sidebar-width);
+  }
 }
