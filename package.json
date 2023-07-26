@@ -46,7 +46,7 @@
     "react-dropzone": "^14.2.3",
     "react-plotly.js": "^2.6.0",
     "react-resizable-rotatable-draggable": "^0.2.0",
-    "react-select": "^5.7.3",
+    "react-select": "^5.7.4",
     "react-tabs": "^4.2.1",
     "styled-components": "^5.3.8",
     "tinycolor2": "^1.6.0"
@@ -92,7 +92,7 @@
     "postcss-cli": "10.1.0",
     "postcss-combine-duplicated-selectors": "10.0.3",
     "postcss-import": "15.1.0",
-    "postcss-preset-env": "9.0.0",
+    "postcss-preset-env": "9.1.0",
     "prettier": "2.8.8",
     "react": "16.14.0",
     "react-ace": "7.0.5",
