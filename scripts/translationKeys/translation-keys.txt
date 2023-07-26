@@ -442,7 +442,7 @@ Lower Bound                                                                     
 Lower ≤ Target < Upper                                                                                                                                                       // /components/fields/FilterOperation.js:20
 Lower ≤ Target ≤ Upper                                                                                                                                                       // /components/fields/FilterOperation.js:18
 Manual                                                                                                                                                                       // /default_panels/GraphSubplotsPanel.js:45
-Map                                                                                                                                                                          // /lib/constants.js:138
+Map                                                                                                                                                                          // /lib/constants.js:139
 Map Frame                                                                                                                                                                    // /default_panels/StyleMapsPanel.js:195
 Map Positioning                                                                                                                                                              // /default_panels/StyleMapsPanel.js:31
 Map Projection                                                                                                                                                               // /default_panels/StyleMapsPanel.js:49
@@ -563,7 +563,7 @@ Point Cloud                                                                     
 Point Opacity                                                                                                                                                                // /default_panels/StyleTracesPanel.js:417
 Points                                                                                                                                                                       // /components/containers/TraceMarkerSection.js:23
 Points and Fills                                                                                                                                                             // /components/fields/derived.js:766
-Polar                                                                                                                                                                        // /lib/constants.js:140
+Polar                                                                                                                                                                        // /lib/constants.js:141
 Polar Bar                                                                                                                                                                    // /lib/computeTraceOptionsFromSchema.js:135
 Polar Scatter                                                                                                                                                                // /lib/computeTraceOptionsFromSchema.js:127
 Polar Scatter GL                                                                                                                                                             // /lib/computeTraceOptionsFromSchema.js:131
@@ -618,7 +618,7 @@ Scatter                                                                         
 Scatter Carpet                                                                                                                                                               // /lib/traceTypes.js:268
 Scatter GL                                                                                                                                                                   // /lib/computeTraceOptionsFromSchema.js:83
 Scatterplot Matrix                                                                                                                                                           // /lib/traceTypes.js:263
-Scene                                                                                                                                                                        // /lib/constants.js:136
+Scene                                                                                                                                                                        // /lib/constants.js:137
 Second                                                                                                                                                                       // /default_panels/StyleAxesPanel.js:402
 Seconds                                                                                                                                                                      // /components/fields/AxisInterval.js:164
 See a basic example.                                                                                                                                                         // /components/widgets/TraceTypeSelector.js:129
@@ -733,7 +733,7 @@ Tick Markers                                                                    
 Tick Spacing                                                                                                                                                                 // /default_panels/StyleAxesPanel.js:296
 Tick spacing                                                                                                                                                                 // /default_panels/StyleColorbarsPanel.js:217
 Ticks                                                                                                                                                                        // /default_panels/StyleColorbarsPanel.js:225
-Tile Map                                                                                                                                                                     // /lib/constants.js:139
+Tile Map                                                                                                                                                                     // /lib/constants.js:140
 Tile Source                                                                                                                                                                  // /default_panels/StyleMapsPanel.js:17
 Tile Source URL                                                                                                                                                              // /default_panels/StyleMapsPanel.js:28
 Timescale Buttons                                                                                                                                                            // /default_panels/StyleAxesPanel.js:378

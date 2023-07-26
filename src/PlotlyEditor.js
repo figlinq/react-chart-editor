@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import ActionBuffer from 'lib/actionBuffer';
 import {DEFAULT_FONTS} from 'lib/constants';
 
-const actionBuffer = new ActionBuffer({graphDiv: {layout: {}}});
+const actionBuffer = new ActionBuffer();
 
 class PlotlyEditor extends Component {
   constructor(props) {
@@ -21,6 +21,7 @@ class PlotlyEditor extends Component {
     if (this.props.onRender) {
       this.props.onRender(graphDiv.data, graphDiv.layout, graphDiv._transitionData._frames);
     }
+  }
 
   handleRelayout(update) {
     console.log('handleRelayout update:', JSON.stringify(update));
