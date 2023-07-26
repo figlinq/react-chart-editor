@@ -36,8 +36,8 @@ export striptags from './striptags';
 import {capitalize, lowerCase, upperCase, removeNonWord, camelCase, pascalCase} from './strings';
 import {getColorscale} from 'react-colorscales';
 import {templateString} from 'plotly.js/src/lib';
-import {SUBPLOT_TO_ATTR} from './constants';
-import ActionBuffer from './actionBuffer';
+import {SUBPLOT_TO_ATTR, OPERATION_TYPE} from './constants';
+export ActionBuffer from './actionBuffer';
 
 export const TOO_LIGHT_FACTOR = 0.8;
 
@@ -263,4 +263,6 @@ export {
   removeNonWord,
   camelCase,
   pascalCase,
+  OPERATION_TYPE,
+  EDITOR_ACTIONS,
 };

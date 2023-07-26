@@ -40,7 +40,7 @@ class EditorControls extends Component {
       this.plotSchema = this.props.plotly.PlotSchema.get();
     }
 
-    this.actionBuffer = new ActionBuffer({graphDiv: this.props.graphDiv});
+    this.actionBuffer = new ActionBuffer(this.props.graphDiv);
   }
 
   getChildContext() {
