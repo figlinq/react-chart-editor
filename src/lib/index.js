@@ -37,6 +37,7 @@ import {capitalize, lowerCase, upperCase, removeNonWord, camelCase, pascalCase} 
 import {getColorscale} from 'react-colorscales';
 import {templateString} from 'plotly.js/src/lib';
 import {SUBPLOT_TO_ATTR} from './constants';
+import ActionBuffer from './actionBuffer';
 
 export const TOO_LIGHT_FACTOR = 0.8;
 
