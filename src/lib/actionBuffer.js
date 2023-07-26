@@ -22,19 +22,21 @@ const skipRelayout = (update) =>
   Object.keys(update)?.includes('autosize');
 
 export default class ActionBuffer {
-  constructor({graphDiv}) {
-    if (ActionBuffer.instance) {
-      return ActionBuffer.instance;
+  // Sometimes we call constructor just to get access to the singleton instance, so arg is optional
+  constructor(graphDiv = null) {
+    if (!ActionBuffer.instance) {
+      this.undoStack = [];
+      this.redoStack = [];
+      ActionBuffer.instance = this;
     }
-    ActionBuffer.instance = this;
 
-    this.undoStack = [];
-    this.redoStack = [];
+    if (graphDiv) {
+      // Stores the graphDiv layout after every action - needed for relayout undo
+      // The last call will have the latest graphDiv before modifications.
+      ActionBuffer.instance.oldGraphDivLayout = structuredClone(graphDiv.layout);
+    }
 
-    // Store the graphDiv layout after every action - needed for relayout undo
-    this.oldGraphDivLayout = structuredClone(graphDiv.layout);
-
-    return this;
+    return ActionBuffer.instance;
   }
 
   reverseAction({type, payload}, oldGraphDiv, graphDiv, operationType, optimizeSliders = true) {
@@ -234,6 +236,7 @@ export default class ActionBuffer {
   }
 
   // Special case for relayout
+  // graphDiv we need here is the "new" graphDiv after the action
   addToUndoRelayout(update, graphDiv) {
     // Range selection and a few other operations don't make it into layout, so no need to undo
     if (!skipRelayout(update)) {
