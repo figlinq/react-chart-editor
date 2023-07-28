@@ -27,7 +27,7 @@ import nestedProperty from 'plotly.js/src/lib/nested_property';
 import {categoryLayout, traceTypes} from 'lib/traceTypes';
 import {ModalProvider} from 'components/containers';
 import {DEFAULT_FONTS} from 'lib/constants';
-import ActionBuffer from 'lib/actionBuffer';
+import History from 'lib/history';
 
 class EditorControls extends Component {
   constructor(props, context) {
@@ -40,7 +40,7 @@ class EditorControls extends Component {
       this.plotSchema = this.props.plotly.PlotSchema.get();
     }
 
-    this.actionBuffer = new ActionBuffer(this.props.graphDiv);
+    this.history = new History(this.props.graphDiv);
   }
 
   getChildContext() {
@@ -82,7 +82,7 @@ class EditorControls extends Component {
 
   undo() {
     console.log('undo');
-    const action = this.actionBuffer.undo();
+    const action = this.history.undo();
     if (action) {
       this.handleUpdate(action, OPERATION_TYPE.UNDO);
     }
@@ -90,7 +90,7 @@ class EditorControls extends Component {
 
   redo() {
     console.log('redo');
-    const action = this.actionBuffer.redo();
+    const action = this.history.redo();
     if (action) {
       this.handleUpdate(action, OPERATION_TYPE.REDO);
     }
@@ -387,7 +387,7 @@ class EditorControls extends Component {
 
     console.log('layoutDiff', layoutDiff);
 
-    this.actionBuffer.add(
+    this.history.add(
       {type, payload: layoutDiff ? {...payload, update: layoutDiff} : payload},
       oldGraphDiv,
       graphDiv,

@@ -2,10 +2,10 @@ import {Component, forwardRef} from 'react';
 import createPlotComponent from 'react-plotly.js/factory';
 import EditorControls from './EditorControls';
 import PropTypes from 'prop-types';
-import ActionBuffer from 'lib/actionBuffer';
 import {DEFAULT_FONTS} from 'lib/constants';
+import History from 'lib/history';
 
-const actionBuffer = new ActionBuffer();
+const history = new History();
 
 class PlotlyEditor extends Component {
   constructor(props) {
@@ -25,7 +25,7 @@ class PlotlyEditor extends Component {
 
   handleRelayout(update) {
     console.log('handleRelayout update:', JSON.stringify(update));
-    actionBuffer.addToUndoRelayout(update, this.state?.graphDiv || {});
+    history.addToUndoRelayout(update, this.state?.graphDiv || {});
   }
 
   render() {

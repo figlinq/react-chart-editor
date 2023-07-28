@@ -21,22 +21,22 @@ const skipRelayout = (update) =>
   Object.keys(update)?.includes('scene.camera') ||
   Object.keys(update)?.includes('autosize');
 
-export default class ActionBuffer {
+export default class History {
   // Sometimes we call constructor just to get access to the singleton instance, so arg is optional
   constructor(graphDiv = null) {
-    if (!ActionBuffer.instance) {
+    if (!History.instance) {
       this.undoStack = [];
       this.redoStack = [];
-      ActionBuffer.instance = this;
+      History.instance = this;
     }
 
     if (graphDiv) {
       // Stores the graphDiv layout after every action - needed for relayout undo
       // The last call will have the latest graphDiv before modifications.
-      ActionBuffer.instance.oldGraphDivLayout = structuredClone(graphDiv.layout);
+      History.instance.oldGraphDivLayout = structuredClone(graphDiv.layout);
     }
 
-    return ActionBuffer.instance;
+    return History.instance;
   }
 
   reverseAction({type, payload}, oldGraphDiv, graphDiv, operationType, optimizeSliders = true) {
