@@ -52,6 +52,8 @@ class PlotlyEditor extends Component {
             chartHelp={this.props.chartHelp}
             customConfig={this.props.customConfig}
             showUndoRedo={this.props.showUndoRedo}
+            onAddToUndo={this.props.onAddToUndo}
+            onAddToRedo={this.props.onAddToRedo}
           >
             {this.props.children}
           </EditorControls>
@@ -107,6 +109,8 @@ PlotlyEditor.propTypes = {
   customConfig: PropTypes.object,
   showUndoRedo: PropTypes.bool,
   innerRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
+  onAddToUndo: PropTypes.func,
+  onAddToRedo: PropTypes.func,
 };
 
 PlotlyEditor.defaultProps = {
