@@ -23,7 +23,7 @@ const skipRelayout = (update) =>
 
 export default class History {
   // Sometimes we call constructor just to get access to the singleton instance, so arg is optional
-  constructor(graphDiv = null) {
+  constructor(graphDiv = null, onAddToUndo = null, onAddToRedo = null) {
     if (!History.instance) {
       this.undoStack = [];
       this.redoStack = [];
@@ -34,6 +34,13 @@ export default class History {
       // Stores the graphDiv layout after every action - needed for relayout undo
       // The last call will have the latest graphDiv before modifications.
       History.instance.oldGraphDivLayout = structuredClone(graphDiv.layout);
+    }
+
+    if (onAddToUndo) {
+      History.instance.onAddToUndo = onAddToUndo;
+    }
+    if (onAddToRedo) {
+      History.instance.onAddToRedo = onAddToRedo;
     }
 
     return History.instance;
@@ -215,11 +222,18 @@ export default class History {
     const undoAction = this.reverseAction(action, oldGraphDiv, graphDiv, OPERATION_TYPE.UNDO);
     if (undoAction) {
       this.undoStack.push(undoAction);
+      if (this.onAddToUndo) {
+        this.onAddToUndo(undoAction);
+      }
     }
   }
 
   addToRedo(action, oldGraphDiv, graphDiv) {
-    this.redoStack.push(this.reverseAction(action, oldGraphDiv, graphDiv, OPERATION_TYPE.REDO));
+    const redoAction = this.reverseAction(action, oldGraphDiv, graphDiv, OPERATION_TYPE.REDO);
+    this.redoStack.push(redoAction);
+    if (this.onAddToRedo) {
+      this.onAddToRedo(redoAction);
+    }
   }
 
   // Add to undo or redo based on current operation type
@@ -249,6 +263,9 @@ export default class History {
       );
       if (undoAction) {
         this.undoStack.push(undoAction);
+        if (this.onAddToUndo) {
+          this.onAddToUndo(undoAction);
+        }
       }
     }
     this.oldGraphDivLayout = structuredClone(graphDiv?.layout || {});

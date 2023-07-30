@@ -33,14 +33,14 @@ class EditorControls extends Component {
   constructor(props, context) {
     super(props, context);
 
-    this.localize = (key) => localizeString(this.props.dictionaries || {}, this.props.locale, key);
+    this.localize = (key) => localizeString(props.dictionaries || {}, props.locale, key);
 
     // we only need to compute this once.
-    if (this.props.plotly) {
-      this.plotSchema = this.props.plotly.PlotSchema.get();
+    if (props.plotly) {
+      this.plotSchema = props.plotly.PlotSchema.get();
     }
 
-    this.history = new History(this.props.graphDiv);
+    this.history = new History(props.graphDiv, props.onAddToUndo, props.onAddToRedo);
   }
 
   getChildContext() {
@@ -382,7 +382,7 @@ class EditorControls extends Component {
     }
 
     if (onUpdate) {
-      onUpdate(updatedData, updatedLayout, graphDiv._transitionData._frames, opType);
+      onUpdate(updatedData, updatedLayout, graphDiv._transitionData._frames);
     }
 
     console.log('layoutDiff', layoutDiff);
@@ -452,6 +452,8 @@ EditorControls.propTypes = {
   chartHelp: PropTypes.object,
   customConfig: PropTypes.object,
   showUndoRedo: PropTypes.bool,
+  onAddToUndo: PropTypes.func,
+  onAddToRedo: PropTypes.func,
 };
 
 EditorControls.defaultProps = {
