@@ -46,8 +46,14 @@ export default class History {
     return History.instance;
   }
 
-  reverseAction({type, payload}, oldGraphDiv, graphDiv, operationType, optimizeSliders = true) {
-    let action = {type: INVERSE_ACTIONS[type], payload: {}};
+  reverseAction({type, payload, canBeOptimizedAway}, oldGraphDiv, graphDiv, operationType) {
+    let action = {
+      type: INVERSE_ACTIONS[type],
+      payload: {},
+      // canBeOptimizedAway: if true, this action can be optimized away if it returns to the same state as last undo
+      // inherit it from the action being reversed
+      canBeOptimizedAway,
+    };
 
     switch (action.type) {
       case EDITOR_ACTIONS.ADD_TRACE: {
@@ -125,7 +131,13 @@ export default class History {
           action.payload = {
             update,
           };
-        } else if (isAxisDomainUpdate(payload) && isAxisDomainUpdate(this.getLastUndo()?.payload)) {
+        } else if (
+          operationType === OPERATION_TYPE.UNDO &&
+          action.canBeOptimizedAway &&
+          this.getLastUndo()?.canBeOptimizedAway &&
+          isAxisDomainUpdate(payload) &&
+          isAxisDomainUpdate(this.getLastUndo()?.payload)
+        ) {
           // Are we undoing axis domain update? skip.
           // This is a workaround for too many undo actions being created for subplot draggable UI
           action = null;
@@ -206,10 +218,10 @@ export default class History {
 
     // Optimization for sliders and other draggable UI - if action returns to same state as last undo, skip
     if (
-      optimizeSliders &&
       operationType === OPERATION_TYPE.UNDO &&
       action &&
       this.getLastUndo() &&
+      this.getLastUndo().canBeOptimizedAway &&
       isEmpty(diff(action, this.getLastUndo()))
     ) {
       console.log('skipping undo action');
@@ -229,7 +241,12 @@ export default class History {
   }
 
   addToRedo(action, oldGraphDiv, graphDiv) {
-    const redoAction = this.reverseAction(action, oldGraphDiv, graphDiv, OPERATION_TYPE.REDO);
+    const redoAction = this.reverseAction(
+      {...action, canBeOptimizedAway: false},
+      oldGraphDiv,
+      graphDiv,
+      OPERATION_TYPE.REDO
+    );
     this.redoStack.push(redoAction);
     if (this.onAddToRedo) {
       this.onAddToRedo(redoAction);
@@ -237,13 +254,13 @@ export default class History {
   }
 
   // Add to undo or redo based on current operation type
-  add(action, oldGraphDiv, graphDiv, currentOperationType) {
+  add(action, oldGraphDiv, graphDiv, currentOperationType, optimizeUndoAction = true) {
     if (currentOperationType === OPERATION_TYPE.UPDATE) {
       this.clearRedo();
     }
     this.oldGraphDivLayout = structuredClone(graphDiv.layout);
     this[currentOperationType === OPERATION_TYPE.UNDO ? 'addToRedo' : 'addToUndo'](
-      action,
+      {...action, optimizeUndoAction},
       oldGraphDiv,
       graphDiv
     );
@@ -255,11 +272,11 @@ export default class History {
     // Range selection and a few other operations don't make it into layout, so no need to undo
     if (!skipRelayout(update)) {
       const undoAction = this.reverseAction(
-        {type: EDITOR_ACTIONS.UPDATE_LAYOUT, payload: {update}},
+        // don't optimize away things like multiple consecutive title updates)
+        {type: EDITOR_ACTIONS.UPDATE_LAYOUT, payload: {update}, canBeOptimizedAway: false},
         {layout: this.oldGraphDivLayout},
         graphDiv,
-        OPERATION_TYPE.UNDO,
-        false // don't optimize away things like multiple consecutive title updates);
+        OPERATION_TYPE.UNDO
       );
       if (undoAction) {
         this.undoStack.push(undoAction);
@@ -284,7 +301,8 @@ export default class History {
   }
 
   undo() {
-    return this.undoAvailable() ? this.undoStack.pop() : null;
+    // we don't want actions to be optimized away once the user undoes/redoes them
+    return this.undoAvailable() ? {...this.undoStack.pop(), canBeOptimizedAway: false} : null;
   }
 
   getLastUndo() {
@@ -292,6 +310,6 @@ export default class History {
   }
 
   redo() {
-    return this.redoAvailable() ? this.redoStack.pop() : null;
+    return this.redoAvailable() ? {...this.redoStack.pop(), canBeOptimizedAway: false} : null;
   }
 }

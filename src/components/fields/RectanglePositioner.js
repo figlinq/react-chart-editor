@@ -56,7 +56,7 @@ const UnconnectedRectanglePositioner = (
       payload[attrs.y[1]] = snap(y1);
     }
 
-    updateContainer(payload);
+    updateContainer(payload, true);
   };
 
   if (!fullContainer?.xaxis?.overlaying && !fullContainer?.yaxis?.overlaying) {

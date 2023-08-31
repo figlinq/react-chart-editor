@@ -29,11 +29,8 @@ const AnnotationAccordion = (
       const annotationIndex = Array.isArray(layout.annotations) ? layout.annotations.length : 0;
       if (updateContainer) {
         updateContainer(
-          {
-            [`annotations[${annotationIndex}]`]: {
-              text: _('new text'),
-            },
-          },
+          {[`annotations[${annotationIndex}]`]: {text: _('new text')}},
+          false,
           EDITOR_ACTIONS.ADD_ANNOTATION
         );
       }
