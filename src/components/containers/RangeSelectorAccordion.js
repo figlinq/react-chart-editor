@@ -41,9 +41,8 @@ const RangeSelectorAccordion = ({children}, {fullContainer, layout, localize: _}
           : 0;
 
         updateContainer(
-          {
-            [`rangeselector.buttons[${rangeselectorIndex}]`]: {},
-          },
+          {[`rangeselector.buttons[${rangeselectorIndex}]`]: {}},
+          false,
           EDITOR_ACTIONS.ADD_RANGESELECTOR
         );
       }

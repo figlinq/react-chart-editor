@@ -78,7 +78,7 @@ export default function connectTraceToPlot(WrappedComponent) {
       return this.childContext;
     }
 
-    updateTrace(update, type = EDITOR_ACTIONS.UPDATE_TRACES) {
+    updateTrace(update, canBeOptimizedAway, type = EDITOR_ACTIONS.UPDATE_TRACES) {
       const {traceIndexes, fullDataArrayPosition} = this.props;
       const {fullData, onUpdate} = this.context;
 
@@ -98,6 +98,7 @@ export default function connectTraceToPlot(WrappedComponent) {
                 traceIndexes: [traceIndexes[i]],
                 splitTraceGroup: splitTraceGroup ? splitTraceGroup[i] : null,
               },
+              canBeOptimizedAway,
             });
           });
         } else if (splitTraceGroup && !containsAnSrc) {
@@ -109,6 +110,7 @@ export default function connectTraceToPlot(WrappedComponent) {
                 traceIndexes: [traceIndexes[i]],
                 splitTraceGroup: splitTraceGroup ? splitTraceGroup[i] : null,
               },
+              canBeOptimizedAway,
             });
           });
         } else {
@@ -118,6 +120,7 @@ export default function connectTraceToPlot(WrappedComponent) {
               update,
               traceIndexes,
             },
+            canBeOptimizedAway,
           });
         }
       }

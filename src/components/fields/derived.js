@@ -265,11 +265,11 @@ const numericFractionModifyPlotProps = (props, context, plotProps) => {
     plotProps.fullValue = Math.round((100 * (fullValue - min)) / (max - min));
   }
 
-  plotProps.updatePlot = (v) => {
+  plotProps.updatePlot = (v, optimizeUndoAction) => {
     if (isNumeric(v)) {
-      updatePlot((v / 100) * (max - min) + min);
+      updatePlot((v / 100) * (max - min) + min, optimizeUndoAction);
     } else {
-      updatePlot(v);
+      updatePlot(v, optimizeUndoAction);
     }
   };
   plotProps.max = 100;

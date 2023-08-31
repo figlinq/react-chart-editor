@@ -144,9 +144,9 @@ export default function unpackPlotProps(props, context) {
     description = attrMeta.description;
   }
 
-  const updatePlot = (v) => {
+  const updatePlot = (v, optimizeUndoAction = false) => {
     if (updateContainer) {
-      updateContainer({[props.attr]: v});
+      updateContainer({[props.attr]: v}, optimizeUndoAction);
     }
   };
 
