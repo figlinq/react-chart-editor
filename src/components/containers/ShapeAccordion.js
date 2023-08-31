@@ -34,7 +34,7 @@ const ShapeAccordion = ({canAdd, children, canReorder}, {layout: {shapes = []}, 
       };
 
       if (updateContainer) {
-        updateContainer({[key]: value}, EDITOR_ACTIONS.ADD_SHAPE);
+        updateContainer({[key]: value}, false, EDITOR_ACTIONS.ADD_SHAPE);
       }
     },
   };

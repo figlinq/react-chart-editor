@@ -133,7 +133,7 @@ export default function connectAxesToLayout(WrappedComponent) {
         }
       }
 
-      this.context.updateContainer(newUpdate, type);
+      this.context.updateContainer(newUpdate, false, type);
     }
 
     render() {

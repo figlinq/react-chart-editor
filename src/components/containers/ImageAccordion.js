@@ -35,7 +35,7 @@ const ImageAccordion = ({canAdd, children, canReorder}, {layout: {images = []}, 
       };
 
       if (updateContainer) {
-        updateContainer({[key]: value}, EDITOR_ACTIONS.ADD_IMAGE);
+        updateContainer({[key]: value}, false, EDITOR_ACTIONS.ADD_IMAGE);
       }
     },
   };

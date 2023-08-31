@@ -102,12 +102,7 @@ const TransformAccordion = (props, context) => {
               payload.styles = [];
             }
 
-            updateContainer(
-              {
-                [key]: payload,
-              },
-              EDITOR_ACTIONS.ADD_TRANSFORM
-            );
+            updateContainer({[key]: payload}, false, EDITOR_ACTIONS.ADD_TRANSFORM);
           }
         },
       };

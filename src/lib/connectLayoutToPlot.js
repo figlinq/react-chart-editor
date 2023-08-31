@@ -9,15 +9,18 @@ export default function connectLayoutToPlot(WrappedComponent) {
     getChildContext() {
       const {layout, fullLayout, plotly, onUpdate} = this.context;
 
-      const updateContainer = (update, type = EDITOR_ACTIONS.UPDATE_LAYOUT) => {
+      const updateContainer = (
+        update,
+        canBeOptimizedAway = false,
+        type = EDITOR_ACTIONS.UPDATE_LAYOUT
+      ) => {
         if (!onUpdate) {
           return;
         }
         onUpdate({
           type,
-          payload: {
-            update,
-          },
+          payload: {update},
+          canBeOptimizedAway,
         });
       };
 

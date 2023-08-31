@@ -96,7 +96,7 @@ class EditorControls extends Component {
     }
   }
 
-  handleUpdate({type, payload}, opType = OPERATION_TYPE.UPDATE) {
+  handleUpdate({type, payload, canBeOptimizedAway = false}, opType = OPERATION_TYPE.UPDATE) {
     const {
       graphDiv,
       beforeUpdateTraces,
@@ -121,7 +121,7 @@ class EditorControls extends Component {
 
     console.log(
       'handleUpdate',
-      {type, payload},
+      {type, payload, canBeOptimizedAway},
       'graphDiv.data',
       graphDiv.data,
       'graphDiv.layout',
@@ -388,7 +388,11 @@ class EditorControls extends Component {
     console.log('layoutDiff', layoutDiff);
 
     this.history.add(
-      {type, payload: layoutDiff ? {...payload, update: layoutDiff} : payload},
+      {
+        type,
+        payload: layoutDiff ? {...payload, update: layoutDiff} : payload,
+        canBeOptimizedAway,
+      },
       oldGraphDiv,
       graphDiv,
       opType
