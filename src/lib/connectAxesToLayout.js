@@ -108,7 +108,7 @@ export default function connectAxesToLayout(WrappedComponent) {
       this.setState({axesTarget});
     }
 
-    updateContainer(update, type) {
+    updateContainer(update, optimizeUndoAction, type) {
       const newUpdate = {};
       const {axesTarget} = this.state;
 
@@ -133,7 +133,7 @@ export default function connectAxesToLayout(WrappedComponent) {
         }
       }
 
-      this.context.updateContainer(newUpdate, false, type);
+      this.context.updateContainer(newUpdate, optimizeUndoAction, type);
     }
 
     render() {
