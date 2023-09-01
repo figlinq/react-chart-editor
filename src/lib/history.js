@@ -3,19 +3,19 @@ import isNumeric from 'fast-isnumeric';
 import nestedProperty from 'plotly.js/src/lib/nested_property';
 import {EDITOR_ACTIONS, INVERSE_ACTIONS, OPERATION_TYPE} from './constants';
 
-const isEmpty = (obj) => !obj || Object.keys(obj).length === 0;
+const arraysEqual = (a, b) =>
+  a.length !== b.length ? false : a.every((value, index) => value === b[index]);
 
 // Get index from a string like 'annotations[0]'
 const extractIndex = (arrayString) => parseInt(arrayString.match(/\[(\d+)\]/)[1], 10);
 
-const isAxisDomainUpdate = (payload) =>
-  payload?.update && Object.keys(payload.update)?.every((k) => k.includes('domain'));
-const isHole = (payload) => payload?.update?.hole;
+const sameAction = (oldPayload, newPayload) => {
+  const sameTrace =
+    (!oldPayload.traceIndexes && !newPayload.traceIndex) ||
+    arraysEqual(oldPayload.traceIndexes, newPayload.traceIndexes);
+  const sameAttrs = arraysEqual(Object.keys(oldPayload.update), Object.keys(newPayload.update));
 
-const sameListOfAttrs = (oldPayload, newPayload) => {
-  const oldAttrs = Object.keys(oldPayload.update);
-  const newAttrs = Object.keys(newPayload.update);
-  return oldAttrs.length === newAttrs.length && oldAttrs.every((attr) => newAttrs.includes(attr));
+  return sameTrace && sameAttrs;
 };
 
 const isRangeUpdate = (update) => update && Object.keys(update)?.every((k) => k.includes('range'));
@@ -53,7 +53,7 @@ export default class History {
   }
 
   reverseAction({type, payload, canBeOptimizedAway}, oldGraphDiv, graphDiv, operationType) {
-    let action = {
+    const action = {
       type: INVERSE_ACTIONS[type],
       payload: {},
       // canBeOptimizedAway: if true, this action can be optimized away if it returns to the same state as last undo
@@ -62,15 +62,17 @@ export default class History {
     };
     const lastUndoAction = this.getLastUndo();
 
-    // Optimization for sliders and other draggable UI. RectanglePositioner stuff (isAxisDomainUpdate) is handled separately
+    // Optimization for sliders and other draggable UI.
+    // TODO: need to fork react-resizable-rotatable-draggable to make this work well. Extend it with onEnd events.
     if (
       operationType === OPERATION_TYPE.UNDO &&
-      action.canBeOptimizedAway &&
       lastUndoAction?.canBeOptimizedAway &&
-      !(isAxisDomainUpdate(payload) && type === EDITOR_ACTIONS.UPDATE_LAYOUT) &&
-      sameListOfAttrs(payload, lastUndoAction?.payload)
+      sameAction(payload, lastUndoAction?.payload)
     ) {
       console.log('skipping undo action');
+      if (!action.canBeOptimizedAway) {
+        lastUndoAction.canBeOptimizedAway = false;
+      }
       return null;
     }
 
@@ -89,9 +91,8 @@ export default class History {
         break;
       }
       case EDITOR_ACTIONS.DELETE_TRACE: {
-        const traceIndex = !payload ? graphDiv.data.length - 1 : payload.traceIndexes[0];
         action.payload = {
-          traceIndexes: [traceIndex || 0],
+          traceIndexes: [(payload ? payload.traceIndexes[0] : graphDiv.data.length - 1) || 0],
         };
         break;
       }
@@ -113,32 +114,14 @@ export default class History {
         break;
       }
       case EDITOR_ACTIONS.UPDATE_TRACES: {
-        // Are we undoing axis domain update on Pie chart? skip.
-        // This is a workaround for too many undo actions being created for subplot draggable UI
-        if (
-          ((isAxisDomainUpdate(payload) && isAxisDomainUpdate(lastUndoAction?.payload)) ||
-            (isHole(payload) && isHole(lastUndoAction?.payload))) &&
-          payload.traceIndexes[0] === lastUndoAction?.payload.traceIndexes[0]
-        ) {
-          action = null;
-        } else {
-          const update = {};
-          for (const attr in payload.update) {
-            if (payload.update.hasOwnProperty(attr)) {
-              update[attr] = nestedProperty(oldGraphDiv.data[payload.traceIndexes[0]], attr).get();
-            }
-          }
-          // If all attrs in the action are same as in oldGraphDiv, skip
-          if (isEmpty(diff(update, payload.update))) {
-            console.log('Empty trace update - skip');
-            action = null;
-          } else {
-            action.payload = {
-              traceIndexes: payload.traceIndexes,
-              update,
-            };
-          }
-        }
+        const update = {};
+        Object.keys(payload.update).forEach((attr) => {
+          update[attr] = nestedProperty(oldGraphDiv.data[payload.traceIndexes[0]], attr).get();
+        });
+        action.payload = {
+          traceIndexes: payload.traceIndexes,
+          update,
+        };
         break;
       }
       case EDITOR_ACTIONS.UPDATE_LAYOUT: {
@@ -150,31 +133,13 @@ export default class History {
           action.payload = {
             update,
           };
-        } else if (
-          operationType === OPERATION_TYPE.UNDO &&
-          action.canBeOptimizedAway &&
-          lastUndoAction?.canBeOptimizedAway &&
-          isAxisDomainUpdate(payload) &&
-          isAxisDomainUpdate(lastUndoAction?.payload)
-        ) {
-          // Are we undoing axis domain update? skip.
-          // This is a workaround for too many undo actions being created for subplot draggable UI
-          action = null;
         } else {
-          for (const attr in payload.update) {
-            if (payload.update.hasOwnProperty(attr)) {
-              update[attr] = nestedProperty(oldGraphDiv.layout, attr).get();
-            }
-          }
-          // If all attrs in the action are same as in oldGraphDiv, skip
-          if (isEmpty(diff(update, payload.update))) {
-            console.log('Empty layout update - skip');
-            action = null;
-          } else {
-            action.payload = {
-              update,
-            };
-          }
+          Object.keys(payload.update).forEach((attr) => {
+            update[attr] = nestedProperty(oldGraphDiv.layout, attr).get();
+          });
+          action.payload = {
+            update,
+          };
         }
         break;
       }
