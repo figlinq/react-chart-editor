@@ -1,10 +1,10 @@
+import Slider from '@figlinq/react-rangeslider';
+import {mdiMenuDown, mdiMenuUp} from '@mdi/js';
+import Icon from '@mdi/react';
 import EditableText from './EditableText';
 import {Component} from 'react';
 import PropTypes from 'prop-types';
 import isNumeric from 'fast-isnumeric';
-import Slider from '@appigram/react-rangeslider';
-import Icon from '@mdi/react';
-import {mdiMenuDown, mdiMenuUp} from '@mdi/js';
 
 export const UP_ARROW = 38;
 export const DOWN_ARROW = 40;
@@ -63,15 +63,12 @@ export default class NumericInput extends Component {
     this.setState({value, numericInputClassName: this.getNumericInputClassName(value)});
   }
 
-  updateValue(newValue) {
-    const {max, min, integerOnly} = this.props;
+  updateValue(newValue, optimizeUndoAction = false) {
+    const {max, min, integerOnly, value, onUpdate} = this.props;
     let updatedValue = newValue;
 
     if (updatedValue === '') {
-      this.setState({
-        value: this.props.value,
-        numericInputClassName: this.getNumericInputClassName(this.props.value),
-      });
+      this.setState({value, numericInputClassName: this.getNumericInputClassName(value)});
       return;
     }
 
@@ -98,7 +95,7 @@ export default class NumericInput extends Component {
       updatedValue = Math.min(max, updatedValue);
     }
 
-    this.props.onUpdate(updatedValue);
+    onUpdate(updatedValue, optimizeUndoAction);
   }
 
   incrementValue(direction) {
@@ -163,7 +160,8 @@ export default class NumericInput extends Component {
         max={this.props.max}
         step={this.props.step}
         value={parseFloat(this.state.value)}
-        onChange={this.updateValue}
+        onChange={(value) => this.updateValue(value, true)}
+        onChangeComplete={(value) => this.updateValue(value, false)}
         tooltip={false}
       />
     );
