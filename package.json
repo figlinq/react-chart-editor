@@ -26,7 +26,7 @@
     "test:watch": "jest --watch"
   },
   "dependencies": {
-    "@appigram/react-rangeslider": "^2.2.19",
+    "@figlinq/react-rangeslider": "^3.0.0",
     "@figlinq/plotly-icons": "^3.0.1",
     "@hello-pangea/color-picker": "^3.2.2",
     "@mdi/js": "^7.2.96",

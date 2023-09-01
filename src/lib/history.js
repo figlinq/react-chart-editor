@@ -12,6 +12,12 @@ const isAxisDomainUpdate = (payload) =>
   payload?.update && Object.keys(payload.update)?.every((k) => k.includes('domain'));
 const isHole = (payload) => payload?.update?.hole;
 
+const sameListOfAttrs = (oldPayload, newPayload) => {
+  const oldAttrs = Object.keys(oldPayload.update);
+  const newAttrs = Object.keys(newPayload.update);
+  return oldAttrs.length === newAttrs.length && oldAttrs.every((attr) => newAttrs.includes(attr));
+};
+
 const isRangeUpdate = (update) => update && Object.keys(update)?.every((k) => k.includes('range'));
 
 const skipRelayout = (update) =>
@@ -54,6 +60,19 @@ export default class History {
       // inherit it from the action being reversed
       canBeOptimizedAway,
     };
+    const lastUndoAction = this.getLastUndo();
+
+    // Optimization for sliders and other draggable UI. RectanglePositioner stuff (isAxisDomainUpdate) is handled separately
+    if (
+      operationType === OPERATION_TYPE.UNDO &&
+      action.canBeOptimizedAway &&
+      lastUndoAction?.canBeOptimizedAway &&
+      !(isAxisDomainUpdate(payload) && type === EDITOR_ACTIONS.UPDATE_LAYOUT) &&
+      sameListOfAttrs(payload, lastUndoAction?.payload)
+    ) {
+      console.log('skipping undo action');
+      return null;
+    }
 
     switch (action.type) {
       case EDITOR_ACTIONS.ADD_TRACE: {
@@ -97,9 +116,9 @@ export default class History {
         // Are we undoing axis domain update on Pie chart? skip.
         // This is a workaround for too many undo actions being created for subplot draggable UI
         if (
-          ((isAxisDomainUpdate(payload) && isAxisDomainUpdate(this.getLastUndo()?.payload)) ||
-            (isHole(payload) && isHole(this.getLastUndo()?.payload))) &&
-          payload.traceIndexes[0] === this.getLastUndo()?.payload.traceIndexes[0]
+          ((isAxisDomainUpdate(payload) && isAxisDomainUpdate(lastUndoAction?.payload)) ||
+            (isHole(payload) && isHole(lastUndoAction?.payload))) &&
+          payload.traceIndexes[0] === lastUndoAction?.payload.traceIndexes[0]
         ) {
           action = null;
         } else {
@@ -134,9 +153,9 @@ export default class History {
         } else if (
           operationType === OPERATION_TYPE.UNDO &&
           action.canBeOptimizedAway &&
-          this.getLastUndo()?.canBeOptimizedAway &&
+          lastUndoAction?.canBeOptimizedAway &&
           isAxisDomainUpdate(payload) &&
-          isAxisDomainUpdate(this.getLastUndo()?.payload)
+          isAxisDomainUpdate(lastUndoAction?.payload)
         ) {
           // Are we undoing axis domain update? skip.
           // This is a workaround for too many undo actions being created for subplot draggable UI
@@ -212,21 +231,11 @@ export default class History {
       'reverse action created:',
       action,
       'previous action:',
-      this.getLastUndo(),
-      diff(action, this.getLastUndo())
+      lastUndoAction,
+      'diff:',
+      diff(action, lastUndoAction)
     );
 
-    // Optimization for sliders and other draggable UI - if action returns to same state as last undo, skip
-    if (
-      operationType === OPERATION_TYPE.UNDO &&
-      action &&
-      this.getLastUndo() &&
-      this.getLastUndo().canBeOptimizedAway &&
-      isEmpty(diff(action, this.getLastUndo()))
-    ) {
-      console.log('skipping undo action');
-      action = null;
-    }
     return action;
   }
 
