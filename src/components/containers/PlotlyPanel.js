@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import {Children, Component, cloneElement} from 'react';
 import update from 'immutability-helper';
 import {bem} from 'lib';
-import {EmbedIconIcon} from '@figlinq/plotly-icons';
+import {EmbedIcon} from '@figlinq/plotly-icons';
 
 export class Panel extends Component {
   constructor(props) {
@@ -72,7 +72,7 @@ export class Panel extends Component {
     const {localize: _} = this.context;
 
     return hasError ? (
-      <PanelEmpty icon={EmbedIconIcon} heading={_('Well this is embarrassing.')}>
+      <PanelEmpty icon={EmbedIcon} heading={_('Well this is embarrassing.')}>
         <p>{_('This panel could not be displayed due to an error.')}</p>
       </PanelEmpty>
     ) : (

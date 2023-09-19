@@ -1,7 +1,8 @@
+import {mdiArrowCollapse, mdiArrowExpand, mdiPlus} from '@mdi/js';
+import Icon from '@mdi/react';
 import Button from 'components/widgets/Button';
 import PropTypes from 'prop-types';
 import {useState} from 'react';
-import {PlusIcon, ResizeUpIcon, ResizeDownIcon} from '@figlinq/plotly-icons';
 
 const PanelHeader = ({children, addAction, allowCollapse, toggleFolds, hasOpen}, context) => {
   const [addPanelOpen, setAddPanelOpen] = useState(false);
@@ -22,15 +23,15 @@ const PanelHeader = ({children, addAction, allowCollapse, toggleFolds, hasOpen},
         {allowCollapse && (
           <div className="panel__header__collapse" onClick={toggleFolds}>
             {hasOpen ? (
-              <span>
-                <ResizeDownIcon />
+              <>
+                <Icon path={mdiArrowCollapse} />
                 {_('Collapse All')}
-              </span>
+              </>
             ) : (
-              <span>
-                <ResizeUpIcon />
+              <>
+                <Icon path={mdiArrowExpand} />
                 {_('Expand All')}
-              </span>
+              </>
             )}
           </div>
         )}
@@ -43,7 +44,7 @@ const PanelHeader = ({children, addAction, allowCollapse, toggleFolds, hasOpen},
               onClick={
                 Array.isArray(addAction.handler) ? togglePanel : () => addAction.handler(context)
               }
-              icon={<PlusIcon />}
+              icon={mdiPlus}
               label={addAction.label}
             />
             {addPanelOpen && (

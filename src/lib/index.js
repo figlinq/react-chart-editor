@@ -39,20 +39,17 @@ import {templateString} from 'plotly.js/src/lib';
 
 const TOO_LIGHT_FACTOR = 0.8;
 
-function clamp(value, min, max) {
-  return Math.max(min, Math.min(max, value));
-}
+const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
 
-function getDisplayName(WrappedComponent) {
-  return WrappedComponent.displayName || WrappedComponent.name || 'Component';
-}
+const getDisplayName = (WrappedComponent) =>
+  WrappedComponent.displayName || WrappedComponent.name || 'Component';
 
-function tooLight(color) {
+const tooLight = (color) => {
   const hslColor = tinyColor(color).toHsl();
   return hslColor.l > TOO_LIGHT_FACTOR;
-}
+};
 
-function renderTraceIcon(trace, prefix = 'Plot') {
+const renderTraceIcon = (trace, prefix = 'Plot') => {
   if (!trace) {
     return null;
   }
@@ -62,9 +59,9 @@ function renderTraceIcon(trace, prefix = 'Plot') {
   )}Icon`;
 
   return PlotlyIcons[componentName] ? PlotlyIcons[componentName] : PlotlyIcons.PlotLineIcon;
-}
+};
 
-function transpose(originalArray) {
+const transpose = (originalArray) => {
   // if we want to transpose a uni dimensional array
   if (originalArray.every((a) => !Array.isArray(a))) {
     return originalArray.map((a) => [a]);
@@ -102,9 +99,9 @@ function transpose(originalArray) {
   }
 
   return newArray;
-}
+};
 
-const specialTableCase = (traceType, srcAttributePath) => {
+const specialTableCase = (traceType, srcAttributePath) =>
   /* Just more user friendly
    * Table traces have many configuration options,
    * The below attributes can be 2d or 1d and will affect the plot differently
@@ -114,19 +111,16 @@ const specialTableCase = (traceType, srcAttributePath) => {
    * 1d arrays affect columns
    * 2d arrays affect rows within each column
    */
-  return (
-    traceType === 'table' &&
-    [
-      'header.valuessrc',
-      'header.font.colorsrc',
-      'header.font.sizesrc',
-      'header.fill.colorsrc',
-      'columnwidthsrc',
-    ].some((a) => srcAttributePath.endsWith(a))
-  );
-};
+  traceType === 'table' &&
+  [
+    'header.valuessrc',
+    'header.font.colorsrc',
+    'header.font.sizesrc',
+    'header.fill.colorsrc',
+    'columnwidthsrc',
+  ].some((a) => srcAttributePath.endsWith(a));
 
-function maybeTransposeData(data, srcAttributePath, traceType) {
+const maybeTransposeData = (data, srcAttributePath, traceType) => {
   if (!data || (Array.isArray(data) && data.length === 0)) {
     return null;
   }
@@ -150,9 +144,9 @@ function maybeTransposeData(data, srcAttributePath, traceType) {
   }
 
   return data;
-}
+};
 
-function maybeAdjustSrc(src, srcAttributePath, traceType, config) {
+const maybeAdjustSrc = (src, srcAttributePath, traceType, config) => {
   if (!src || (Array.isArray(src) && src.length === 0)) {
     return null;
   }
@@ -162,9 +156,9 @@ function maybeAdjustSrc(src, srcAttributePath, traceType, config) {
   }
 
   return config && config.fromSrc ? config.fromSrc(src, traceType, srcAttributePath) : src;
-}
+};
 
-function adjustColorscale(colorscale, numberOfNeededColors, colorscaleType, config) {
+const adjustColorscale = (colorscale, numberOfNeededColors, colorscaleType, config) => {
   if (config && config.repeat) {
     if (numberOfNeededColors < colorscale.length) {
       return colorscale.slice(0, numberOfNeededColors);
@@ -180,9 +174,9 @@ function adjustColorscale(colorscale, numberOfNeededColors, colorscaleType, conf
   }
 
   return getColorscale(colorscale, numberOfNeededColors, null, null, colorscaleType);
-}
+};
 
-function getFullTrace(props, context) {
+const getFullTrace = (props, context) => {
   let fullTrace = {};
   if (context.fullData && context.data) {
     if (props.fullDataArrayPosition) {
@@ -207,9 +201,9 @@ function getFullTrace(props, context) {
     }
   }
   return fullTrace;
-}
+};
 
-function getParsedTemplateString(originalString, context) {
+const getParsedTemplateString = (originalString, context) => {
   let text = originalString;
 
   if (originalString && context) {
@@ -217,7 +211,7 @@ function getParsedTemplateString(originalString, context) {
   }
 
   return text === '' && originalString ? originalString : text;
-}
+};
 
 export {
   adjustColorscale,

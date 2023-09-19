@@ -1,7 +1,8 @@
 import {Component} from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import {CarretDownIcon} from '@figlinq/plotly-icons';
+import Icon from '@mdi/react';
+import {mdiMenuDown} from '@mdi/js';
 
 export default class SymbolSelector extends Component {
   constructor(props) {
@@ -100,7 +101,7 @@ export default class SymbolSelector extends Component {
         <div className={toggleClass} onClick={this.togglePanel}>
           <span className="symbol-selector__toggle_option">{this.renderActiveOption()}</span>
           <span>
-            <CarretDownIcon className="symbol-selector__toggle__caret" />
+            <Icon path={mdiMenuDown} className="symbol-selector__toggle__caret" />
           </span>
         </div>
         {isOpen && this.renderOptions()}

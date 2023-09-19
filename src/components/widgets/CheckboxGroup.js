@@ -1,7 +1,8 @@
+import {mdiCheck} from '@mdi/js';
+import Icon from '@mdi/react';
 import {Component} from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import {CheckIcon} from '@figlinq/plotly-icons';
 
 class CheckboxGroup extends Component {
   constructor(props) {
@@ -41,7 +42,7 @@ class CheckboxGroup extends Component {
           >
             {option.checked && (
               <div className={checkClass}>
-                <CheckIcon />
+                <Icon path={mdiCheck} />
               </div>
             )}
           </div>

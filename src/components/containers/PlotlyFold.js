@@ -1,8 +1,9 @@
+import {mdiChevronDown, mdiClose} from '@mdi/js';
+import Icon from '@mdi/react';
 import FoldEmpty from './FoldEmpty';
 import PropTypes from 'prop-types';
 import {Children, Component} from 'react';
 import classnames from 'classnames';
-import {CloseIcon, AngleDownIcon} from '@figlinq/plotly-icons';
 import {unpackPlotProps, containerConnectedContextTypes, striptags} from 'lib';
 
 export class Fold extends Component {
@@ -30,115 +31,96 @@ export class Fold extends Component {
       foldInfo,
       toggleFold,
       hideHeader,
-      icon: Icon,
+      icon: PlotlyIcon,
       messageIfEmpty,
       name,
       canMoveUp,
       canMoveDown,
     } = this.props;
 
-    const contentClass = classnames('fold__content', {
-      'fold__content--noheader': hideHeader,
-    });
-
-    const headerClass = classnames('fold__top', {
-      'fold__top--open': !folded,
-    });
-
-    const arrowClass = classnames('fold__top__arrow', {
-      'fold__top__arrow--open': !folded,
-    });
-
-    const arrowDownIcon = (
-      <div className={arrowClass}>
-        <div className="fold__top__arrow__wrapper">
-          <AngleDownIcon />
-        </div>
-      </div>
-    );
-
-    const icon = Icon ? <Icon className="fold__top__icon" /> : null;
-
-    const deleteButton =
-      canDelete && typeof deleteContainer === 'function' ? (
-        <div
-          className="fold__top__delete js-fold__delete"
-          onClick={(e) => {
-            e.stopPropagation();
-            deleteContainer(foldInfo);
-          }}
-        >
-          <CloseIcon />
-        </div>
-      ) : null;
-
-    const movingControls = (canMoveDown || canMoveUp) && (
-      <div className="fold__top__moving-controls">
-        <span
-          className={`fold__top__moving-controls--up${canMoveUp ? '' : '--disabled'}`}
-          onClick={(e) => {
-            // prevents fold toggle to happen when clicking on moving arrow controls
-            e.stopPropagation();
-
-            if (canMoveUp) {
-              if (!moveContainer || typeof moveContainer !== 'function') {
-                throw new Error('moveContainer must be a function');
-              }
-              moveContainer('up');
-            }
-          }}
-        >
-          <AngleDownIcon />
-        </span>
-        <span
-          className={`fold__top__moving-controls--down${canMoveDown ? '' : '--disabled'}`}
-          onClick={(e) => {
-            // prevents fold toggle to happen when clicking on moving arrow controls
-            e.stopPropagation();
-            if (canMoveDown) {
-              if (!moveContainer || typeof moveContainer !== 'function') {
-                throw new Error('moveContainer must be a function');
-              }
-              moveContainer('down');
-            }
-          }}
-        >
-          <AngleDownIcon />
-        </span>
-      </div>
-    );
-
-    const foldHeader = !hideHeader && (
-      <div className={headerClass} onClick={toggleFold}>
-        <div className="fold__top__arrow-title">
-          {arrowDownIcon}
-          {icon}
-          <div className="fold__top__title">{striptags(name)}</div>
-        </div>
-        {movingControls}
-        {deleteButton}
-      </div>
-    );
-
-    let foldContent = null;
-    if (!folded) {
-      if (this.foldVisible) {
-        foldContent = <div className={contentClass}>{children}</div>;
-      } else {
-        foldContent = (
-          <div className={contentClass}>
-            <FoldEmpty icon={Icon} messagePrimary={messageIfEmpty} />
-          </div>
-        );
-      }
-    }
-
-    const classes = className ? ' ' + className : '';
-
     return (
-      <div className={`fold${classes}`}>
-        {foldHeader}
-        {foldContent}
+      <div className={`fold${className ? ' ' + className : ''}`}>
+        {!hideHeader && (
+          <div
+            className={classnames('fold__top', {
+              'fold__top--open': !folded,
+            })}
+            onClick={toggleFold}
+          >
+            <div className="fold__top__arrow-title">
+              <div
+                className={classnames('fold__top__arrow', {
+                  'fold__top__arrow--open': !folded,
+                })}
+              >
+                <div className="fold__top__arrow__wrapper">
+                  <Icon path={mdiChevronDown} />
+                </div>
+              </div>
+              {PlotlyIcon && <PlotlyIcon className="fold__top__icon" />}
+              <div className="fold__top__title">{striptags(name)}</div>
+            </div>
+            {(canMoveDown || canMoveUp) && (
+              <div className="fold__top__moving-controls">
+                <span
+                  className={`fold__top__moving-controls--up${canMoveUp ? '' : '--disabled'}`}
+                  onClick={(e) => {
+                    // prevents fold toggle to happen when clicking on moving arrow controls
+                    e.stopPropagation();
+
+                    if (canMoveUp) {
+                      if (!moveContainer || typeof moveContainer !== 'function') {
+                        throw new Error('moveContainer must be a function');
+                      }
+                      moveContainer('up');
+                    }
+                  }}
+                >
+                  <Icon path={mdiChevronDown} />
+                </span>
+                <span
+                  className={`fold__top__moving-controls--down${canMoveDown ? '' : '--disabled'}`}
+                  onClick={(e) => {
+                    // prevents fold toggle to happen when clicking on moving arrow controls
+                    e.stopPropagation();
+                    if (canMoveDown) {
+                      if (!moveContainer || typeof moveContainer !== 'function') {
+                        throw new Error('moveContainer must be a function');
+                      }
+                      moveContainer('down');
+                    }
+                  }}
+                >
+                  <Icon path={mdiChevronDown} />
+                </span>
+              </div>
+            )}
+            {canDelete && typeof deleteContainer === 'function' && (
+              <div
+                className="fold__top__delete js-fold__delete"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  deleteContainer(foldInfo);
+                }}
+              >
+                <Icon path={mdiClose} />
+              </div>
+            )}
+          </div>
+        )}
+        {folded ? null : (
+          <div
+            className={classnames('fold__content', {
+              'fold__content--noheader': hideHeader,
+            })}
+          >
+            {this.foldVisible ? (
+              children
+            ) : (
+              <FoldEmpty icon={Icon} messagePrimary={messageIfEmpty} />
+            )}
+          </div>
+        )}
       </div>
     );
   }

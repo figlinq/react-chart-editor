@@ -1,13 +1,14 @@
+import Icon from '@mdi/react';
+import {mdiClose} from '@mdi/js';
 import {Component} from 'react';
 import PropTypes from 'prop-types';
-import {CloseIcon} from '@figlinq/plotly-icons';
 
 const ModalHeader = ({title, handleClose}) => (
   <div className="modal__header">
     {title ? <div className="modal__header__title">{title}</div> : null}
     {handleClose ? (
       <div className="modal__header__close" onClick={handleClose ? () => handleClose() : null}>
-        <CloseIcon />
+        <Icon path={mdiClose} />
       </div>
     ) : null}
   </div>

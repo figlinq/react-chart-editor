@@ -1,9 +1,9 @@
+import {mdiPlus} from '@mdi/js';
 import Dropdown from './Dropdown';
 import Info from './Info';
 import PropTypes from 'prop-types';
 import {EDITOR_ACTIONS} from 'lib/constants';
 import Button from '../widgets/Button';
-import {PlusIcon} from '@figlinq/plotly-icons';
 import {
   connectToContainer,
   traceTypeToAxisType,
@@ -75,9 +75,9 @@ const UnconnectedAxisCreator = (props, {fullData, onUpdate, fullLayout: {_subplo
   };
 
   const extraComponent = canAddAxis() ? (
-    <Button variant="no-text" icon={<PlusIcon />} onClick={() => addAndUpdateAxis()} />
+    <Button variant="no-text" icon={mdiPlus} onClick={() => addAndUpdateAxis()} />
   ) : (
-    <Button variant="no-text--disabled" icon={<PlusIcon />} onClick={() => {}} />
+    <Button variant="no-text--disabled" icon={mdiPlus} onClick={() => {}} />
   );
 
   return (

@@ -1,5 +1,6 @@
+import {mdiLinkVariant} from '@mdi/js';
+import Icon from '@mdi/react';
 import {INLINE_STYLE} from 'draft-js-utils';
-import {LinkIcon} from '@figlinq/plotly-icons';
 import {COLORS} from 'lib/constants';
 
 export const SUPERSCRIPT = 'SUPERSCRIPT';
@@ -80,7 +81,7 @@ export const INLINE_STYLES = [
   {
     label: (
       <span>
-        <LinkIcon className="icon-link" />
+        <Icon path={mdiLinkVariant} className="icon-link" />
       </span>
     ),
     value: LINK,

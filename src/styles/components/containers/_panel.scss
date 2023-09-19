@@ -44,8 +44,10 @@
       svg {
         width: 16px !important;
         height: 16px !important;
-        fill: var(--color-text-light);
         padding-right: 3px;
+        path {
+          fill: var(--color-text-light) !important;
+        }
       }
     }
     &__action {
@@ -78,7 +80,7 @@
           height: $size !important;
           margin: 0 auto;
           path {
-            fill: var(--color-text-light);
+            fill: var(--color-text-light) !important;
           }
         }
       }

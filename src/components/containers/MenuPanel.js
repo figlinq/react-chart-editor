@@ -1,27 +1,28 @@
+import {mdiCog, mdiHelpCircle} from '@mdi/js';
+import Icon from '@mdi/react';
 import ModalBox from './ModalBox';
 import PropTypes from 'prop-types';
 import {useState} from 'react';
 import classnames from 'classnames';
-import {QuestionIcon, CogIcon} from '@figlinq/plotly-icons';
 
-const MenuPanel = ({show, ownline, label, children, question, icon: Icon}) => {
+const MenuPanel = ({show, ownline, label, children, question, icon: PlotlyIcon}) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const getIcon = () => {
     if (question) {
       return {
-        icon: <QuestionIcon className="menupanel__icon" />,
+        icon: <Icon path={mdiHelpCircle} className="menupanel__icon" />,
         spanClass: `menupanel__icon-span menupanel__icon-span--question`,
       };
     }
-    if (Icon) {
+    if (PlotlyIcon) {
       return {
-        icon: <Icon className="menupanel__icon" />,
+        icon: <PlotlyIcon className="menupanel__icon" />,
         spanClass: `menupanel__icon-span`,
       };
     }
     return {
-      icon: <CogIcon className="menupanel__icon" />,
+      icon: <Icon Icon path={mdiCog} className="menupanel__icon" />,
       spanClass: 'menupanel__icon-span menupanel__icon-span--cog',
     };
   };

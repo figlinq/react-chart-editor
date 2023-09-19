@@ -1,3 +1,5 @@
+import {mdiCog} from '@mdi/js';
+import Icon from '@mdi/react';
 import {UnconnectedDropdown} from './Dropdown';
 import PropTypes from 'prop-types';
 import {Component} from 'react';
@@ -10,7 +12,6 @@ import {
 import {TRACES_WITH_GL} from 'lib/constants';
 import {TraceTypeSelector, TraceTypeSelectorButton, RadioBlocks} from 'components/widgets';
 import Field from './Field';
-import {CogIcon} from '@figlinq/plotly-icons';
 
 class TraceSelector extends Component {
   constructor(props, context) {
@@ -135,7 +136,7 @@ class TraceSelector extends Component {
                 }
               />
               {TRACES_WITH_GL.includes(this.props.container.type) && (
-                <CogIcon className="menupanel__icon" onClick={this.toggleGlControls} />
+                <Icon path={mdiCog} className="menupanel__icon" onClick={this.toggleGlControls} />
               )}
             </div>
             {exampleOnClick && (

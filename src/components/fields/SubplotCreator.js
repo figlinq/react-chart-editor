@@ -1,9 +1,9 @@
+import {mdiPlus} from '@mdi/js';
 import Dropdown from './Dropdown';
 import Info from './Info';
 import PropTypes from 'prop-types';
 import {EDITOR_ACTIONS, SUBPLOT_TO_ATTR, subplotName} from 'lib/constants';
 import Button from '../widgets/Button';
-import {PlusIcon} from '@figlinq/plotly-icons';
 import {connectToContainer, traceTypeToAxisType, getSubplotTitle} from 'lib';
 import {PlotlySection} from 'components';
 
@@ -60,11 +60,10 @@ const UnconnectedSingleSubplotCreator = (props, context) => {
     });
   };
 
-  const icon = <PlusIcon />;
   const extraComponent = canAddSubplot() ? (
-    <Button variant="no-text" icon={icon} onClick={() => addAndUpdateSubplot()} />
+    <Button variant="no-text" icon={mdiPlus} onClick={() => addAndUpdateSubplot()} />
   ) : (
-    <Button variant="no-text--disabled" icon={icon} onClick={() => {}} />
+    <Button variant="no-text--disabled" icon={mdiPlus} onClick={() => {}} />
   );
 
   return (
