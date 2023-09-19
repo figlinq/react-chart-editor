@@ -1,9 +1,9 @@
+import {mdiPlus} from '@mdi/js';
 import {connectToContainer} from 'lib';
 import Field from './Field';
 import Dropdown from './Dropdown';
 import PropTypes from 'prop-types';
 import Button from '../widgets/Button';
-import {PlusIcon} from '@figlinq/plotly-icons';
 import {MULTI_VALUED} from 'lib/constants';
 
 const UnconnectedGroupCreator = (props, context) => {
@@ -55,11 +55,10 @@ const UnconnectedGroupCreator = (props, context) => {
   );
   options.sort((a, b) => a.value - b.value);
 
-  const icon = <PlusIcon />;
   const addButton = canAddGroup() ? (
-    <Button variant="no-text" icon={icon} onClick={() => addAndUpdateGroup()} />
+    <Button variant="no-text" icon={mdiPlus} onClick={() => addAndUpdateGroup()} />
   ) : (
-    <Button variant="no-text--disabled" icon={icon} onClick={() => {}} />
+    <Button variant="no-text--disabled" icon={mdiPlus} onClick={() => {}} />
   );
 
   return (

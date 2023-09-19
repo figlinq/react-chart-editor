@@ -1,7 +1,8 @@
+import {mdiChevronRight} from '@mdi/js';
+import Icon from '@mdi/react';
 import PropTypes from 'prop-types';
 import {Component} from 'react';
 import {bem} from 'lib';
-import {AngleRightIcon} from '@figlinq/plotly-icons';
 import SidebarItem from './SidebarItem';
 
 export default class SidebarGroup extends Component {
@@ -51,7 +52,7 @@ export default class SidebarGroup extends Component {
       >
         <div onClick={this.toggleExpanded} className={bem('sidebar__group', 'title')}>
           <div className={bem('sidebar__group', 'title__icon')}>
-            <AngleRightIcon />
+            <Icon path={mdiChevronRight} size="24px" />
           </div>
           <div className={bem('sidebar__group', 'title__label')}>{group}</div>
         </div>

@@ -55,7 +55,7 @@
     svg {
       @include drop-shadow--dark-ui;
       path {
-        fill: var(--color-white);
+        fill: var(--color-white) !important;
       }
     }
   }

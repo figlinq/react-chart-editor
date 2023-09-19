@@ -1,6 +1,7 @@
+import {mdiApps, mdiMagnify, mdiPoll} from '@mdi/js';
+import Icon from '@mdi/react';
 import {Component} from 'react';
 import PropTypes from 'prop-types';
-import {SearchIcon, ThumnailViewIcon, GraphIcon} from '@figlinq/plotly-icons';
 import Modal from 'components/containers/Modal';
 import {traceTypeToPlotlyInitFigure, renderTraceIcon, plotlyTraceToCustomTrace} from 'lib';
 import {TRACES_WITH_GL} from 'lib/constants';
@@ -8,12 +9,12 @@ import {TRACES_WITH_GL} from 'lib/constants';
 const renderActionItems = (actionItems, item) =>
   actionItems
     ? actionItems(item).map((action, i) =>
-        !action.onClick ? null : (
+        action.onClick ? null : (
           <a
             className="trace-item__actions__item"
             key={i}
             aria-label={action.label}
-            data-microtip-position={`top-left`}
+            data-microtip-position="top-left"
             role="tooltip"
             onClick={action.onClick}
             target="_blank"
@@ -114,7 +115,7 @@ class TraceTypeSelector extends Component {
                 '_blank'
               )
             )),
-        icon: <SearchIcon />,
+        icon: <Icon path={mdiMagnify} />,
       },
       {
         label: _('View tutorials on this chart type.'),
@@ -122,7 +123,7 @@ class TraceTypeSelector extends Component {
           chartHelp[value] &&
           chartHelp[value].helpDoc &&
           ((e) => onClick(e, () => window.open(chartHelp[value].helpDoc, '_blank'))),
-        icon: <ThumnailViewIcon />,
+        icon: <Icon path={mdiApps} />,
       },
       {
         label: _('See a basic example.'),
@@ -130,7 +131,7 @@ class TraceTypeSelector extends Component {
           chartHelp[value] &&
           chartHelp[value].examplePlot &&
           ((e) => onClick(e, chartHelp[value].examplePlot)),
-        icon: <GraphIcon />,
+        icon: <Icon path={mdiPoll} />,
       },
     ];
   }

@@ -3,7 +3,8 @@ import {Component} from 'react';
 import PropTypes from 'prop-types';
 import isNumeric from 'fast-isnumeric';
 import Slider from '@appigram/react-rangeslider';
-import {CarretDownIcon, CarretUpIcon} from '@figlinq/plotly-icons';
+import Icon from '@mdi/react';
+import {mdiMenuDown, mdiMenuUp} from '@mdi/js';
 
 export const UP_ARROW = 38;
 export const DOWN_ARROW = 40;
@@ -141,13 +142,13 @@ export default class NumericInput extends Component {
           className="numeric-input__caret js-numeric-increase"
           onClick={this.incrementValue.bind(this, 'increase')}
         >
-          <CarretUpIcon className="numeric-top-caret-modifier" />
+          <Icon path={mdiMenuUp} className="numeric-top-caret-modifier" />
         </div>
         <div
           className="numeric-input__caret js-numeric-decrease"
           onClick={this.incrementValue.bind(this, 'decrease')}
         >
-          <CarretDownIcon className="numeric-bottom-caret-modifier" />
+          <Icon path={mdiMenuDown} className="numeric-bottom-caret-modifier" />
         </div>
       </div>
     );

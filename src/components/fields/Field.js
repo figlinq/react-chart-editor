@@ -1,13 +1,14 @@
+import {mdiClose} from '@mdi/js';
+import Icon from '@mdi/react';
 import PropTypes from 'prop-types';
 import MenuPanel from '../containers/MenuPanel';
 import classnames from 'classnames';
 import {bem} from 'lib';
 import {getMultiValueText} from 'lib/constants';
-import {CloseIcon} from '@figlinq/plotly-icons';
 
 export const FieldDelete = ({onClick}) => (
   <div className="field__delete" onClick={onClick}>
-    <CloseIcon />
+    <Icon path={mdiClose} />
   </div>
 );
 

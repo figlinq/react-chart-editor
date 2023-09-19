@@ -1,5 +1,6 @@
 import 'react-day-picker/lib/style.css';
-import {CalendarMultiselectIcon} from '@figlinq/plotly-icons';
+import {mdiCalendarMultiselect} from '@mdi/js';
+import Icon from '@mdi/react';
 import {ms2DateTime, dateTime2ms, isDateTime} from 'plotly.js/src/lib/dates';
 import DayPicker from 'react-day-picker';
 import PropTypes from 'prop-types';
@@ -238,7 +239,9 @@ export default class DateTimePicker extends Component {
           placeholder={datePlaceholder}
         />
         <div className="datetimepicker-container-icons">
-          <CalendarMultiselectIcon
+          <Icon
+            path={mdiCalendarMultiselect}
+            size="24px"
             onClick={() => this.setState({calendarOpen: !this.state.calendarOpen})}
             className={
               this.state.calendarOpen

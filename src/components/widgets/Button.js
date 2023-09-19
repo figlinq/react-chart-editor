@@ -1,3 +1,4 @@
+import Icon from '@mdi/react';
 import PropTypes from 'prop-types';
 import {bem} from 'lib';
 
@@ -7,7 +8,11 @@ const Button = ({children, className, icon, label, variant, ...rest}) => (
     {...rest}
   >
     <div className={bem('button', 'wrapper')}>
-      {Boolean(icon) && <div className={bem('button', 'icon')}>{icon}</div>}
+      {Boolean(icon) && (
+        <div className={bem('button', 'icon')}>
+          <Icon path={icon} size="24px" />{' '}
+        </div>
+      )}
       <div className="button__label">{label || children}</div>
     </div>
   </button>
