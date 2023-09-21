@@ -27,8 +27,10 @@ examples
 .percy.yml
 .prettierrc
 .git
+.vscode
 babel.config.json
 postcss.config.js
+webpack.config.js
 renovate.json
 
 npm-debug.log
