@@ -27,7 +27,7 @@
   },
   "dependencies": {
     "@appigram/react-rangeslider": "^2.2.19",
-    "@figlinq/plotly-icons": "^3.0.0",
+    "@figlinq/plotly-icons": "^3.0.1",
     "@hello-pangea/color-picker": "^3.2.2",
     "@mdi/js": "^7.2.96",
     "@mdi/react": "^1.6.1",
