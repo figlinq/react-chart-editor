@@ -136,6 +136,7 @@
   ],
   "license": "MIT",
   "main": "lib/index.js",
+  "module": "lib/index.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/figlinq/react-chart-editor.git"
