@@ -1,16 +1,15 @@
 {
   "env": {
     "development": {"comments": false, "minified": true},
-    "production": {"comments": true, "minified": false}
+    "production": {"comments": true, "minified": false},
+    "test": {
+      "sourceType": "unambiguous",
+      "presets": [["@babel/env", {"modules": "commonjs"}]]
+    }
   },
   "presets": [
-    [
-      "@babel/preset-react",
-      {
-        "runtime": "automatic"
-      }
-    ],
-    "@babel/env"
+    ["@babel/env", {"modules": false}],
+    ["@babel/preset-react", {"runtime": "automatic"}]
   ],
   "plugins": [
     "react-hot-loader/babel",
@@ -27,6 +26,4 @@
       }
     ]
   ]
-  // "comments": false,
-  // "minified": true,
 }
