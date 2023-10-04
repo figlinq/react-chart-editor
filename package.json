@@ -121,7 +121,10 @@
     ],
     "moduleNameMapper": {
       "^.+\\.css$": "<rootDir>/config/CSSStub.js"
-    }
+    },
+    "transformIgnorePatterns": [
+      "@figlink/plotly-icons"
+    ]
   },
   "keywords": [
     "chart",
