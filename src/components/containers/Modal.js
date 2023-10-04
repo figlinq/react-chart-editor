@@ -5,12 +5,12 @@ import PropTypes from 'prop-types';
 
 const ModalHeader = ({title, handleClose}) => (
   <div className="modal__header">
-    {title ? <div className="modal__header__title">{title}</div> : null}
-    {handleClose ? (
+    {Boolean(title) && <div className="modal__header__title">{title}</div>}
+    {Boolean(handleClose) && (
       <div className="modal__header__close" onClick={handleClose ? () => handleClose() : null}>
-        <Icon path={mdiClose} />
+        <Icon size="24px" path={mdiClose} />
       </div>
-    ) : null}
+    )}
   </div>
 );
 

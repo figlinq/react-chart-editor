@@ -106,8 +106,7 @@ class TraceTypeSelector extends Component {
       {
         label: _('Charts like this by Plotly users.'),
         onClick:
-          chartHelp[value] &&
-          chartHelp[value].feedQuery &&
+          chartHelp[value]?.feedQuery &&
           ((e) =>
             onClick(e, () =>
               window.open(
@@ -115,33 +114,29 @@ class TraceTypeSelector extends Component {
                 '_blank'
               )
             )),
-        icon: <Icon path={mdiMagnify} />,
+        icon: <Icon size="16px" path={mdiMagnify} />,
       },
       {
         label: _('View tutorials on this chart type.'),
         onClick:
-          chartHelp[value] &&
-          chartHelp[value].helpDoc &&
+          chartHelp[value]?.helpDoc &&
           ((e) => onClick(e, () => window.open(chartHelp[value].helpDoc, '_blank'))),
-        icon: <Icon path={mdiApps} />,
+        icon: <Icon size="16px" path={mdiApps} />,
       },
       {
         label: _('See a basic example.'),
-        onClick:
-          chartHelp[value] &&
-          chartHelp[value].examplePlot &&
-          ((e) => onClick(e, chartHelp[value].examplePlot)),
-        icon: <Icon path={mdiPoll} />,
+        onClick: chartHelp[value]?.examplePlot && ((e) => onClick(e, chartHelp[value].examplePlot)),
+        icon: <Icon size="16px" path={mdiPoll} />,
       },
     ];
   }
 
   renderCategories() {
-    const {fullValue} = this.props;
-    const {localize: _, chartHelp} = this.context;
     const {
+      fullValue,
       traceTypesConfig: {traces, categories, complex},
     } = this.props;
+    const {localize: _, chartHelp} = this.context;
 
     return categories(_).map((category, i) => {
       const items = traces(_)
@@ -182,11 +177,11 @@ class TraceTypeSelector extends Component {
   }
 
   renderSingleBlock() {
-    const {fullValue} = this.props;
-    const {localize: _} = this.context;
     const {
+      fullValue,
       traceTypesConfig: {traces, complex},
     } = this.props;
+    const {localize: _} = this.context;
 
     return (
       <div className="trace-grid-single-block">

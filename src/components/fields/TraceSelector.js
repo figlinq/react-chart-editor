@@ -141,7 +141,8 @@ class TraceSelector extends Component {
             </div>
             {exampleOnClick && (
               <div className="js-test-info" style={{padding: '16px 0 12px 0'}}>
-                See basic usage <a onClick={exampleOnClick}>example</a>.
+                {_('See basic usage ')}
+                <a onClick={exampleOnClick}>{_('example')}</a>.
               </div>
             )}
           </Field>

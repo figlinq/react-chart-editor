@@ -10,7 +10,7 @@ const Button = ({children, className, icon, label, variant, ...rest}) => (
     <div className={bem('button', 'wrapper')}>
       {Boolean(icon) && (
         <div className={bem('button', 'icon')}>
-          <Icon path={icon} size="24px" />{' '}
+          <Icon size="24px" path={icon} />
         </div>
       )}
       <div className="button__label">{label || children}</div>

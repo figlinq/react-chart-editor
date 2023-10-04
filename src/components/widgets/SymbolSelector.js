@@ -53,13 +53,11 @@ export default class SymbolSelector extends Component {
     };
 
     return (
-      <span>
-        <svg width="18" height="18">
-          <g transform="translate(8,8)">
-            <path d={currentSymbol.label} style={symbolStyle} />
-          </g>
-        </svg>
-      </span>
+      <svg width="18" height="18">
+        <g transform="translate(8,8)">
+          <path d={currentSymbol.label} style={symbolStyle} />
+        </g>
+      </svg>
     );
   }
 
@@ -100,9 +98,7 @@ export default class SymbolSelector extends Component {
       <div>
         <div className={toggleClass} onClick={this.togglePanel}>
           <span className="symbol-selector__toggle_option">{this.renderActiveOption()}</span>
-          <span>
-            <Icon path={mdiMenuDown} className="symbol-selector__toggle__caret" />
-          </span>
+          <Icon path={mdiMenuDown} className="symbol-selector__toggle__caret" />
         </div>
         {isOpen && this.renderOptions()}
       </div>

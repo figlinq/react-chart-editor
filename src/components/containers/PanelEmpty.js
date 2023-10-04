@@ -6,7 +6,7 @@ import {bem} from 'lib';
 export const PanelMessage = ({children, heading, icon: PlotlyIcon}) => (
   <div className="panel__empty__message">
     <div className="panel__empty__message__icon">
-      {PlotlyIcon ? <PlotlyIcon /> : <Icon path={mdiChartLine} size="24px" />}
+      {PlotlyIcon ? <PlotlyIcon /> : <Icon size="24px" path={mdiChartLine} />}
     </div>
     {Boolean(heading) && <div className="panel__empty__message__heading">{heading}</div>}
     <div className="panel__empty__message__content">{children}</div>

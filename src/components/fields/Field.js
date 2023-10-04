@@ -8,7 +8,7 @@ import {getMultiValueText} from 'lib/constants';
 
 export const FieldDelete = ({onClick}) => (
   <div className="field__delete" onClick={onClick}>
-    <Icon path={mdiClose} />
+    <Icon size="24px" path={mdiClose} />
   </div>
 );
 
