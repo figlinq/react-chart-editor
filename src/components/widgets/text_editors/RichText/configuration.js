@@ -64,25 +64,25 @@ export const INLINE_STYLES = [
   },
   {
     label: (
-      <span>
+      <>
         x<span style={STYLE_MAP[SUBSCRIPT]}>2</span>
-      </span>
+      </>
     ),
     value: SUBSCRIPT,
   },
   {
     label: (
-      <span>
+      <>
         x<span style={STYLE_MAP[SUPERSCRIPT]}>2</span>
-      </span>
+      </>
     ),
     value: SUPERSCRIPT,
   },
   {
     label: (
-      <span>
+      <>
         <Icon path={mdiLinkVariant} className="icon-link" />
-      </span>
+      </>
     ),
     value: LINK,
   },

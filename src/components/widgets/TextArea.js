@@ -29,16 +29,14 @@ export default class TextArea extends Component {
 
   render() {
     return (
-      <span>
-        <textarea
-          value={this.state.value}
-          rows={this.props.visibleRows}
-          cols={this.props.areaWidth}
-          placeholder={this.props.placeholder}
-          onChange={this.onChange}
-          className={this.props.textareaClass}
-        />
-      </span>
+      <textarea
+        value={this.state.value}
+        rows={this.props.visibleRows}
+        cols={this.props.areaWidth}
+        placeholder={this.props.placeholder}
+        onChange={this.onChange}
+        className={this.props.textareaClass}
+      />
     );
   }
 }

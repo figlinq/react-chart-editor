@@ -16,7 +16,7 @@ class CheckboxGroup extends Component {
   }
 
   handleChange(i) {
-    var newOptions = this.props.options.slice();
+    const newOptions = this.props.options.slice();
     newOptions[i] = Object.assign(newOptions[i], {
       checked: !newOptions[i].checked,
     });
