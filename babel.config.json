@@ -1,7 +1,7 @@
 {
   "env": {
-    "development": {"comments": false, "minified": true},
-    "production": {"comments": true, "minified": false},
+    "development": {"comments": true, "minified": false},
+    "production": {"comments": false, "minified": true},
     "test": {
       "sourceType": "unambiguous",
       "presets": [["@babel/env", {"modules": "commonjs"}]]
