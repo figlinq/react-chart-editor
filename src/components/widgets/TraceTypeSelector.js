@@ -9,7 +9,7 @@ import {TRACES_WITH_GL} from 'lib/constants';
 const renderActionItems = (actionItems, item) =>
   actionItems
     ? actionItems(item).map((action, i) =>
-        action.onClick ? null : (
+        !action.onClick ? null : (
           <a
             className="trace-item__actions__item"
             key={i}
