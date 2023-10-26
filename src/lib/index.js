@@ -100,7 +100,7 @@ export const transpose = (originalArray) => {
   return newArray;
 };
 
-export const specialTableCase = (traceType, srcAttributePath) => {
+export const specialTableCase = (traceType, srcAttributePath) =>
   /* Just more user friendly
    * Table traces have many configuration options,
    * The below attributes can be 2d or 1d and will affect the plot differently
