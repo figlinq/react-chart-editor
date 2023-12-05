@@ -1,4 +1,3 @@
-import {diff} from 'deep-object-diff';
 import isNumeric from 'fast-isnumeric';
 import nestedProperty from 'plotly.js/src/lib/nested_property';
 import {EDITOR_ACTIONS, INVERSE_ACTIONS, OPERATION_TYPE} from './constants';
