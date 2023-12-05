@@ -145,6 +145,33 @@ For use in containers bound to annotations e.g. as children of `<AnnotationAccor
 * `connectShapeToLayout( Container )`: returns a wrapped container component that can be bound to a shape such that its children are bound to that shape's figure entry under the `layout.shapes` key, e.g. the `<Fold>`s in `<ShapeAccordion />` above.
 * `connectImagesToLayout( Container )`: returns a wrapped container component that can be bound to an image such that its children are bound to that image's figure entry under the `layout.image` key, e.g. the `<Fold>`s in `<ImageAccordion />` above.
 
+### Action History
+
+You can show/hide undo/redo buttons via `showUndoRedo` prop of `<PlotlyEditor />`.
+
+You can trigger undo/redo actions programmatically by passing a ref to `PlotlyEditor` or `EditorControls` and calling `undo` or `redo` methods on the ref. E.g.:
+
+```javascript
+const rceRef = useRef(null);
+...
+<EditModeController
+  ref={rceRef}
+  ...
+/>
+...
+rceRef.current.undo()
+```
+
+Use `onAddToUndo` and `onAddToRedo` hooks to trigger events when an action is added to undo or redo history in the `<PlotlyEditor />` component.
+
+```javascript
+<PlotlyEditor
+  ...
+  onAddToUndo={() => { console.log('action added to undo') }}
+  onAddToRedo={() => { console.log('action added to redo') }}
+/>
+```
+
 ## Mapbox Access Tokens
 
 To use Satellite Maps in the Editor, [Mapbox access tokens](https://www.mapbox.com/help/how-access-tokens-work/) are required.
