@@ -24,7 +24,6 @@ class PlotlyEditor extends Component {
   }
 
   handleRelayout(update) {
-    console.log('handleRelayout update:', JSON.stringify(update));
     history.addToUndoRelayout(update, this.state?.graphDiv || {});
   }
 

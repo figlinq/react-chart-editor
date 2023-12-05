@@ -81,7 +81,6 @@ class EditorControls extends Component {
   }
 
   undo() {
-    console.log('undo');
     const action = this.history.undo();
     if (action) {
       this.handleUpdate(action, OPERATION_TYPE.UNDO);
@@ -89,7 +88,6 @@ class EditorControls extends Component {
   }
 
   redo() {
-    console.log('redo');
     const action = this.history.redo();
     if (action) {
       this.handleUpdate(action, OPERATION_TYPE.REDO);
@@ -118,15 +116,6 @@ class EditorControls extends Component {
       beforeDeleteImage,
       afterDeleteImage,
     } = this.props;
-
-    console.log(
-      'handleUpdate',
-      {type, payload, canBeOptimizedAway},
-      'graphDiv.data',
-      graphDiv.data,
-      'graphDiv.layout',
-      graphDiv.layout
-    );
 
     const oldGraphDiv = structuredClone({layout: graphDiv.layout, data: graphDiv.data});
     let layoutDiff;
@@ -385,8 +374,6 @@ class EditorControls extends Component {
       onUpdate(updatedData, updatedLayout, graphDiv._transitionData._frames);
     }
 
-    console.log('layoutDiff', layoutDiff);
-
     this.history.add(
       {
         type,
@@ -410,8 +397,7 @@ class EditorControls extends Component {
         }
       >
         <ModalProvider>
-          {graphDiv?._fullLayout &&
-            (children ? children : <DefaultEditor />)}
+          {graphDiv?._fullLayout && (children ? children : <DefaultEditor />)}
         </ModalProvider>
       </div>
     );

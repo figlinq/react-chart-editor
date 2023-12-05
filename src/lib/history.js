@@ -69,7 +69,6 @@ export default class History {
       lastUndoAction?.canBeOptimizedAway &&
       sameAction(payload, lastUndoAction?.payload)
     ) {
-      console.log('skipping undo action');
       if (!action.canBeOptimizedAway) {
         lastUndoAction.canBeOptimizedAway = false;
       }
@@ -192,14 +191,6 @@ export default class History {
         break;
       }
     }
-    console.log(
-      'reverse action created:',
-      action,
-      'previous action:',
-      lastUndoAction,
-      'diff:',
-      diff(action, lastUndoAction)
-    );
 
     return action;
   }
