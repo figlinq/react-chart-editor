@@ -21,7 +21,7 @@ import Logo from './components/widgets/Logo';
 import {TRANSFORMABLE_TRACES, TRACE_TO_AXIS} from './lib/constants';
 
 const DefaultEditor = (
-  {logoSrc, children, menuPanelOrder},
+  {logoSrc, logoLinkUrl, children, menuPanelOrder},
   {fullData, fullLayout, layout, localize: _}
 ) => {
   const hasTransforms = () => fullData.some((d) => TRANSFORMABLE_TRACES.includes(d.type));
@@ -51,7 +51,7 @@ const DefaultEditor = (
 
   return (
     <PanelMenuWrapper menuPanelOrder={menuPanelOrder}>
-      {Boolean(logoSrc) && <Logo src={logoSrc} />}
+      {Boolean(logoSrc) && <Logo src={logoSrc} link={logoLinkUrl} />}
       <GraphCreatePanel group={_('Structure')} name={_('Traces')} />
       <GraphSubplotsPanel group={_('Structure')} name={_('Subplots')} />
       {hasTransforms() && <GraphTransformsPanel group={_('Structure')} name={_('Transforms')} />}
@@ -74,6 +74,7 @@ const DefaultEditor = (
 DefaultEditor.propTypes = {
   children: PropTypes.node,
   logoSrc: PropTypes.string,
+  logoLinkUrl: PropTypes.string,
   menuPanelOrder: PropTypes.array,
 };
 
