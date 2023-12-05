@@ -127,6 +127,9 @@
     },
     "transformIgnorePatterns": [
       "@figlink/plotly-icons"
+    ],
+    "setupFiles": [
+      "<rootDir>/jestSetup.js"
     ]
   },
   "keywords": [
