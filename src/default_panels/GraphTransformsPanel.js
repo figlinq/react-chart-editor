@@ -20,7 +20,6 @@ export const Aggregations = (props, context) => {
     localize: _,
   } = context;
 
-
   if (aggregations.length === 0) {
     return null;
   }
