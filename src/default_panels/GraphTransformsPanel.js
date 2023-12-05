@@ -17,8 +17,9 @@ const AggregationSection = connectAggregationToTransform(PlotlySection);
 export const Aggregations = (props, context) => {
   const {
     fullContainer: {aggregations = []},
+    localize: _,
   } = context;
-  const {localize: _} = context;
+
 
   if (aggregations.length === 0) {
     return null;
@@ -27,7 +28,7 @@ export const Aggregations = (props, context) => {
   return (
     <PlotlySection name={_('Aggregations')} attr="aggregations">
       {aggregations
-        .filter((aggr) => aggr.target && aggr.target.match(/transforms\[\d*\]\./gi) === null)
+        .filter((aggr) => aggr?.target?.match(/transforms\[\d*\]\./gi) === null)
         .map(({target}, i) => (
           <AggregationSection show key={i} aggregationIndex={i}>
             <Dropdown
@@ -98,40 +99,39 @@ export const Aggregations = (props, context) => {
 Aggregations.plotly_editor_traits = {no_visibility_forcing: true};
 Aggregations.contextTypes = {
   fullContainer: PropTypes.object,
+  container: PropTypes.object,
   localize: PropTypes.func,
 };
 
-const GraphTransformsPanel = (props, {localize: _}) => {
-  return (
-    <TraceAccordion traceFilterCondition={(t) => TRANSFORMABLE_TRACES.includes(t.type)}>
-      <TransformAccordion>
-        <Radio
-          attr="enabled"
-          options={[
-            {label: _('Enabled'), value: true},
-            {label: _('Disabled'), value: false},
-          ]}
-        />
+const GraphTransformsPanel = (props, {localize: _}) => (
+  <TraceAccordion traceFilterCondition={(t) => TRANSFORMABLE_TRACES.includes(t.type)}>
+    <TransformAccordion>
+      <Radio
+        attr="enabled"
+        options={[
+          {label: _('Enabled'), value: true},
+          {label: _('Disabled'), value: false},
+        ]}
+      />
 
-        <DataSelector label={_('By')} attr="groups" />
+      <DataSelector label={_('By')} attr="groups" />
 
-        <DataSelector label={_('Target')} attr="target" />
-        <FilterOperation label={_('Operator')} attr="operation" />
-        <FilterValue label={_('Value')} attr="value" />
+      <DataSelector label={_('Target')} attr="target" />
+      <FilterOperation label={_('Operator')} attr="operation" />
+      <FilterValue label={_('Value')} attr="value" />
 
-        <Radio
-          attr="order"
-          options={[
-            {label: _('Ascending'), value: 'ascending'},
-            {label: _('Descending'), value: 'descending'},
-          ]}
-        />
+      <Radio
+        attr="order"
+        options={[
+          {label: _('Ascending'), value: 'ascending'},
+          {label: _('Descending'), value: 'descending'},
+        ]}
+      />
 
-        <Aggregations />
-      </TransformAccordion>
-    </TraceAccordion>
-  );
-};
+      <Aggregations />
+    </TransformAccordion>
+  </TraceAccordion>
+);
 
 GraphTransformsPanel.contextTypes = {
   localize: PropTypes.func,

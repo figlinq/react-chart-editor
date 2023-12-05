@@ -19,20 +19,8 @@ export default function connectAggregationToTransform(WrappedComponent) {
       const {aggregationIndex} = props;
       const {container, fullContainer} = context;
 
-      const aggregations = (container && container.aggregations) || [];
-      const fullAggregations = fullContainer.aggregations || [];
-      this.container = aggregations[aggregationIndex];
-      this.fullContainer = fullAggregations[aggregationIndex];
-    }
-
-    getChildContext() {
-      return {
-        getValObject: (attr) =>
-          !this.context.getValObject ? null : this.context.getValObject(`aggregations[].${attr}`),
-        updateContainer: this.updateAggregation,
-        container: this.container,
-        fullContainer: this.fullContainer,
-      };
+      this.container = (container?.aggregations || [])[aggregationIndex];
+      this.fullContainer = (fullContainer?.aggregations || [])[aggregationIndex];
     }
 
     updateAggregation(update) {
@@ -44,6 +32,16 @@ export default function connectAggregationToTransform(WrappedComponent) {
       newUpdate[`${path}.target`] = this.fullContainer.target;
       newUpdate[`${path}.enabled`] = true;
       this.context.updateContainer(newUpdate);
+    }
+
+    getChildContext() {
+      const {getValObject} = this.context;
+      return {
+        getValObject: getValObject ? (attr) => getValObject(`aggregations[].${attr}`) : null,
+        updateContainer: this.updateAggregation,
+        container: this.container,
+        fullContainer: this.fullContainer,
+      };
     }
 
     render() {
