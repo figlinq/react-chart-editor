@@ -400,17 +400,18 @@ class EditorControls extends Component {
   }
 
   render() {
+    const {children, className, graphDiv} = this.props;
     return (
       <div
         className={
           bem('editor_controls') +
           ' plotly-editor--theme-provider' +
-          `${this.props.className ? ` ${this.props.className}` : ''}`
+          `${className ? ` ${className}` : ''}`
         }
       >
         <ModalProvider>
-          {this.props.graphDiv?._fullLayout &&
-            (this.props.children ? this.props.children : <DefaultEditor />)}
+          {graphDiv?._fullLayout &&
+            (children ? children : <DefaultEditor />)}
         </ModalProvider>
       </div>
     );
