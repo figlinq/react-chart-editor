@@ -46,8 +46,6 @@ describe('<PlotlyFold>', () => {
 
     const payload = beforeDeleteTrace.mock.calls[0][0];
     expect(payload).toEqual({
-      axesToBeGarbageCollected: [],
-      subplotToBeGarbageCollected: null,
       traceIndexes: [0],
     });
   });
