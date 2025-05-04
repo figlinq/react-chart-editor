@@ -161,5 +161,8 @@
   "directories": {
     "example": "examples",
     "lib": "lib"
+  },
+  "resolutions": {
+    "cheerio": "0.22.0"
   }
 }

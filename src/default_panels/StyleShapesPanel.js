@@ -9,6 +9,9 @@ import {
   NumericFraction,
   ColorPicker,
   LineDashSelector,
+  TextEditor,
+  Dropdown,
+  FontSelector,
 } from '../components';
 
 const StyleShapesPanel = (props, {localize: _}) => (
@@ -48,6 +51,32 @@ const StyleShapesPanel = (props, {localize: _}) => (
     <PlotlySection name={_('Fill')}>
       <ColorPicker label={_('Color')} attr="fillcolor" />
       <NumericFraction label={_('Opacity')} attr="opacity" />
+    </PlotlySection>
+    <PlotlySection name={_('Label')}>
+      <TextEditor label={_('Text')} attr="label.text" />
+      <Numeric label={_('Font Size')} attr="label.text.font.size" />
+      <ColorPicker label={_('Font Color')} attr="label.font.color" />
+      <FontSelector label={_('Typeface')} attr="label.font.family" />
+      <Numeric label={_('Padding')} attr="label.padding" />
+      <Dropdown
+        label={_('X Anchor')}
+        attr="label.xanchor"
+        options={[
+          {label: _('Left'), value: 'left'},
+          {label: _('Center'), value: 'center'},
+          {label: _('Right'), value: 'right'},
+        ]}
+      />
+      <Dropdown
+        label={_('Y Anchor')}
+        attr="label.yanchor"
+        options={[
+          {label: _('Top'), value: 'top'},
+          {label: _('Middle'), value: 'middle'},
+          {label: _('Bottom'), value: 'bottom'},
+        ]}
+      />
+      <Numeric label={_('Rotation')} attr="label.textangle" />
     </PlotlySection>
   </ShapeAccordion>
 );
