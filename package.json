@@ -1,7 +1,7 @@
 {
   "name": "@figlinq/react-chart-editor",
   "description": "plotly.js chart editor react component UI",
-  "version": "0.51.0",
+  "version": "0.51.1",
   "author": "Figlinq",
   "bugs": {
     "url": "https://github.com/figlinq/react-chart-editor/issues"
