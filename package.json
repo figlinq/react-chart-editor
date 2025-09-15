@@ -155,7 +155,7 @@
     "not IE 11"
   ],
   "volta": {
-    "node": "16.14.0",
+    "node": "20.5.1",
     "yarn": "1.22.19"
   },
   "directories": {
