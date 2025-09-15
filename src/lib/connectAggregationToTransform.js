@@ -19,19 +19,40 @@ export default function connectAggregationToTransform(WrappedComponent) {
       const {aggregationIndex} = props;
       const {container, fullContainer} = context;
 
+      // Keep references to the parent transform containers
+      this.parentContainer = container;
+      this.parentFullContainer = fullContainer;
+
       this.container = (container?.aggregations || [])[aggregationIndex];
       this.fullContainer = (fullContainer?.aggregations || [])[aggregationIndex];
     }
 
     updateAggregation(update) {
-      const newUpdate = {};
-      const path = `aggregations[${this.props.aggregationIndex}]`;
-      for (const key in update) {
-        newUpdate[`${path}.${key}`] = update[key];
+      // Build a full aggregations array update so other entries are preserved
+      const {aggregationIndex} = this.props;
+      const sourceAggs = Array.isArray(this.parentContainer?.aggregations)
+        ? this.parentContainer.aggregations
+        : Array.isArray(this.parentFullContainer?.aggregations)
+        ? this.parentFullContainer.aggregations
+        : [];
+
+      const newAggs = sourceAggs.map((a) => (a ? {...a} : a));
+      const current = newAggs[aggregationIndex] ? {...newAggs[aggregationIndex]} : {};
+
+      Object.keys(update).forEach((k) => {
+        current[k] = update[k];
+      });
+
+      // If target wasn't provided and doesn't exist yet, fall back to existing agg target
+      if (typeof update.target === 'undefined' && !current.target && this.fullContainer?.target) {
+        current.target = this.fullContainer.target;
       }
-      newUpdate[`${path}.target`] = this.fullContainer.target;
-      newUpdate[`${path}.enabled`] = true;
-      this.context.updateContainer(newUpdate);
+
+      current.enabled = true;
+      newAggs[aggregationIndex] = current;
+
+      // Send whole aggregations array; parent context will prefix with transforms[index].
+      this.context.updateContainer({aggregations: newAggs});
     }
 
     getChildContext() {

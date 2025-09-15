@@ -27,7 +27,7 @@ export const Aggregations = (props, context) => {
   return (
     <PlotlySection name={_('Aggregations')} attr="aggregations">
       {aggregations
-        .filter((aggr) => aggr?.target?.match(/transforms\[\d*\]\./gi) === null)
+        .filter((aggr) => !(aggr?.target && aggr.target.match(/transforms\[\d*\]\./gi)))
         .map(({target}, i) => (
           <AggregationSection show key={i} aggregationIndex={i}>
             <Dropdown
