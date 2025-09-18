@@ -162,6 +162,14 @@
     "example": "examples",
     "lib": "lib"
   },
+  "files": [
+    "lib",
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "resolutions": {
     "cheerio": "0.22.0"
   }
