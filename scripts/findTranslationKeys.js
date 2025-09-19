@@ -31,7 +31,7 @@ function findLocaleStrings() {
       const ast = transformSync(code, {
         presets: ['@babel/preset-react', '@babel/preset-env'],
         plugins: [
-          '@babel/plugin-proposal-object-rest-spread',
+          '@babel/plugin-transform-object-rest-spread',
           [
             'module-resolver',
             {

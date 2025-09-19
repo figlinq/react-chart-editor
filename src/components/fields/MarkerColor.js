@@ -10,13 +10,14 @@ import Radio from './Radio';
 import Info from './Info';
 import DataSelector from './DataSelector';
 import VisibilitySelect from './VisibilitySelect';
-import {MULTI_VALUED, COLORS} from 'lib/constants';
+import {MULTI_VALUED, COLORS, ATTRS_WITH_DISABLED_VARIABLE_OPTION} from 'lib/constants';
 
 class UnconnectedMarkerColor extends Component {
   constructor(props, context) {
     super(props, context);
 
     let type = null;
+    let disableVariableOption = false;
     if (!props.container.marker || (props.container.marker && !props.container.marker.colorsrc)) {
       type = 'constant';
     } else if (
@@ -28,6 +29,16 @@ class UnconnectedMarkerColor extends Component {
       type = 'variable';
     }
 
+    // Disable 'variable' option for certain attrs in box and violin traces due to lack of support in plotly.js
+    if (
+      props.container.type &&
+      ATTRS_WITH_DISABLED_VARIABLE_OPTION[props.container.type] &&
+      ATTRS_WITH_DISABLED_VARIABLE_OPTION[props.container.type].includes(props.attr)
+    ) {
+      disableVariableOption = true;
+      type = 'constant';
+    }
+
     this.state = {
       type,
       value: {
@@ -35,6 +46,7 @@ class UnconnectedMarkerColor extends Component {
         variable: type === 'variable' ? props.fullValue : null,
       },
       selectedConstantColorOption: type === 'constant' && props.multiValued ? 'multiple' : 'single',
+      disableVariableOption,
     };
 
     this.setType = this.setType.bind(this);
@@ -142,7 +154,8 @@ class UnconnectedMarkerColor extends Component {
 
   render() {
     const {attr} = this.props;
-    const {localize: _, container} = this.context;
+    const { localize: _, container } = this.context;
+    const {disableVariableOption} = this.state;
 
     // TO DO: https://github.com/plotly/react-chart-editor/issues/654
     const noSplitsPresent =
@@ -159,8 +172,8 @@ class UnconnectedMarkerColor extends Component {
       return (
         <>
           <Field {...this.props} attr={attr}>
-            <Field multiValued={this.isMultiValued() && !this.state.type}>
-              <RadioBlocks options={options} activeOption={type} onOptionChange={this.setType} />
+            {!disableVariableOption ? <Field multiValued={this.isMultiValued() && !this.state.type}>
+            <RadioBlocks options={options} activeOption={type} onOptionChange={this.setType} />
 
               {!type ? null : (
                 <Info>
@@ -169,7 +182,7 @@ class UnconnectedMarkerColor extends Component {
                     : _('Each point in a trace is colored according to data.')}
                 </Info>
               )}
-            </Field>
+            </Field> : null}
 
             {!type
               ? null

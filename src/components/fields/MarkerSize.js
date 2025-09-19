@@ -5,13 +5,14 @@ import {connectToContainer} from 'lib';
 import RadioBlocks from '../widgets/RadioBlocks';
 import Numeric from './Numeric';
 import DataSelector from './DataSelector';
-import {MULTI_VALUED} from 'lib/constants';
+import {MULTI_VALUED, ATTRS_WITH_DISABLED_VARIABLE_OPTION} from 'lib/constants';
 
 class UnconnectedMarkerSize extends Component {
   constructor(props, context) {
     super(props, context);
 
     let type = null;
+    let disableVariableOption = false;
     if (!props.container.marker || (props.container.marker && !props.container.marker.sizesrc)) {
       type = 'constant';
     } else if (
@@ -23,12 +24,23 @@ class UnconnectedMarkerSize extends Component {
       type = 'variable';
     }
 
+    // Disable 'variable' option for certain attrs in box and violin traces due to lack of support in plotly.js
+    if (
+      props.container.type &&
+      ATTRS_WITH_DISABLED_VARIABLE_OPTION[props.container.type] &&
+      ATTRS_WITH_DISABLED_VARIABLE_OPTION[props.container.type].includes(props.attr)
+    ) {
+      disableVariableOption = true;
+      type = 'constant';
+    }
+
     this.state = {
       type,
       value: {
         constant: type === 'constant' ? props.fullValue : '6',
         variable: type === 'variable' ? props.fullValue : null,
       },
+      disableVariableOption,
     };
 
     this.setType = this.setType.bind(this);
@@ -60,7 +72,7 @@ class UnconnectedMarkerSize extends Component {
   render() {
     const {attr, fullValue} = this.props;
     const {localize: _} = this.context;
-    const {type, value} = this.state;
+    const {type, value, disableVariableOption} = this.state;
     const options = [
       {label: _('Constant'), value: 'constant'},
       {label: _('Variable'), value: 'variable'},
@@ -70,7 +82,9 @@ class UnconnectedMarkerSize extends Component {
 
     return (
       <Field {...this.props} multiValued={multiValued} attr={attr}>
-        <RadioBlocks options={options} activeOption={type} onOptionChange={this.setType} />
+        {!disableVariableOption ? (
+          <RadioBlocks options={options} activeOption={type} onOptionChange={this.setType} />
+        ) : null}
         {type === 'constant' ? (
           <Numeric
             suppressMultiValuedMessage

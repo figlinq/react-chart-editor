@@ -190,3 +190,9 @@ export const COLOR_PICKER_SWATCH = [
 ];
 
 export const DEFAULT_COLORS = Object.values(COLORS);
+
+// These are attrs for which we want to disable the 'variable' option in MarkerSize and MarkerColor, dur to lack of support in plotly.js
+export const ATTRS_WITH_DISABLED_VARIABLE_OPTION = {
+  'box': ['marker.color', 'marker.size'],
+  'violin': ['marker.color', 'marker.size'],
+}
