@@ -1,4 +1,4 @@
-import {mdiChevronDown, mdiClose} from '@mdi/js';
+import {mdiChevronDown, mdiClose, mdiContentCopy} from '@mdi/js';
 import Icon from '@mdi/react';
 import FoldEmpty from './FoldEmpty';
 import PropTypes from 'prop-types';
@@ -30,6 +30,7 @@ export class Fold extends Component {
       folded,
       foldInfo,
       toggleFold,
+      duplicateFold,
       hideHeader,
       icon: PlotlyIcon,
       messageIfEmpty,
@@ -95,6 +96,17 @@ export class Fold extends Component {
                 </span>
               </div>
             )}
+            {typeof duplicateFold === 'function' && (
+              <div
+                className="fold__top__delete js-fold__duplicate"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  duplicateFold(foldInfo);
+                }}
+              >
+                <Icon path={mdiContentCopy} />
+              </div>
+            )}
             {canDelete && typeof deleteContainer === 'function' && (
               <div
                 className="fold__top__delete js-fold__delete"
@@ -141,6 +153,7 @@ Fold.propTypes = {
   name: PropTypes.string,
   canMoveUp: PropTypes.bool,
   canMoveDown: PropTypes.bool,
+  duplicateFold: PropTypes.func,
 };
 
 Fold.contextTypes = {
