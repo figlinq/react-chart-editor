@@ -4,7 +4,10 @@ import Button from 'components/widgets/Button';
 import PropTypes from 'prop-types';
 import {useState} from 'react';
 
-const PanelHeader = ({children, addAction, allowCollapse, toggleFolds, hasOpen}, context) => {
+const PanelHeader = (
+  {children, addAction, allowCollapse, toggleFolds, hasOpen, additionalButton},
+  context
+) => {
   const [addPanelOpen, setAddPanelOpen] = useState(false);
 
   const togglePanel = () => {
@@ -35,6 +38,7 @@ const PanelHeader = ({children, addAction, allowCollapse, toggleFolds, hasOpen},
             )}
           </div>
         )}
+        {additionalButton ? additionalButton : null}
 
         {Boolean(addAction) && (
           <div className="panel__header__action dropdown-container">
@@ -88,6 +92,7 @@ PanelHeader.propTypes = {
   children: PropTypes.node,
   hasOpen: PropTypes.bool,
   toggleFolds: PropTypes.func,
+  additionalButton: PropTypes.node,
 };
 
 export default PanelHeader;

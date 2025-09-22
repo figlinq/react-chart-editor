@@ -83,6 +83,7 @@ export class Panel extends Component {
           allowCollapse={this.props.showExpandCollapse && individualFoldStates.length > 1}
           toggleFolds={this.toggleFolds}
           hasOpen={individualFoldStates.some((s) => s === false)}
+          additionalButton={this.props.additionalButton}
         />
         <div className={bem('panel', 'content')}>
           {Children.map(this.props.children, (child, index) =>
@@ -113,6 +114,7 @@ Panel.propTypes = {
   showExpandCollapse: PropTypes.bool,
   canReorder: PropTypes.bool,
   collapsedOnStart: PropTypes.bool,
+  additionalButton: PropTypes.node,
 };
 
 Panel.defaultProps = {
