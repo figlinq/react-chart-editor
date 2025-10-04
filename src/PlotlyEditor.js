@@ -5,8 +5,6 @@ import PropTypes from 'prop-types';
 import {DEFAULT_FONTS} from 'lib/constants';
 import History from 'lib/history';
 
-const history = new History();
-
 class PlotlyEditor extends Component {
   constructor(props) {
     super();
@@ -14,9 +12,11 @@ class PlotlyEditor extends Component {
     this.PlotComponent = createPlotComponent(props.plotly);
     this.handleRender = this.handleRender.bind(this);
     this.handleRelayout = this.handleRelayout.bind(this);
+    this.history = new History();
   }
 
   handleRender(fig, graphDiv) {
+    this.history.setGraphDiv(graphDiv);
     this.setState({graphDiv});
     if (this.props.onRender) {
       this.props.onRender(graphDiv.data, graphDiv.layout, graphDiv._transitionData._frames);
@@ -24,7 +24,7 @@ class PlotlyEditor extends Component {
   }
 
   handleRelayout(update) {
-    history.addToUndoRelayout(update, this.state?.graphDiv || {});
+    this.history.addToUndoRelayout(update, this.state?.graphDiv || {});
   }
 
   render() {
@@ -53,6 +53,7 @@ class PlotlyEditor extends Component {
             showUndoRedo={this.props.showUndoRedo}
             onAddToUndo={this.props.onAddToUndo}
             onAddToRedo={this.props.onAddToRedo}
+            history={this.history}
           >
             {this.props.children}
           </EditorControls>

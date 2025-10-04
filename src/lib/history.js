@@ -27,28 +27,41 @@ const skipRelayout = (update) =>
   Object.keys(update)?.includes('autosize');
 
 export default class History {
-  // Sometimes we call constructor just to get access to the singleton instance, so arg is optional
   constructor(graphDiv = null, onAddToUndo = null, onAddToRedo = null) {
-    if (!History.instance) {
-      this.undoStack = [];
-      this.redoStack = [];
-      History.instance = this;
-    }
+    this.undoStack = [];
+    this.redoStack = [];
+    this.oldGraphDivLayout = graphDiv?.layout ? structuredClone(graphDiv.layout) : {};
+    this.onAddToUndo = onAddToUndo;
+    this.onAddToRedo = onAddToRedo;
+  }
 
-    if (graphDiv) {
-      // Stores the graphDiv layout after every action - needed for relayout undo
-      // The last call will have the latest graphDiv before modifications.
-      History.instance.oldGraphDivLayout = structuredClone(graphDiv.layout);
-    }
+  setCallbacks(onAddToUndo = null, onAddToRedo = null) {
+    this.onAddToUndo = onAddToUndo;
+    this.onAddToRedo = onAddToRedo;
+  }
 
-    if (onAddToUndo) {
-      History.instance.onAddToUndo = onAddToUndo;
-    }
-    if (onAddToRedo) {
-      History.instance.onAddToRedo = onAddToRedo;
-    }
+  setGraphDiv(graphDiv = null) {
+    this.oldGraphDivLayout = graphDiv?.layout ? structuredClone(graphDiv.layout) : {};
+  }
 
-    return History.instance;
+  getState() {
+    return {
+      undoStack: structuredClone(this.undoStack),
+      redoStack: structuredClone(this.redoStack),
+      oldGraphDivLayout: structuredClone(this.oldGraphDivLayout || {}),
+    };
+  }
+
+  setState({undoStack = [], redoStack = [], oldGraphDivLayout = {}} = {}) {
+    this.undoStack = structuredClone(undoStack);
+    this.redoStack = structuredClone(redoStack);
+    this.oldGraphDivLayout = structuredClone(oldGraphDivLayout);
+  }
+
+  reset() {
+    this.undoStack = [];
+    this.redoStack = [];
+    this.oldGraphDivLayout = {};
   }
 
   reverseAction({type, payload, canBeOptimizedAway}, oldGraphDiv, graphDiv, operationType) {
@@ -199,7 +212,7 @@ export default class History {
     if (undoAction) {
       this.undoStack.push(undoAction);
       if (this.onAddToUndo) {
-        this.onAddToUndo(undoAction);
+        this.onAddToUndo(undoAction, this.getState());
       }
     }
   }
@@ -213,7 +226,7 @@ export default class History {
     );
     this.redoStack.push(redoAction);
     if (this.onAddToRedo) {
-      this.onAddToRedo(redoAction);
+      this.onAddToRedo(redoAction, this.getState());
     }
   }
 
@@ -245,7 +258,7 @@ export default class History {
       if (undoAction) {
         this.undoStack.push(undoAction);
         if (this.onAddToUndo) {
-          this.onAddToUndo(undoAction);
+          this.onAddToUndo(undoAction, this.getState());
         }
       }
     }

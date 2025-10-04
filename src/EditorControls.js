@@ -40,7 +40,38 @@ class EditorControls extends Component {
       this.plotSchema = props.plotly.PlotSchema.get();
     }
 
-    this.history = new History(props.graphDiv, props.onAddToUndo, props.onAddToRedo);
+    this.history = props.history ? props.history : new History();
+    this.history.setCallbacks(props.onAddToUndo, props.onAddToRedo);
+    this.history.setGraphDiv(props.graphDiv);
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.graphDiv !== prevProps.graphDiv) {
+      this.history.setGraphDiv(this.props.graphDiv);
+    }
+
+    if (
+      this.props.onAddToUndo !== prevProps.onAddToUndo ||
+      this.props.onAddToRedo !== prevProps.onAddToRedo
+    ) {
+      this.history.setCallbacks(this.props.onAddToUndo, this.props.onAddToRedo);
+    }
+  }
+
+  getHistoryState() {
+    return this.history.getState();
+  }
+
+  setHistoryState(state) {
+    this.history.setState(state);
+  }
+
+  resetHistory() {
+    this.history.reset();
+  }
+
+  getHistory() {
+    return this.history;
   }
 
   getChildContext() {
@@ -445,6 +476,7 @@ EditorControls.propTypes = {
   showUndoRedo: PropTypes.bool,
   onAddToUndo: PropTypes.func,
   onAddToRedo: PropTypes.func,
+  history: PropTypes.instanceOf(History),
 };
 
 EditorControls.defaultProps = {
