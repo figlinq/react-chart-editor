@@ -37,6 +37,8 @@ export class Fold extends Component {
       name,
       canMoveUp,
       canMoveDown,
+      topStyleOverrides,
+      titleStyleOverrides,
     } = this.props;
 
     return (
@@ -47,6 +49,7 @@ export class Fold extends Component {
               'fold__top--open': !folded,
             })}
             onClick={toggleFold}
+            style={topStyleOverrides}
           >
             <div className="fold__top__arrow-title">
               <div
@@ -59,7 +62,7 @@ export class Fold extends Component {
                 </div>
               </div>
               {PlotlyIcon && <PlotlyIcon className="fold__top__icon" />}
-              <div className="fold__top__title">{striptags(name)}</div>
+              <div className="fold__top__title" style={titleStyleOverrides}>{striptags(name)}</div>
             </div>
             {(canMoveDown || canMoveUp) && (
               <div className="fold__top__moving-controls">
@@ -154,6 +157,8 @@ Fold.propTypes = {
   canMoveUp: PropTypes.bool,
   canMoveDown: PropTypes.bool,
   duplicateFold: PropTypes.func,
+  topStyleOverrides: PropTypes.object,
+  titleStyleOverrides: PropTypes.object,
 };
 
 Fold.contextTypes = {
