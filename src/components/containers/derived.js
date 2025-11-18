@@ -2,11 +2,7 @@ import PlotlyPanel from './PlotlyPanel';
 import PlotlySection from './PlotlySection';
 import PropTypes from 'prop-types';
 
-import {
-  connectLayoutToPlot,
-  containerConnectedContextTypes,
-  plotlyTraceToCustomTrace,
-} from 'lib';
+import {connectLayoutToPlot, containerConnectedContextTypes, plotlyTraceToCustomTrace} from 'lib';
 
 const LayoutPanel = connectLayoutToPlot(PlotlyPanel);
 const LayoutSection = connectLayoutToPlot(PlotlySection);
@@ -15,12 +11,9 @@ const TraceTypeSection = (props, context) => {
   const {fullContainer, fullData} = context;
   const {mode, traceTypes, excludeCustomTypes = []} = props;
 
-  const customContainerType = fullContainer
-    ? plotlyTraceToCustomTrace(fullContainer)
-    : null;
+  const customContainerType = fullContainer ? plotlyTraceToCustomTrace(fullContainer) : null;
 
-  const matchesTraceType = (candidate) =>
-    candidate && (traceTypes || []).includes(candidate);
+  const matchesTraceType = (candidate) => candidate && (traceTypes || []).includes(candidate);
 
   const customExcluded = customContainerType && excludeCustomTypes.includes(customContainerType);
 

@@ -33,14 +33,14 @@ This module's entry point is a React component called `<PlotlyEditor />` which c
 
 Select the **Bar with Points** trace type to pair a jittered box/point display with a computed bar that can show either the mean or the median of the underlying data. The editor automatically inserts the supporting bar trace, hides it from the Traces panel, and wires it up so that:
 
-* The Create and Style panels expose Statistic (Mean or Median) and Error Metric (SEM or SD) dropdowns that recompute the overlaid bar and its whiskers.
-* Error bars and other visual properties of the computed bar can still be styled from the Traces → Style tab by selecting the overlaid bar trace.
-* Deleting or duplicating the parent trace automatically manages the related computed bar, so the experience feels like working with a single trace.
+- The Create and Style panels expose Statistic (Mean or Median) and Error Metric (SEM or SD) dropdowns that recompute the overlaid bar and its whiskers.
+- Error bars and other visual properties of the computed bar can still be styled from the Traces → Style tab by selecting the overlaid bar trace.
+- Deleting or duplicating the parent trace automatically manages the related computed bar, so the experience feels like working with a single trace.
 
 ## Styling the `<DefaultEditor />` and the built-in components
 
-* Import editor styles with `import 'react-chart-editor/lib/react-chart-editor.min.css'`
-* Interested in [theming](https://github.com/figlinq/react-chart-editor/tree/master/THEMING.md)?
+- Import editor styles with `import 'react-chart-editor/lib/react-chart-editor.min.css'`
+- Interested in [theming](https://github.com/figlinq/react-chart-editor/tree/master/THEMING.md)?
 
 ## Development Setup
 
@@ -72,26 +72,26 @@ The [custom editor example](https://github.com/figlinq/react-chart-editor/tree/m
 
 ### General-purpose Containers
 
-* `<PanelMenuWrapper />`: renders as a sidebar selector menu for `<Panel />`s
-* `<PlotlyPanel />`: renders as a generic rectangular container with special handling for collapsing/expanding child `<Fold />`s and optionally an 'add' button for creating them, has special [visibility rules](https://github.com/figlinq/react-chart-editor/tree/master/src/components/containers/__tests__/ConnectedContainersVisibility-test.js) that depend on plotly figure
-* `<PlotlyFold />`: collapsable container within a `<Panel />`, has special [visibility rules](https://github.com/figlinq/react-chart-editor/tree/master/src/components/containers/__tests__/ConnectedContainersVisibility-test.js) that depend on plotly figure
-* `<PlotlySection />`: uncollapsable container within a `<Panel />` or `<Fold />`, has special [visibility rules](https://github.com/figlinq/react-chart-editor/tree/master/src/components/containers/__tests__/ConnectedContainersVisibility-test.js) that depend on plotly figure
-* `<Panel/>`, `<Fold/>`, `<Section/>`: same as `PlotlyPanel`, `PlotlyFold`, `PlotlySection`, but there are no special visibility rules, those containers [always show, and always show their children](https://github.com/figlinq/react-chart-editor/tree/master/src/components/containers/__tests__/UnconnectedContainersVisibility-test.js), but Fold does not have the canDelete functionality as its context related
-* `<SingleSidebarItem/>`: wraps any item you would like to see appear in the sidebar menu.
+- `<PanelMenuWrapper />`: renders as a sidebar selector menu for `<Panel />`s
+- `<PlotlyPanel />`: renders as a generic rectangular container with special handling for collapsing/expanding child `<Fold />`s and optionally an 'add' button for creating them, has special [visibility rules](https://github.com/figlinq/react-chart-editor/tree/master/src/components/containers/__tests__/ConnectedContainersVisibility-test.js) that depend on plotly figure
+- `<PlotlyFold />`: collapsable container within a `<Panel />`, has special [visibility rules](https://github.com/figlinq/react-chart-editor/tree/master/src/components/containers/__tests__/ConnectedContainersVisibility-test.js) that depend on plotly figure
+- `<PlotlySection />`: uncollapsable container within a `<Panel />` or `<Fold />`, has special [visibility rules](https://github.com/figlinq/react-chart-editor/tree/master/src/components/containers/__tests__/ConnectedContainersVisibility-test.js) that depend on plotly figure
+- `<Panel/>`, `<Fold/>`, `<Section/>`: same as `PlotlyPanel`, `PlotlyFold`, `PlotlySection`, but there are no special visibility rules, those containers [always show, and always show their children](https://github.com/figlinq/react-chart-editor/tree/master/src/components/containers/__tests__/UnconnectedContainersVisibility-test.js), but Fold does not have the canDelete functionality as its context related
+- `<SingleSidebarItem/>`: wraps any item you would like to see appear in the sidebar menu.
 
 ### General-purpose Fields
 
 All Fields except `<Info />` accept an `attr` property to bind them to a key in the figure (see https://plot.ly/javascript/reference/ for exhaustive documentation of figure keys). This property can be a `.`-delimited path to a leaf, starting at the context-appropriate point in the figure for the parent container (see connector functions below).
 
-* `<Info />`: renders its children as HTML, useful for displaying help text
-* `<Numeric />`: renders as a text field with arrows and units, useful for numeric values
-* `<Radio />`: renders as a button group, useful for mutually-exclusive low-cardinality enumerable values
-* `<Dropdown />`: renders as a dropdown menu useful for mutually-exclusive high-cardinality enumerable values
-* `<Dropzone/>`: renders a dropzone component to drag and drop files to load
-* `<ColorPicker />`: renders as a popup color-picker, useful for CSS color hex value strings
-* `<ColorscalePicker />`: npm module [react-colorscales](https://github.com/figlinq/react-colorscales)
-* `<Flaglist />`: renders as a list of checkboxes, useful for `+`-joined flag lists like `data[].mode`
-* `<TextEditor />`: renders as a WYSIWYG editor, useful for text like `layout.title`, takes props: `latexOnly`, `richTextOnly`, `htmlOnly` if no format props given, defaults to the `MultiFormat` text editor (latex && richText && html)
+- `<Info />`: renders its children as HTML, useful for displaying help text
+- `<Numeric />`: renders as a text field with arrows and units, useful for numeric values
+- `<Radio />`: renders as a button group, useful for mutually-exclusive low-cardinality enumerable values
+- `<Dropdown />`: renders as a dropdown menu useful for mutually-exclusive high-cardinality enumerable values
+- `<Dropzone/>`: renders a dropzone component to drag and drop files to load
+- `<ColorPicker />`: renders as a popup color-picker, useful for CSS color hex value strings
+- `<ColorscalePicker />`: npm module [react-colorscales](https://github.com/figlinq/react-colorscales)
+- `<Flaglist />`: renders as a list of checkboxes, useful for `+`-joined flag lists like `data[].mode`
+- `<TextEditor />`: renders as a WYSIWYG editor, useful for text like `layout.title`, takes props: `latexOnly`, `richTextOnly`, `htmlOnly` if no format props given, defaults to the `MultiFormat` text editor (latex && richText && html)
 
 <p align="center">
   <img src="examples/components.png" alt="Components" width="432" height="692" border="1">
@@ -101,57 +101,57 @@ All Fields except `<Info />` accept an `attr` property to bind them to a key in 
 
 Simple component that takes in props and renders.
 
-* `<Button/>`: simple button component, useful when combined with `<SingleSidebarItem/>` to add as menu item
+- `<Button/>`: simple button component, useful when combined with `<SingleSidebarItem/>` to add as menu item
 
 ### Special-Purpose Containers
 
-* `<TraceAccordion />`: `<Panel />` whose children are replicated into `<Folds />` connected to traces via `connectTraceToPlot()`.
-* `<LayoutPanel />`: `<Panel />` whose children are connected to the `layout` figure key
-* `<LayoutSection />`: `<Section />` whose children are connected to the `layout` figure key
-* `<TraceRequiredPanel />`: `<LayoutPanel />` renders `<PanelEmpty />` if no trace data is set, can add extra conditions (i.e. an array of functions that will be run) with the `extraConditions` prop and a matching array with extraEmptyPanelMessages to show when those conditions are not met.
-* `<AnnotationAccordion />`: `<Panel />` whose children are replicated into `<Folds />` connected to annotations via `connectAnnotationToLayout()`. For use in a `<LayoutPanel />`.
-* `<ShapeAccordion />`: `<Panel />` whose children are replicated into `<Folds />` connected to shapes via `connectShapeToLayout()`. For use in a `<LayoutPanel />`.
-* `<ImageAccordion />`: `<Panel />` whose children are replicated into `<Folds />` connected to images via `connectImageToLayout()`. For use in a `<LayoutPanel />`.
-* `<AxesFold />`: `<Fold />` whose children are bound to axis-specific keys. For use in a `<LayoutPanel />`; and automatically contains an `<AxesSelector />` (see below).
-* `<TraceMarkerSection />`: `<Section />` with trace-specific name handling. For use in containers bound to traces e.g. as children of `<TraceAccordion />`.
+- `<TraceAccordion />`: `<Panel />` whose children are replicated into `<Folds />` connected to traces via `connectTraceToPlot()`.
+- `<LayoutPanel />`: `<Panel />` whose children are connected to the `layout` figure key
+- `<LayoutSection />`: `<Section />` whose children are connected to the `layout` figure key
+- `<TraceRequiredPanel />`: `<LayoutPanel />` renders `<PanelEmpty />` if no trace data is set, can add extra conditions (i.e. an array of functions that will be run) with the `extraConditions` prop and a matching array with extraEmptyPanelMessages to show when those conditions are not met.
+- `<AnnotationAccordion />`: `<Panel />` whose children are replicated into `<Folds />` connected to annotations via `connectAnnotationToLayout()`. For use in a `<LayoutPanel />`.
+- `<ShapeAccordion />`: `<Panel />` whose children are replicated into `<Folds />` connected to shapes via `connectShapeToLayout()`. For use in a `<LayoutPanel />`.
+- `<ImageAccordion />`: `<Panel />` whose children are replicated into `<Folds />` connected to images via `connectImageToLayout()`. For use in a `<LayoutPanel />`.
+- `<AxesFold />`: `<Fold />` whose children are bound to axis-specific keys. For use in a `<LayoutPanel />`; and automatically contains an `<AxesSelector />` (see below).
+- `<TraceMarkerSection />`: `<Section />` with trace-specific name handling. For use in containers bound to traces e.g. as children of `<TraceAccordion />`.
 
 ### Special-Purpose Fields
 
 For use in containers bound to traces e.g. as children of `<TraceAccordion />`:
 
-* `<DataSelector />`: renders as a `<Dropdown />` coupled to `data[].*src` etc, triggers `onUpdateTraces` when changed
-* `<TraceSelector />`: renders as a `<Dropdown />` useful for `data[].type`
-* `<LineDashSelector />`: renders as a `<Dropdown />` useful for `data[].line.dash`
-* `<LineShapeSelector />`: renders as a `<Dropdown />` useful for `data[].line.shape`
-* `<SymbolSelector />`: renders as a `<Dropdown />` useful for `data[].marker.symbol`
-* `<PositioningRef />`: renders as a `<Dropdown />` useful for `layout.*.xref/yref` where the allowable values are `paper|[axis]`
-* `<ErrorBars/>`: renders a set of controls that control a trace's error bars (`visibility`, `type`, `value`, `valueminus`, `array`, `arrayminus`)
+- `<DataSelector />`: renders as a `<Dropdown />` coupled to `data[].*src` etc, triggers `onUpdateTraces` when changed
+- `<TraceSelector />`: renders as a `<Dropdown />` useful for `data[].type`
+- `<LineDashSelector />`: renders as a `<Dropdown />` useful for `data[].line.dash`
+- `<LineShapeSelector />`: renders as a `<Dropdown />` useful for `data[].line.shape`
+- `<SymbolSelector />`: renders as a `<Dropdown />` useful for `data[].marker.symbol`
+- `<PositioningRef />`: renders as a `<Dropdown />` useful for `layout.*.xref/yref` where the allowable values are `paper|[axis]`
+- `<ErrorBars/>`: renders a set of controls that control a trace's error bars (`visibility`, `type`, `value`, `valueminus`, `array`, `arrayminus`)
 
 For use in containers bound to layout:
 
-* `<FontSelector />`: renders as a `<Dropdown />` whose options are rendered in the selected font
-* `<CanvasSize />`: renders as a `<Numeric />` with visibility coupled to `layout.autosize`
+- `<FontSelector />`: renders as a `<Dropdown />` whose options are rendered in the selected font
+- `<CanvasSize />`: renders as a `<Numeric />` with visibility coupled to `layout.autosize`
 
 For use in containers bound to axes:
 
-* `<AxesSelector />`: renders as a `<Radio />` to select one or all axes. Must be in a container bound to a figure via `connectAxesToPlot()` and sets that container's context such that its children are bound to either all axes or just the selected one. `<AxesFold>`s automatically contain this component.
-* `<AxesRange />`: numeric with visibility coupled to `layout.*axis.autorange`
+- `<AxesSelector />`: renders as a `<Radio />` to select one or all axes. Must be in a container bound to a figure via `connectAxesToPlot()` and sets that container's context such that its children are bound to either all axes or just the selected one. `<AxesFold>`s automatically contain this component.
+- `<AxesRange />`: numeric with visibility coupled to `layout.*axis.autorange`
 
 For use in containers bound to annotations e.g. as children of `<AnnotationAccordion />`:
 
-* `<AnnotationRef />`: renders as a `<Dropdown />` useful for `layout.annotations[].xref`, `layout.annotations[].yref`
-* `<AnnotationArrowRef />`: renders as a `<Dropdown />` useful for `layout.annotations[].axref`, `layout.annotations[].ayref`
-* `<ArrowSelector />`: renders as a `<Dropdown />` useful for `layout.annotations[].arrowhead`
+- `<AnnotationRef />`: renders as a `<Dropdown />` useful for `layout.annotations[].xref`, `layout.annotations[].yref`
+- `<AnnotationArrowRef />`: renders as a `<Dropdown />` useful for `layout.annotations[].axref`, `layout.annotations[].ayref`
+- `<ArrowSelector />`: renders as a `<Dropdown />` useful for `layout.annotations[].arrowhead`
 
 ### Connector functions
 
-* `connectToContainer( Component )`: returns a field component that can be bound to a figure value via the `attr` prop.
-* `connectTraceToPlot( Container )`: returns a wrapped container component that can be bound to a figure trace such that its children are bound to that trace's figure entry under the `data` key, e.g. `<TraceAccordion />` above.
-* `connectLayoutToPlot( Container )`: returns a wrapped container component that can be bound to a figure such that its children are bound to that figure's layout under the `layout` key.
-* `connectAxesToLayout( Container )`: returns a wrapped container component that should contain an `<AxesSelector />` field (see above) and can be bound to a figure such that its children are bound to that figure's axes entries under the `layout.*axis` keys.
-* `connectAnnotationToLayout( Container )`: returns a wrapped container component that can be bound to a figure annotation such that its children are bound to that annotation's figure entry under the `layout.annotations` key, e.g. the `<Fold>`s in `<AnnotationAccordion />` above.
-* `connectShapeToLayout( Container )`: returns a wrapped container component that can be bound to a shape such that its children are bound to that shape's figure entry under the `layout.shapes` key, e.g. the `<Fold>`s in `<ShapeAccordion />` above.
-* `connectImagesToLayout( Container )`: returns a wrapped container component that can be bound to an image such that its children are bound to that image's figure entry under the `layout.image` key, e.g. the `<Fold>`s in `<ImageAccordion />` above.
+- `connectToContainer( Component )`: returns a field component that can be bound to a figure value via the `attr` prop.
+- `connectTraceToPlot( Container )`: returns a wrapped container component that can be bound to a figure trace such that its children are bound to that trace's figure entry under the `data` key, e.g. `<TraceAccordion />` above.
+- `connectLayoutToPlot( Container )`: returns a wrapped container component that can be bound to a figure such that its children are bound to that figure's layout under the `layout` key.
+- `connectAxesToLayout( Container )`: returns a wrapped container component that should contain an `<AxesSelector />` field (see above) and can be bound to a figure such that its children are bound to that figure's axes entries under the `layout.*axis` keys.
+- `connectAnnotationToLayout( Container )`: returns a wrapped container component that can be bound to a figure annotation such that its children are bound to that annotation's figure entry under the `layout.annotations` key, e.g. the `<Fold>`s in `<AnnotationAccordion />` above.
+- `connectShapeToLayout( Container )`: returns a wrapped container component that can be bound to a shape such that its children are bound to that shape's figure entry under the `layout.shapes` key, e.g. the `<Fold>`s in `<ShapeAccordion />` above.
+- `connectImagesToLayout( Container )`: returns a wrapped container component that can be bound to an image such that its children are bound to that image's figure entry under the `layout.image` key, e.g. the `<Fold>`s in `<ImageAccordion />` above.
 
 ### Action History
 
@@ -188,8 +188,8 @@ Once you have your tokens, you can provide it as a config prop to the `<PlotlyEd
 
 ## See also
 
-* [plotly.js](https://github.com/plotly/plotly.js)
-* [react-plotly.js](https://github.com/plotly/react-plotly.js)
+- [plotly.js](https://github.com/plotly/plotly.js)
+- [react-plotly.js](https://github.com/plotly/react-plotly.js)
 
 ## License
 

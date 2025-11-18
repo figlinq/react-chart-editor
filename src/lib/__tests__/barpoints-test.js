@@ -1,9 +1,5 @@
 /* eslint-disable no-magic-numbers */
-import {
-  syncBarWithPointsTraces,
-  BAR_POINTS_TRANSFORM,
-  BAR_POINTS_OVERLAY_KEY,
-} from '../barpoints';
+import {syncBarWithPointsTraces, BAR_POINTS_TRANSFORM, BAR_POINTS_OVERLAY_KEY} from '../barpoints';
 
 const DEFAULT_VALUES = [1, 2, 3, 4];
 const DEFAULT_CATEGORIES = ['G1', 'G1', 'G2', 'G2'];
