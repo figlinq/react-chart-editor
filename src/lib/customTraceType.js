@@ -12,7 +12,9 @@ export function plotlyTraceToCustomTrace(trace) {
       : trace.type
     : 'scatter';
 
-  if (
+  if (type === 'box' && trace.barpoints && trace.barpoints.enabled) {
+    return 'bar-with-points';
+  } else if (
     (type === 'scatter' || type === 'scattergl') &&
     (![null, undefined, ''].includes(trace.stackgroup) || // eslint-disable-line no-undefined
       ['tozeroy', 'tozerox', 'tonexty', 'tonextx', 'toself', 'tonext'].includes(trace.fill))
@@ -38,7 +40,26 @@ export function traceTypeToPlotlyInitFigure(traceType, gl = '') {
     area: {type: 'scatter' + gl, mode: 'lines', stackgroup: 1},
     scatterpolar: {type: 'scatterpolar' + gl},
     waterfall: {type: 'waterfall', orientation: 'v'},
-    box: {type: 'box', boxpoints: false},
+    box: {type: 'box', boxpoints: false, barpoints: null},
+    'bar-with-points': {
+      type: 'box',
+      name: 'Bar with Points',
+      boxpoints: 'all',
+      jitter: 0.4,
+      pointpos: 0,
+      marker: {
+        opacity: 0.85,
+        line: {color: '#000', width: 1},
+      },
+      line: {width: 0, color: 'rgba(0,0,0,0)'},
+      fillcolor: 'rgba(0,0,0,0)',
+      showlegend: false,
+      barpoints: {
+        enabled: true,
+        statistic: 'mean',
+        errorMetric: 'sem',
+      },
+    },
     violin: {type: 'violin', bandwidth: 0},
     line3d: {type: 'scatter3d', mode: 'lines'},
     scatter3d: {type: 'scatter3d', mode: 'markers'},

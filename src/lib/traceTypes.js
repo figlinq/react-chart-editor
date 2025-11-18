@@ -126,6 +126,11 @@ export const traceTypes = (_) => [
     category: chartCategory(_).DISTRIBUTIONS,
   },
   {
+    value: 'bar-with-points',
+    label: _('Bar with Points'),
+    category: chartCategory(_).DISTRIBUTIONS,
+  },
+  {
     value: 'violin',
     label: _('Violin'),
     category: chartCategory(_).DISTRIBUTIONS,

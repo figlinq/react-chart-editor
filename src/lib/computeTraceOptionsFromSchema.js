@@ -155,6 +155,14 @@ function computeTraceOptionsFromSchema(schema, _, context) {
     value: 'line3d',
   });
 
+  const barIndex = traceIndex('box');
+  if (barIndex !== -1) {
+    traceOptions.splice(barIndex + 1, 0, {
+      label: _('Bar with Points'),
+      value: 'bar-with-points',
+    });
+  }
+
   if (context.config && context.config.mapboxAccessToken) {
     traceOptions.push({
       value: 'scattermapbox',

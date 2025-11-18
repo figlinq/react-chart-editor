@@ -28,6 +28,7 @@ import {categoryLayout, traceTypes} from 'lib/traceTypes';
 import {ModalProvider} from 'components/containers';
 import {DEFAULT_FONTS} from 'lib/constants';
 import History from 'lib/history';
+import {syncBarWithPointsTraces} from './lib/barpoints';
 
 class EditorControls extends Component {
   constructor(props, context) {
@@ -399,6 +400,11 @@ class EditorControls extends Component {
 
       default:
         throw new Error(this.localize('must specify an action type to handleEditorUpdate'));
+    }
+
+    syncBarWithPointsTraces(graphDiv);
+    if (Array.isArray(graphDiv?.data)) {
+      updatedData = graphDiv.data.slice();
     }
 
     if (onUpdate) {

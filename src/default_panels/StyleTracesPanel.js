@@ -337,7 +337,12 @@ const StyleTracesPanel = (props, {localize: _}) => (
       <Numeric label={_('Offset')} attr="offset" />
       <Numeric label={_('Width')} attr="width" />
     </PlotlySection>
-    <TraceTypeSection name={_('Box Size and Spacing')} traceTypes={['box']} mode="trace">
+    <TraceTypeSection
+      name={_('Box Size and Spacing')}
+      traceTypes={['box']}
+      mode="trace"
+      excludeCustomTypes={['bar-with-points']}
+    >
       <LayoutSection attr="name">
         <Radio
           label={_('Box Mode')}
@@ -365,7 +370,37 @@ const StyleTracesPanel = (props, {localize: _}) => (
         <NumericFraction label={_('Violin Padding')} attr="violingroupgap" />
       </LayoutSection>
     </TraceTypeSection>
-    <NumericFraction label={_('Whisker Width')} attr="whiskerwidth" />
+    <TraceTypeSection
+      traceTypes={['box', 'violin']}
+      mode="trace"
+      excludeCustomTypes={['bar-with-points']}
+    >
+      <NumericFraction label={_('Whisker Width')} attr="whiskerwidth" />
+    </TraceTypeSection>
+    <TraceTypeSection
+      name={_('Bar with Points Settings')}
+      traceTypes={['bar-with-points']}
+      mode="trace"
+    >
+      <Dropdown
+        label={_('Statistic')}
+        attr="barpoints.statistic"
+        options={[
+          {label: _('Mean'), value: 'mean'},
+          {label: _('Median'), value: 'median'},
+        ]}
+        clearable={false}
+      />
+      <Dropdown
+        label={_('Error Metric')}
+        attr="barpoints.errorMetric"
+        options={[
+          {label: _('Standard Error'), value: 'sem'},
+          {label: _('Standard Deviation'), value: 'sd'},
+        ]}
+        clearable={false}
+      />
+    </TraceTypeSection>
     <TraceMarkerSection>
       <Radio
         label={_('Order')}
@@ -603,6 +638,7 @@ const StyleTracesPanel = (props, {localize: _}) => (
         'histogram2dcontour',
       ]}
       mode="trace"
+      excludeCustomTypes={['bar-with-points']}
     >
       <Numeric label={_('Width')} attr="line.width" />
       <MultiColorPicker label={_('Color')} attr="line.color" />
@@ -631,7 +667,12 @@ const StyleTracesPanel = (props, {localize: _}) => (
       <FillDropdown attr="fill" label={_('Fill to')} />
       <MultiColorPicker label={_('Color')} attr="fillcolor" />
     </PlotlySection>
-    <PlotlySection name={_('Notches')}>
+    <TraceTypeSection
+      name={_('Notches')}
+      traceTypes={['box']}
+      mode="trace"
+      excludeCustomTypes={['bar-with-points']}
+    >
       <Radio
         attr="notched"
         options={[
@@ -640,7 +681,7 @@ const StyleTracesPanel = (props, {localize: _}) => (
         ]}
       />
       <Numeric label={_('Width')} attr="notchwidth" min={0} max={0.5} step={0.1} />
-    </PlotlySection>
+    </TraceTypeSection>
     <TraceTypeSection
       name={_('Text')}
       traceTypes={allTraceTypes.filter(
@@ -830,7 +871,12 @@ const StyleTracesPanel = (props, {localize: _}) => (
         ]}
       />
     </PlotlySection>
-    <PlotlySection name={_('Box Mean')}>
+    <TraceTypeSection
+      name={_('Box Mean')}
+      traceTypes={['box']}
+      mode="trace"
+      excludeCustomTypes={['bar-with-points']}
+    >
       <Radio
         attr="boxmean"
         options={[
@@ -839,8 +885,13 @@ const StyleTracesPanel = (props, {localize: _}) => (
           {label: _('None'), value: false},
         ]}
       />
-    </PlotlySection>
-    <PlotlySection name={_('Box')}>
+    </TraceTypeSection>
+    <TraceTypeSection
+      name={_('Box')}
+      traceTypes={['box']}
+      mode="trace"
+      excludeCustomTypes={['bar-with-points']}
+    >
       <Radio
         attr="box.visible"
         options={[
@@ -852,8 +903,13 @@ const StyleTracesPanel = (props, {localize: _}) => (
       <MultiColorPicker label={_('Box Fill Color')} attr="box.color" />
       <NumericFraction label={_('Box Line Width')} attr="box.line.width" />
       <MultiColorPicker label={_('Box Line Color')} attr="box.line.color" />
-    </PlotlySection>
-    <PlotlySection name={_('Meanline')}>
+    </TraceTypeSection>
+    <TraceTypeSection
+      name={_('Meanline')}
+      traceTypes={['box']}
+      mode="trace"
+      excludeCustomTypes={['bar-with-points']}
+    >
       <Radio
         attr="meanline.visible"
         options={[
@@ -863,7 +919,7 @@ const StyleTracesPanel = (props, {localize: _}) => (
       />
       <NumericFraction label={_('Meanline Width')} attr="meanline.width" />
       <MultiColorPicker label={_('Meanline Color')} attr="meanline.color" />
-    </PlotlySection>
+    </TraceTypeSection>
     <PlotlySection name={_('Nodes')}>
       <ColorArrayPicker label={_('Color')} attr="node.color" />
       <Numeric label={_('Padding')} attr="node.pad" min={0} />

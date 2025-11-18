@@ -29,6 +29,14 @@ See more examples
 
 This module's entry point is a React component called `<PlotlyEditor />` which connects an instance of `<EditorControls />` to a [plotly.js](https://plot.ly/javascript/)-powered `<Plot />` component care of [`react-plotly.js`](https://github.com/figlinq/react-plotly.js). `<PlotlyEditor />` accepts as children React components whose descendents are input elements wrapped via `connectToContainer()` calls so as to bind them to the `<Plot />`'s figure's values. If no children are passed to the `<PlotlyEditor />`, the `<DefaultEditor />` is used. This module also exposes the [building block components](#Built-in-Components) that comprise the `<DefaultEditor />` so that developers can create their own customized editors.
 
+### Bar with Points trace
+
+Select the **Bar with Points** trace type to pair a jittered box/point display with a computed bar that can show either the mean or the median of the underlying data. The editor automatically inserts the supporting bar trace, hides it from the Traces panel, and wires it up so that:
+
+* The Create and Style panels expose Statistic (Mean or Median) and Error Metric (SEM or SD) dropdowns that recompute the overlaid bar and its whiskers.
+* Error bars and other visual properties of the computed bar can still be styled from the Traces → Style tab by selecting the overlaid bar trace.
+* Deleting or duplicating the parent trace automatically manages the related computed bar, so the experience feels like working with a single trace.
+
 ## Styling the `<DefaultEditor />` and the built-in components
 
 * Import editor styles with `import 'react-chart-editor/lib/react-chart-editor.min.css'`

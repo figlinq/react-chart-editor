@@ -198,7 +198,8 @@ export const shamefullyDeleteRelatedAnalysisTransforms = (graphDiv, payload) => 
         d.transforms &&
         d.transforms.some(
           (transform) =>
-            ['moving-average', 'fit'].includes(transform.type) && transform.inputUid === parentUid
+            ['moving-average', 'fit', 'bar-with-points'].includes(transform.type) &&
+            transform.inputUid === parentUid
         )
       ) {
         relatedAnalysisTraceIndexes.push(i);

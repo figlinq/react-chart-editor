@@ -192,7 +192,9 @@ export const getFullTrace = ({fullDataArrayPosition, traceIndexes}, {fullData, d
     // what we want
     if (
       fullTrace?.transforms &&
-      !fullTrace.transforms.some((t) => ['moving-average', 'fits'].includes(t.type)) &&
+      !fullTrace.transforms.some((t) =>
+        ['moving-average', 'fits', 'bar-with-points'].includes(t.type)
+      ) &&
       !fullDataArrayPosition
     ) {
       fullTrace = fullTrace._fullInput;

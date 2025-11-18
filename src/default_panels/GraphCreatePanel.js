@@ -24,7 +24,10 @@ const GraphCreatePanel = (props, {localize: _, setPanel}) => (
   <TraceAccordion
     canAdd
     traceFilterCondition={(t) =>
-      !(t.transforms && t.transforms.some((tr) => ['fit', 'moving-average'].includes(tr.type)))
+      !(
+        t.transforms &&
+        t.transforms.some((tr) => ['fit', 'moving-average', 'bar-with-points'].includes(tr.type))
+      )
     }
     canReorder
   >
@@ -35,7 +38,26 @@ const GraphCreatePanel = (props, {localize: _, setPanel}) => (
     <DataSelector label={_('Values')} attr="values" />
     <DataSelector label={_('Labels')} attr="labels" />
     <DataSelector label={_('Parents')} attr="parents" />
-
+    <TraceTypeSection traceTypes={['bar-with-points']} mode="trace">
+      <Dropdown
+        label={_('Statistic')}
+        attr="barpoints.statistic"
+        options={[
+          {label: _('Mean'), value: 'mean'},
+          {label: _('Median'), value: 'median'},
+        ]}
+        clearable={false}
+      />
+      <Dropdown
+        label={_('Error Metric')}
+        attr="barpoints.errorMetric"
+        options={[
+          {label: _('Standard Error'), value: 'sem'},
+          {label: _('Standard Deviation'), value: 'sd'},
+        ]}
+        clearable={false}
+      />
+    </TraceTypeSection>
     <TraceTypeSection traceTypes={['sunburst', 'treemap']} mode="trace">
       <DataSelector label={_('IDs')} attr="ids" />
     </TraceTypeSection>
