@@ -5,6 +5,7 @@ import {MULTI_VALUED_PLACEHOLDER} from 'lib/constants';
 import Field from './Field';
 import DropdownWidget from '../widgets/Dropdown';
 import Text from './Text';
+import EditorContext from 'lib/EditorContext';
 
 export class UnconnectedDropdownCustom extends Component {
   constructor(props, context) {
@@ -22,8 +23,20 @@ export class UnconnectedDropdownCustom extends Component {
     };
   }
 
-  UNSAFE_componentWillReceiveProps(props) {
-    this.setLocals(props);
+  static getDerivedStateFromProps(nextProps, prevState) {
+    const incomingValue =
+      nextProps.fullValue === undefined || nextProps.fullValue === MULTI_VALUED_PLACEHOLDER // eslint-disable-line no-undefined
+        ? nextProps.defaultOpt
+        : nextProps.fullValue;
+    const isCustom =
+      incomingValue === nextProps.customOpt ||
+      !nextProps.options.map((o) => o.value).includes(incomingValue);
+
+    if (isCustom !== prevState.custom) {
+      return {custom: isCustom};
+    }
+
+    return null;
   }
 
   setLocals(props) {
@@ -45,6 +58,7 @@ export class UnconnectedDropdownCustom extends Component {
   }
 
   render() {
+    this.setLocals(this.props);
     const {options, attr, customOpt} = this.props;
     const value =
       (this.value === '' || !options.map((o) => o.value).includes(this.value)) && this.state.custom
@@ -78,6 +92,8 @@ export class UnconnectedDropdownCustom extends Component {
     );
   }
 }
+
+UnconnectedDropdownCustom.contextType = EditorContext;
 
 UnconnectedDropdownCustom.propTypes = {
   backgroundDark: PropTypes.bool,

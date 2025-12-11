@@ -62,7 +62,9 @@ export class Fold extends Component {
                 </div>
               </div>
               {PlotlyIcon && <PlotlyIcon className="fold__top__icon" />}
-              <div className="fold__top__title" style={titleStyleOverrides}>{striptags(name)}</div>
+              <div className="fold__top__title" style={titleStyleOverrides}>
+                {striptags(name)}
+              </div>
             </div>
             {(canMoveDown || canMoveUp) && (
               <div className="fold__top__moving-controls">
@@ -174,11 +176,11 @@ class PlotlyFold extends Fold {
     super(props, context);
 
     this.foldVisible = false;
-    this.determineVisibility(props, context);
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps, nextContext) {
-    this.determineVisibility(nextProps, nextContext);
+  render() {
+    this.determineVisibility(this.props, this.context);
+    return super.render();
   }
 
   determineVisibility(nextProps, nextContext) {

@@ -29,6 +29,28 @@ class TraceSelector extends Component {
     this.state = {showGlControls: false};
   }
 
+  componentDidMount() {
+    this.setTraceDefaults(
+      this.props.container,
+      this.props.fullContainer,
+      this.props.updateContainer
+    );
+  }
+
+  componentDidUpdate(prevProps) {
+    if (
+      prevProps.container !== this.props.container ||
+      prevProps.fullContainer !== this.props.fullContainer
+    ) {
+      this.setTraceDefaults(
+        this.props.container,
+        this.props.fullContainer,
+        this.props.updateContainer
+      );
+    }
+    this.setLocals(this.props, this.context);
+  }
+
   glEnabled() {
     return this.props.container.type && this.props.container.type.endsWith('gl') ? 'gl' : '';
   }
@@ -62,12 +84,6 @@ class TraceSelector extends Component {
     }
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps, nextContext) {
-    const {container, fullContainer, updateContainer} = nextProps;
-    this.setTraceDefaults(container, fullContainer, updateContainer);
-    this.setLocals(nextProps, nextContext);
-  }
-
   updatePlot(value) {
     const {updateContainer} = this.props;
     const {glByDefault} = this.context;
@@ -91,6 +107,7 @@ class TraceSelector extends Component {
   }
 
   render() {
+    this.setLocals(this.props, this.context);
     const props = Object.assign({}, this.props, {
       fullValue: this.fullValue,
       updatePlot: this.updatePlot,

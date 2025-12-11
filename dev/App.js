@@ -1,5 +1,4 @@
 import {Component, createRef} from 'react';
-import {hot} from 'react-hot-loader/root';
 import plotly from 'plotly.js/dist/plotly-with-meta';
 import '../src/styles/main.scss';
 import AceEditor from 'react-ace';
@@ -124,7 +123,7 @@ class App extends Component {
     this.PlotlyEditor = createRef();
   }
 
-  UNSAFE_componentWillMount() {
+  componentDidMount() {
     // curl https://api.github.com/repos/plotly/plotly.js/contents/test/image/mocks \
     // | jq '[.[] | .name ]' > mocks.json
     fetch('/mocks.json')
@@ -302,4 +301,4 @@ class App extends Component {
   }
 }
 
-export default hot(App);
+export default App;

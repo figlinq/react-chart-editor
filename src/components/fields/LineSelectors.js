@@ -4,6 +4,7 @@ import {Component} from 'react';
 import nestedProperty from 'plotly.js/src/lib/nested_property';
 import {tooLight} from 'lib';
 import {COLORS, MULTI_VALUED} from 'lib/constants';
+import EditorContext from 'lib/EditorContext';
 
 const strokeDashes = [
   {value: 'solid', strokeDasharray: ''},
@@ -67,10 +68,6 @@ class LineSelector extends Component {
     this.setLocals(props, context);
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps, nextContext) {
-    this.setLocals(nextProps, nextContext);
-  }
-
   setLocals(nextProps, nextContext) {
     const {fullContainer} = nextContext;
     const lineColor = nestedProperty(fullContainer, 'line.color').get();
@@ -81,6 +78,7 @@ class LineSelector extends Component {
   }
 
   render() {
+    this.setLocals(this.props, this.context);
     return (
       <Dropdown {...this.props} options={this.options} backgroundDark={tooLight(this.lineColor)} />
     );
@@ -99,3 +97,5 @@ LineSelector.defaultProps = {
 LineSelector.contextTypes = {
   fullContainer: PropTypes.object,
 };
+
+LineSelector.contextType = EditorContext;

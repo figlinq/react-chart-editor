@@ -17,10 +17,6 @@ class TraceAccordion extends Component {
     this.setLocals(props, context);
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps, nextContext) {
-    this.setLocals(nextProps, nextContext);
-  }
-
   setLocals(props, context) {
     const base = props.canGroup ? context.fullData : context.data;
     const traceFilterCondition = this.props.traceFilterCondition || (() => true);
@@ -130,6 +126,7 @@ class TraceAccordion extends Component {
   }
 
   render() {
+    this.setLocals(this.props, this.context);
     const {canAdd, canGroup, canReorder} = this.props;
     const _ = this.context.localize;
 

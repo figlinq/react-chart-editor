@@ -1,6 +1,7 @@
 import {Component} from 'react';
 import PropTypes from 'prop-types';
 import {connectToContainer} from 'lib';
+import EditorContext from 'lib/EditorContext';
 import Field from './Field';
 import RadioBlocks from '../widgets/RadioBlocks';
 import NumericInput from '../widgets/NumericInput';
@@ -18,12 +19,13 @@ export class UnconnectedHoverLabelNameLength extends Component {
     return props.fullValue > 0 ? 'clip' : props.fullValue === 0 ? 'hide' : 'no-clip';
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    if (nextProps.fullValue !== this.props.fullValue) {
-      this.setState({
-        currentOption: this.getCurrentOption(nextProps),
-      });
+  static getDerivedStateFromProps(nextProps, prevState) {
+    const nextOption =
+      nextProps.fullValue > 0 ? 'clip' : nextProps.fullValue === 0 ? 'hide' : 'no-clip';
+    if (nextOption !== prevState.currentOption) {
+      return {currentOption: nextOption};
     }
+    return null;
   }
 
   onOptionChange(option) {
@@ -80,6 +82,8 @@ UnconnectedHoverLabelNameLength.propTypes = {
 UnconnectedHoverLabelNameLength.contextTypes = {
   localize: PropTypes.func,
 };
+
+UnconnectedHoverLabelNameLength.contextType = EditorContext;
 
 UnconnectedHoverLabelNameLength.displayName = 'UnconnectedHoverLabelNameLength';
 

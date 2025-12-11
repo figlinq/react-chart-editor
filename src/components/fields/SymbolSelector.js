@@ -5,6 +5,7 @@ import SymbolSelectorWidget from '../widgets/SymbolSelector';
 import nestedProperty from 'plotly.js/src/lib/nested_property';
 import {connectToContainer, tooLight} from 'lib';
 import {MULTI_VALUED, COLORS} from 'lib/constants';
+import EditorContext from 'lib/EditorContext';
 
 // TODO compute these from plotly.js
 const SYMBOLS = [
@@ -351,8 +352,8 @@ class SymbolSelector extends Component {
     this.setLocals(props, context);
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps, nextContext) {
-    this.setLocals(nextProps, nextContext);
+  componentDidUpdate() {
+    this.setLocals(this.props, this.context);
   }
 
   setLocals(props, context) {
@@ -409,6 +410,8 @@ SymbolSelector.propTypes = {
 SymbolSelector.contextTypes = {
   defaultContainer: PropTypes.object,
 };
+
+SymbolSelector.contextType = EditorContext;
 
 SymbolSelector.defaultProps = {
   showArrows: true,

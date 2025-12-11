@@ -5,6 +5,7 @@ import {MULTI_VALUED_PLACEHOLDER} from 'lib/constants';
 import Field from './Field';
 import Radio from './Radio';
 import Dropdown from './Dropdown';
+import EditorContext from 'lib/EditorContext';
 
 export class UnconnectedVisibilitySelect extends Component {
   constructor(props, context) {
@@ -13,10 +14,6 @@ export class UnconnectedVisibilitySelect extends Component {
     this.setMode = this.setMode.bind(this);
     this.setLocals = this.setLocals.bind(this);
 
-    this.setLocals(props);
-  }
-
-  UNSAFE_componentWillReceiveProps(props) {
     this.setLocals(props);
   }
 
@@ -32,6 +29,7 @@ export class UnconnectedVisibilitySelect extends Component {
   }
 
   render() {
+    this.setLocals(this.props);
     const {dropdown, clearable, options, showOn, attr, label} = this.props;
 
     return (
@@ -82,6 +80,8 @@ UnconnectedVisibilitySelect.propTypes = {
 UnconnectedVisibilitySelect.contextTypes = {
   updateContainer: PropTypes.func,
 };
+
+UnconnectedVisibilitySelect.contextType = EditorContext;
 
 UnconnectedVisibilitySelect.displayName = 'UnconnectedVisibilitySelect';
 

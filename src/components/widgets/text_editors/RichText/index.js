@@ -67,25 +67,17 @@ class RichText extends Component {
     this.renderLinkEditor = this.renderLinkEditor.bind(this);
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
+  componentDidUpdate(prevProps) {
     const {linkEditorFocus, editorFocus} = this.state;
 
-    /*
-     * Don't worry about what plotly.js thinks the annotation value
-     * should be while we're using our editor, for these reasons:
-     *
-     * 1. The editor should be considered the source of truth, unless the
-     *    user is actually editing the annotation inline, in the chart.
-     * 2. Sometimes we get updates with stale values.
-     */
     if (linkEditorFocus || editorFocus) {
       return;
     }
 
-    // Sync editor state with plotly annotation value.
-    const editorState = this.createEditorStateFromHTML(nextProps.value);
-
-    this.setState({editorState});
+    if (prevProps.value !== this.props.value) {
+      const editorState = this.createEditorStateFromHTML(this.props.value);
+      this.setState({editorState});
+    }
   }
 
   shouldComponentUpdate(nextProps, nextState) {

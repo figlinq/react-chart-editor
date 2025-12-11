@@ -49,11 +49,21 @@ class Dropzone extends Component {
     return <div className="dropzone-container__message">{_('File loaded!')}</div>;
   }
 
-  UNSAFE_componentWillMount() {
+  componentDidMount() {
+    this.syncContentFromProps(this.props);
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.value !== this.props.value || prevProps.fileType !== this.props.fileType) {
+      this.syncContentFromProps(this.props);
+    }
+  }
+
+  syncContentFromProps(props) {
     const _ = this.context.localize;
 
-    if (this.props.value && this.props.value !== '') {
-      this.setState({content: this.renderSuccess(this.props.value)});
+    if (props.value && props.value !== '') {
+      this.setState({content: this.renderSuccess(props.value)});
       return;
     }
 
@@ -62,14 +72,14 @@ class Dropzone extends Component {
         <div className="dropzone-container__message">
           <p>
             {_('Drop the ') +
-              this.props.fileType +
+              props.fileType +
               _(' to upload here or click to choose a file from your computer.')}
           </p>
 
-          {this.validFiletypes[this.props.fileType] ? (
+          {this.validFiletypes[props.fileType] ? (
             <p>
               {_('Supported formats are: ') +
-                this.validFiletypes[this.props.fileType]
+                this.validFiletypes[props.fileType]
                   .join(', ')
                   .replaceAll('image/', '')
                   .toUpperCase() +

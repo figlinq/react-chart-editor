@@ -2,6 +2,7 @@ import {Component} from 'react';
 import PropTypes from 'prop-types';
 import unpackPlotProps, {isVisibleGivenCustomConfig} from './unpackPlotProps';
 import {getDisplayName} from '../lib';
+import EditorContext from './EditorContext';
 
 export const containerConnectedContextTypes = {
   localize: PropTypes.func,
@@ -41,17 +42,23 @@ export default function connectToContainer(WrappedComponent, config = {}) {
       this.setLocals(props, context);
     }
 
-    UNSAFE_componentWillReceiveProps(nextProps, nextContext) {
-      this.setLocals(nextProps, nextContext);
-    }
-
     setLocals(props, context) {
       this.plotProps = unpackPlotProps(props, context, WrappedComponent);
       this.attr = props.attr;
       ContainerConnectedComponent.modifyPlotProps(props, context, this.plotProps);
     }
 
+    getContextValue() {
+      return {
+        ...this.context,
+        plotProps: this.plotProps,
+        description: this.plotProps?.description,
+        attr: this.attr,
+      };
+    }
+
     getChildContext() {
+      this.setLocals(this.props, this.context);
       return {
         description: this.plotProps.description,
         attr: this.attr,
@@ -59,6 +66,7 @@ export default function connectToContainer(WrappedComponent, config = {}) {
     }
 
     render() {
+      this.setLocals(this.props, this.context);
       // Merge plotprops onto props so leaf components only need worry about
       // props. However pass plotProps as a specific prop in case inner component
       // is also wrapped by a component that `unpackPlotProps`. That way inner
@@ -75,7 +83,11 @@ export default function connectToContainer(WrappedComponent, config = {}) {
           wrappedComponentDisplayName
         )
       ) {
-        return <WrappedComponent {...props} plotProps={plotProps} />;
+        return (
+          <EditorContext.Provider value={this.getContextValue()}>
+            <WrappedComponent {...props} plotProps={plotProps} />
+          </EditorContext.Provider>
+        );
       }
 
       return null;

@@ -2,6 +2,7 @@ import {Component} from 'react';
 import PropTypes from 'prop-types';
 import {getDisplayName} from '../lib';
 import {EDITOR_ACTIONS} from './constants';
+import EditorContext from './EditorContext';
 
 export default function connectShapeToLayout(WrappedComponent) {
   class ShapeConnectedComponent extends Component {
@@ -12,10 +13,6 @@ export default function connectShapeToLayout(WrappedComponent) {
       this.updateShape = this.updateShape.bind(this);
       this.moveShape = this.moveShape.bind(this);
       this.setLocals(props, context);
-    }
-
-    UNSAFE_componentWillReceiveProps(nextProps, nextContext) {
-      this.setLocals(nextProps, nextContext);
     }
 
     setLocals(props, context) {
@@ -29,6 +26,7 @@ export default function connectShapeToLayout(WrappedComponent) {
     }
 
     getChildContext() {
+      this.setLocals(this.props, this.context);
       return {
         getValObject: (attr) =>
           !this.context.getValObject ? null : this.context.getValObject(`shapes[].${attr}`),
@@ -75,7 +73,17 @@ export default function connectShapeToLayout(WrappedComponent) {
     }
 
     render() {
-      return <WrappedComponent {...this.props} />;
+      this.setLocals(this.props, this.context);
+      const contextValue = {
+        ...this.context,
+        ...this.getChildContext(),
+      };
+
+      return (
+        <EditorContext.Provider value={contextValue}>
+          <WrappedComponent {...this.props} />
+        </EditorContext.Provider>
+      );
     }
   }
 

@@ -3,10 +3,9 @@
  * in the RichTextEditor, and lets the user enter a URL.
  */
 
-import {Component} from 'react';
+import {Component, createRef} from 'react';
 import PropTypes from 'prop-types';
 import {RETURN_KEY, ESCAPE_KEY} from 'lib/constants';
-import {findDOMNode} from 'react-dom';
 
 class LinkEditor extends Component {
   constructor(props) {
@@ -17,31 +16,30 @@ class LinkEditor extends Component {
       position: this.getUpdatedPosition(props),
       originalLinkURL: props.linkURL,
     };
+
+    this.inputRef = createRef();
   }
 
   componentDidMount() {
     // Focus the input field if the URL value is empty
     if (this.props.linkURL.trim() === '') {
-      findDOMNode(this.input).focus();
+      this.inputRef.current?.focus();
     }
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    const {props} = this;
-
+  componentDidUpdate(prevProps) {
     // Update position if we are editing a new link
-    if (nextProps.linkID !== props.linkID) {
+    if (prevProps.linkID !== this.props.linkID) {
       this.setState({
-        position: this.getUpdatedPosition(props),
+        position: this.getUpdatedPosition(this.props),
       });
     }
-  }
 
-  componentDidUpdate() {
-    // Cursor dissappears when component rerenders, to make sure it's present
-    // we're using setSelection range to make it appear at the end of text:
-    // https://github.com/plotly/streambed/issues/9964
-    findDOMNode(this.input).setSelectionRange(this.props.linkURL.length, this.props.linkURL.length);
+    // Cursor disappears when component rerenders, keep it at the end of text
+    if (this.inputRef.current && this.props.linkURL !== prevProps.linkURL) {
+      const cursorPos = this.props.linkURL.length;
+      this.inputRef.current.setSelectionRange(cursorPos, cursorPos);
+    }
   }
 
   getUpdatedPosition(props) {
@@ -98,7 +96,7 @@ class LinkEditor extends Component {
           onFocus={onFocus}
           onChange={(ev) => this.onInputChange(ev.target.value)}
           onKeyDown={(ev) => this.onInputKeyDown(ev)}
-          ref={(input) => (this.input = input)}
+          ref={this.inputRef}
           value={linkURL}
           placeholder={placeholderText}
         />

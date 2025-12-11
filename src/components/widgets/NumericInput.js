@@ -30,10 +30,11 @@ export default class NumericInput extends Component {
     }`;
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    if (nextProps.value !== this.state.value) {
-      this.setState({value: nextProps.value});
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if (nextProps.value !== prevState.value) {
+      return {value: nextProps.value};
     }
+    return null;
   }
 
   onKeyDown(e) {

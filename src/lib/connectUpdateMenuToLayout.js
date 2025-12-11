@@ -1,6 +1,7 @@
 import {Component} from 'react';
 import PropTypes from 'prop-types';
 import {getDisplayName} from '../lib';
+import EditorContext from './EditorContext';
 
 export default function connectUpdateMenuToLayout(WrappedComponent) {
   class UpdateMenuConnectedComponent extends Component {
@@ -8,10 +9,6 @@ export default function connectUpdateMenuToLayout(WrappedComponent) {
       super(props, context);
       this.updateUpdateMenu = this.updateUpdateMenu.bind(this);
       this.setLocals(props, context);
-    }
-
-    UNSAFE_componentWillReceiveProps(nextProps, nextContext) {
-      this.setLocals(nextProps, nextContext);
     }
 
     setLocals(props, context) {
@@ -25,6 +22,7 @@ export default function connectUpdateMenuToLayout(WrappedComponent) {
     }
 
     getChildContext() {
+      this.setLocals(this.props, this.context);
       return {
         getValObject: (attr) =>
           !this.context.getValObject ? null : this.context.getValObject(`updatemenus[].${attr}`),
@@ -45,7 +43,17 @@ export default function connectUpdateMenuToLayout(WrappedComponent) {
     }
 
     render() {
-      return <WrappedComponent {...this.props} />;
+      this.setLocals(this.props, this.context);
+      const contextValue = {
+        ...this.context,
+        ...this.getChildContext(),
+      };
+
+      return (
+        <EditorContext.Provider value={contextValue}>
+          <WrappedComponent {...this.props} />
+        </EditorContext.Provider>
+      );
     }
   }
 

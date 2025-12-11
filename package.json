@@ -61,9 +61,9 @@
     "@babel/preset-env": "7.23.5",
     "@babel/preset-react": "7.23.3",
     "@babel/traverse": "7.23.5",
-    "@hot-loader/react-dom": "16.14.0",
     "@percy/cli": "1.27.5",
     "@percy/storybook": "4.3.6",
+    "@pmmmwh/react-refresh-webpack-plugin": "0.5.11",
     "@storybook/builder-webpack5": "^6.5.14",
     "@storybook/manager-webpack5": "^6.5.14",
     "@storybook/react": "6.5.16",
@@ -94,12 +94,12 @@
     "postcss-import": "15.1.0",
     "postcss-preset-env": "9.3.0",
     "prettier": "2.8.8",
-    "react": "16.14.0",
+    "react": "18.2.0",
     "react-ace": "7.0.5",
-    "react-dom": "16.14.0",
-    "react-hot-loader": "4.13.1",
+    "react-dom": "18.2.0",
     "react-inspector": "5.1.1",
-    "react-test-renderer": "16.14.0",
+    "react-refresh": "0.14.0",
+    "react-test-renderer": "18.2.0",
     "request": "2.88.2",
     "rimraf": "5.0.5",
     "sass": "1.69.5",
@@ -111,8 +111,8 @@
   },
   "peerDependencies": {
     "plotly.js": ">=1.58.5 <3.0.0",
-    "react": ">=16.14.0",
-    "react-dom": ">=16.14.0"
+    "react": ">=18.0.0",
+    "react-dom": ">=18.0.0"
   },
   "engines": {
     "node": ">=12.13.0"

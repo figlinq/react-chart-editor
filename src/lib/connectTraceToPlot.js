@@ -10,6 +10,7 @@ import {
 } from '../lib';
 import {deepCopyPublic, setMultiValuedContainer} from './multiValues';
 import {EDITOR_ACTIONS} from 'lib/constants';
+import EditorContext from './EditorContext';
 
 export default function connectTraceToPlot(WrappedComponent) {
   class TraceConnectedComponent extends Component {
@@ -20,10 +21,6 @@ export default function connectTraceToPlot(WrappedComponent) {
       this.updateTrace = this.updateTrace.bind(this);
       this.moveTrace = this.moveTrace.bind(this);
       this.setLocals(props, context);
-    }
-
-    UNSAFE_componentWillReceiveProps(nextProps, nextContext) {
-      this.setLocals(nextProps, nextContext);
     }
 
     setLocals(props, context) {
@@ -75,6 +72,7 @@ export default function connectTraceToPlot(WrappedComponent) {
     }
 
     getChildContext() {
+      this.setLocals(this.props, this.context);
       return this.childContext;
     }
 
@@ -152,7 +150,19 @@ export default function connectTraceToPlot(WrappedComponent) {
     }
 
     render() {
-      return <WrappedComponent name={this.name} icon={this.icon} {...this.props} />;
+      this.setLocals(this.props, this.context);
+      const contextValue = {
+        ...this.context,
+        ...this.getChildContext(),
+        name: this.name,
+        icon: this.icon,
+      };
+
+      return (
+        <EditorContext.Provider value={contextValue}>
+          <WrappedComponent name={this.name} icon={this.icon} {...this.props} />
+        </EditorContext.Provider>
+      );
     }
   }
 

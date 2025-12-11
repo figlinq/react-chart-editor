@@ -9,7 +9,7 @@ export default class LaTeX extends TextArea {
 
     // Internally, represesent the LaTeX document without the
     // wrapping `$...$` characters.
-    const unwrappedValue = this.unwrap(props.value);
+    const unwrappedValue = LaTeX.unwrapValue(props.value);
 
     this.state = {
       value: unwrappedValue,
@@ -18,22 +18,23 @@ export default class LaTeX extends TextArea {
     this.onBlur = this.onBlur.bind(this);
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    const unwrappedNextValue = this.unwrap(nextProps.value);
-
-    if (unwrappedNextValue !== this.state.value) {
-      this.setState({
-        value: unwrappedNextValue,
-      });
+  static getDerivedStateFromProps(nextProps, prevState) {
+    const unwrappedNextValue = LaTeX.unwrapValue(nextProps.value);
+    if (unwrappedNextValue !== prevState.value) {
+      return {value: unwrappedNextValue};
     }
+    return null;
   }
 
   // Return a new value with wrapping `$...$` removed.
   unwrap(value) {
+    return LaTeX.unwrapValue(value);
+  }
+
+  static unwrapValue(value) {
     if (isWrapped(value)) {
       return value.substr(1, value.length - 2);
     }
-
     return value;
   }
 

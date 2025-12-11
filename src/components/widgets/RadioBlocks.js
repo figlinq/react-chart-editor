@@ -10,13 +10,11 @@ class RadioBlocks extends Component {
     this.renderOption = this.renderOption.bind(this);
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    // Reset the value to the graph's actual value
-    if (nextProps.activeOption !== this.state.activeOption) {
-      this.setState({
-        activeOption: nextProps.activeOption,
-      });
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if (nextProps.activeOption !== prevState.activeOption) {
+      return {activeOption: nextProps.activeOption};
     }
+    return null;
   }
 
   handleChange(newValue) {

@@ -1,6 +1,7 @@
 import {Component} from 'react';
 import PropTypes from 'prop-types';
 import {getDisplayName} from '../lib';
+import EditorContext from './EditorContext';
 
 export default function connectAggregationToTransform(WrappedComponent) {
   class AggregationConnectedComponent extends Component {
@@ -9,10 +10,6 @@ export default function connectAggregationToTransform(WrappedComponent) {
 
       this.updateAggregation = this.updateAggregation.bind(this);
       this.setLocals(props, context);
-    }
-
-    UNSAFE_componentWillReceiveProps(nextProps, nextContext) {
-      this.setLocals(nextProps, nextContext);
     }
 
     setLocals(props, context) {
@@ -56,6 +53,7 @@ export default function connectAggregationToTransform(WrappedComponent) {
     }
 
     getChildContext() {
+      this.setLocals(this.props, this.context);
       const {getValObject} = this.context;
       return {
         getValObject: getValObject ? (attr) => getValObject(`aggregations[].${attr}`) : null,
@@ -66,7 +64,17 @@ export default function connectAggregationToTransform(WrappedComponent) {
     }
 
     render() {
-      return <WrappedComponent {...this.props} />;
+      this.setLocals(this.props, this.context);
+      const contextValue = {
+        ...this.context,
+        ...this.getChildContext(),
+      };
+
+      return (
+        <EditorContext.Provider value={contextValue}>
+          <WrappedComponent {...this.props} />
+        </EditorContext.Provider>
+      );
     }
   }
 

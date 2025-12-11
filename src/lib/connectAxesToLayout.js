@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import nestedProperty from 'plotly.js/src/lib/nested_property';
 import {deepCopyPublic, setMultiValuedContainer} from './multiValues';
 import {capitalize, getAllAxes, getDisplayName, getAxisTitle} from '../lib';
+import EditorContext from './EditorContext';
 
 function computeAxesOptions(axes, {axisFilter}, {localize: _}) {
   let filteredAxes = axes;
@@ -59,10 +60,9 @@ export default function connectAxesToLayout(WrappedComponent) {
       this.setLocals(props, this.state, context);
     }
 
-    UNSAFE_componentWillUpdate(nextProps, nextState, nextContext) {
+    refreshLocals(nextProps, nextState, nextContext) {
       this.axes = getAllAxes(nextContext.fullContainer);
       this.axesOptions = computeAxesOptions(this.axes, nextProps, nextContext);
-      // This is not enough, what if plotly.js adds new axes...
       this.setLocals(nextProps, nextState, nextContext);
     }
 
@@ -89,6 +89,7 @@ export default function connectAxesToLayout(WrappedComponent) {
     }
 
     getChildContext() {
+      this.refreshLocals(this.props, this.state, this.context);
       return {
         getValObject: (attr) =>
           !this.context.getValObject
@@ -137,7 +138,17 @@ export default function connectAxesToLayout(WrappedComponent) {
     }
 
     render() {
-      return <WrappedComponent {...this.props} options={this.axesOptions} />;
+      this.refreshLocals(this.props, this.state, this.context);
+      const contextValue = {
+        ...this.context,
+        ...this.getChildContext(),
+      };
+
+      return (
+        <EditorContext.Provider value={contextValue}>
+          <WrappedComponent {...this.props} options={this.axesOptions} />
+        </EditorContext.Provider>
+      );
     }
   }
 

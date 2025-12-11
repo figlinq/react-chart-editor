@@ -16,7 +16,7 @@ class FlaglistCheckboxGroup extends Component {
     }
 
     this.state = {
-      activeOption: this.parseFlags(currentActiveOption),
+      activeOption: FlaglistCheckboxGroup.parseFlagsValue(currentActiveOption, props),
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -24,10 +24,14 @@ class FlaglistCheckboxGroup extends Component {
 
   // convert plotly.js's "all" or "none" option in its `flaglist` type
   // to a series of options separated by `+` that our component can handle
-  parseFlags(option) {
+  parseFlags(option, props = this.props) {
+    return FlaglistCheckboxGroup.parseFlagsValue(option, props);
+  }
+
+  static parseFlagsValue(option, props) {
     let activeOption;
     if (option === 'all') {
-      activeOption = this.props.options.map((o) => o.value).join('+');
+      activeOption = props.options.map((o) => o.value).join('+');
     } else if (option === 'none') {
       activeOption = '';
     } else {
@@ -37,8 +41,12 @@ class FlaglistCheckboxGroup extends Component {
   }
 
   // Sync local state to parent props.
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    this.setState({activeOption: this.parseFlags(nextProps.activeOption)});
+  static getDerivedStateFromProps(nextProps, prevState) {
+    const nextActive = FlaglistCheckboxGroup.parseFlagsValue(nextProps.activeOption, nextProps);
+    if (nextActive !== prevState.activeOption) {
+      return {activeOption: nextActive};
+    }
+    return null;
   }
 
   // Called whenever a checkbox is changed, this updates the local

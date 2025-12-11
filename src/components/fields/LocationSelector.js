@@ -1,6 +1,7 @@
 import {Component} from 'react';
 import PropTypes from 'prop-types';
 import {connectToContainer} from 'lib';
+import EditorContext from 'lib/EditorContext';
 import Field from './Field';
 import Radio from './Radio';
 import {UnconnectedDropdown} from './Dropdown';
@@ -68,10 +69,12 @@ class UnconnectedLocationSelector extends Component {
     this.setMode = this.setMode.bind(this);
   }
 
-  UNSAFE_componentWillMount() {
-    this.setState({
-      mode: this.props.container.locations ? 'location' : 'latlon',
-    });
+  componentDidUpdate(prevProps) {
+    const prevMode = prevProps.container.locations ? 'location' : 'latlon';
+    const nextMode = this.props.container.locations ? 'location' : 'latlon';
+    if (prevMode !== nextMode && nextMode !== this.state.mode) {
+      this.setState({mode: nextMode});
+    }
   }
 
   setMode(mode) {
@@ -145,5 +148,7 @@ UnconnectedLocationSelector.contextTypes = {
   localize: PropTypes.func,
   updateContainer: PropTypes.func,
 };
+
+UnconnectedLocationSelector.contextType = EditorContext;
 
 export default connectToContainer(UnconnectedLocationSelector);

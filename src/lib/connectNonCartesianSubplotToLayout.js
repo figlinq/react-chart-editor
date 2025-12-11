@@ -1,6 +1,7 @@
 import {Component} from 'react';
 import PropTypes from 'prop-types';
 import {getDisplayName, plotlyTraceToCustomTrace, renderTraceIcon, getFullTrace} from '../lib';
+import EditorContext from './EditorContext';
 
 export default function connectNonCartesianSubplotToLayout(WrappedComponent) {
   class SubplotConnectedComponent extends Component {
@@ -9,10 +10,6 @@ export default function connectNonCartesianSubplotToLayout(WrappedComponent) {
 
       this.updateSubplot = this.updateSubplot.bind(this);
       this.setLocals(props, context);
-    }
-
-    UNSAFE_componentWillReceiveProps(nextProps, nextContext) {
-      this.setLocals(nextProps, nextContext);
     }
 
     setLocals(props, context) {
@@ -32,6 +29,7 @@ export default function connectNonCartesianSubplotToLayout(WrappedComponent) {
     }
 
     getChildContext() {
+      this.setLocals(this.props, this.context);
       return {
         getValObject: (attr) =>
           !this.context.getValObject
@@ -52,7 +50,19 @@ export default function connectNonCartesianSubplotToLayout(WrappedComponent) {
     }
 
     render() {
-      return <WrappedComponent name={this.name} icon={this.icon} {...this.props} />;
+      this.setLocals(this.props, this.context);
+      const contextValue = {
+        ...this.context,
+        ...this.getChildContext(),
+        name: this.name,
+        icon: this.icon,
+      };
+
+      return (
+        <EditorContext.Provider value={contextValue}>
+          <WrappedComponent name={this.name} icon={this.icon} {...this.props} />
+        </EditorContext.Provider>
+      );
     }
   }
 

@@ -1,6 +1,10 @@
 {
   "env": {
-    "development": {"comments": true, "minified": false},
+    "development": {
+      "comments": true,
+      "minified": false,
+      "plugins": ["react-refresh/babel"]
+    },
     "production": {"comments": false, "minified": true},
     "test": {
       "sourceType": "unambiguous",
@@ -12,7 +16,6 @@
     ["@babel/preset-react", {"runtime": "automatic"}]
   ],
   "plugins": [
-    "react-hot-loader/babel",
     "@babel/plugin-transform-object-rest-spread",
     "@babel/plugin-proposal-export-default-from",
     [
