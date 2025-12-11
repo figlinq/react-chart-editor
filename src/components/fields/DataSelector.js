@@ -6,7 +6,6 @@ import nestedProperty from 'plotly.js/src/lib/nested_property';
 import {connectToContainer, maybeAdjustSrc, maybeTransposeData} from 'lib';
 import {TRANSFORMS_LIST} from 'lib/constants';
 import {getColumnNames} from 'lib/dereference';
-import EditorContext from 'lib/EditorContext';
 
 export function attributeIsData(meta = {}) {
   return meta.valType === 'data_array' || meta.arrayOk;
@@ -133,8 +132,6 @@ export class UnconnectedDataSelector extends Component {
     );
   }
 }
-
-UnconnectedDataSelector.contextType = EditorContext;
 
 UnconnectedDataSelector.propTypes = {
   fullValue: PropTypes.any,

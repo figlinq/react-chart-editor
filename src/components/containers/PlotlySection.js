@@ -1,6 +1,5 @@
 import {Children, Component} from 'react';
 import PropTypes from 'prop-types';
-import EditorContext from 'lib/EditorContext';
 import {
   containerConnectedContextTypes,
   unpackPlotProps,
@@ -84,4 +83,3 @@ export default class PlotlySection extends Section {
 
 PlotlySection.plotly_editor_traits = {no_visibility_forcing: true};
 PlotlySection.contextTypes = containerConnectedContextTypes;
-PlotlySection.contextType = EditorContext;

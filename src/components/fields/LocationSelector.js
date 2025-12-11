@@ -1,7 +1,6 @@
 import {Component} from 'react';
 import PropTypes from 'prop-types';
 import {connectToContainer} from 'lib';
-import EditorContext from 'lib/EditorContext';
 import Field from './Field';
 import Radio from './Radio';
 import {UnconnectedDropdown} from './Dropdown';
@@ -148,7 +147,5 @@ UnconnectedLocationSelector.contextTypes = {
   localize: PropTypes.func,
   updateContainer: PropTypes.func,
 };
-
-UnconnectedLocationSelector.contextType = EditorContext;
 
 export default connectToContainer(UnconnectedLocationSelector);
