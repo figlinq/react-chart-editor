@@ -93,8 +93,6 @@ export class UnconnectedDropdownCustom extends Component {
   }
 }
 
-UnconnectedDropdownCustom.contextType = EditorContext;
-
 UnconnectedDropdownCustom.propTypes = {
   backgroundDark: PropTypes.bool,
   fullValue: PropTypes.any,

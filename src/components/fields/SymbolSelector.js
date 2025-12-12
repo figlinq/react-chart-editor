@@ -411,8 +411,6 @@ SymbolSelector.contextTypes = {
   defaultContainer: PropTypes.object,
 };
 
-SymbolSelector.contextType = EditorContext;
-
 SymbolSelector.defaultProps = {
   showArrows: true,
 };

@@ -97,5 +97,3 @@ LineSelector.defaultProps = {
 LineSelector.contextTypes = {
   fullContainer: PropTypes.object,
 };
-
-LineSelector.contextType = EditorContext;

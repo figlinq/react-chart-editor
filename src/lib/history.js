@@ -3,16 +3,19 @@ import nestedProperty from 'plotly.js/src/lib/nested_property';
 import {EDITOR_ACTIONS, INVERSE_ACTIONS, OPERATION_TYPE} from './constants';
 
 const arraysEqual = (a, b) =>
-  a.length !== b.length ? false : a.every((value, index) => value === b[index]);
+  !a || !b ? false : a.length !== b.length ? false : a.every((value, index) => value === b[index]);
 
 // Get index from a string like 'annotations[0]'
 const extractIndex = (arrayString) => parseInt(arrayString.match(/\[(\d+)\]/)[1], 10);
 
 const sameAction = (oldPayload, newPayload) => {
   const sameTrace =
-    (!oldPayload.traceIndexes && !newPayload.traceIndex) ||
+    (!oldPayload.traceIndexes && !newPayload.traceIndexes) ||
     arraysEqual(oldPayload.traceIndexes, newPayload.traceIndexes);
-  const sameAttrs = arraysEqual(Object.keys(oldPayload.update), Object.keys(newPayload.update));
+  const sameAttrs =
+    oldPayload.update &&
+    newPayload.update &&
+    arraysEqual(Object.keys(oldPayload.update), Object.keys(newPayload.update));
 
   return sameTrace && sameAttrs;
 };

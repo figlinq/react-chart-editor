@@ -81,8 +81,6 @@ UnconnectedVisibilitySelect.contextTypes = {
   updateContainer: PropTypes.func,
 };
 
-UnconnectedVisibilitySelect.contextType = EditorContext;
-
 UnconnectedVisibilitySelect.displayName = 'UnconnectedVisibilitySelect';
 
 export default connectToContainer(UnconnectedVisibilitySelect);

@@ -37,6 +37,4 @@ TraceMarkerSection.contextTypes = {
   localize: PropTypes.func,
 };
 
-TraceMarkerSection.contextType = EditorContext;
-
 export default TraceMarkerSection;
