@@ -5,6 +5,7 @@ import {
   TraceAccordion,
   DataSelector,
   Dropdown,
+  Numeric,
   PlotlySection,
   FilterOperation,
   FilterValue,
@@ -128,6 +129,42 @@ const GraphTransformsPanel = (props, {localize: _}) => (
       />
 
       <Aggregations />
+
+      <Dropdown
+        label={_('Error bars')}
+        attr="statistic"
+        options={[
+          {label: _('SD (standard deviation)'), value: 'sd'},
+          {label: _('SEM (standard error of the mean)'), value: 'sem'},
+          {label: _('Confidence interval of the mean'), value: 'ci'},
+        ]}
+        clearable={false}
+      />
+      <Numeric label={_('Confidence level')} attr="confidence" min={0.5} max={0.9999} step={0.01} />
+      <Radio
+        label={_('Show n')}
+        attr="shown"
+        options={[
+          {label: _('Yes'), value: true},
+          {label: _('No'), value: false},
+        ]}
+      />
+      <Radio
+        label={_('Group order')}
+        attr="grouporder"
+        options={[
+          {label: _('First seen'), value: 'first'},
+          {label: _('Sorted'), value: 'sorted'},
+        ]}
+      />
+      <Radio
+        label={_('Orientation')}
+        attr="orientation"
+        options={[
+          {label: _('Vertical'), value: 'v'},
+          {label: _('Horizontal'), value: 'h'},
+        ]}
+      />
     </TransformAccordion>
   </TraceAccordion>
 );
