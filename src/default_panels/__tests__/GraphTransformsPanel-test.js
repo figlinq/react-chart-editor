@@ -95,6 +95,14 @@ describe('<GraphTransformsPanel> with a summary transform', () => {
       .prop('addAction');
     const summarize = addAction.handler.find(({label}) => label === 'Summarize');
     expect(summarize).toBeTruthy();
+    const filter = addAction.handler.find(({label}) => label === 'Filter');
+    const updateFilter = jest.fn();
+    filter.handler({fullContainer: {transforms: []}, updateContainer: updateFilter});
+    expect(updateFilter.mock.calls[0][0]['transforms[0]']).toEqual({
+      type: 'filter',
+      target: [],
+      targetsrc: null,
+    });
     const updateContainer = jest.fn();
     summarize.handler({fullContainer: {transforms: []}, updateContainer});
     expect(updateContainer.mock.calls[0][0]['transforms[0]']).toEqual({

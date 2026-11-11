@@ -95,6 +95,8 @@ const TransformAccordion = (props, context) => {
             };
 
             if (type === 'filter') {
+              payload.target = [];
+              payload.targetsrc = null;
             } else if (type !== 'sort' && type !== 'summary') {
               payload.groupssrc = null;
               payload.groups = null;
