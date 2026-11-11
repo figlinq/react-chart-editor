@@ -2,26 +2,17 @@ import plotlyCartesian from 'plotly.js/dist/plotly-cartesian';
 import Lib from 'plotly.js/src/lib';
 import GraphTransformsPanel from '../GraphTransformsPanel';
 import {TestEditor, fixtures, mount} from 'lib/test-utils';
+import DropdownWidget from '../../components/widgets/Dropdown';
 import {TRANSFORMS_LIST} from 'lib/constants';
+import realAttributes from './fixtures/summaryTransformAttributes.json';
 
-// A stand-in for Figlinq's `summary` transform (streambed: shelly/plotlyjs/static/plotlyjs/src/addons/summaryTransform.js) with the same attributes and
-// supplyDefaults. The editor only needs the full transform container; the grouping itself is plotly.js work done in Streambed.
-const attributes = {
-  enabled: {valType: 'boolean', dflt: true, editType: 'calc'},
-  groups: {valType: 'data_array', dflt: [], editType: 'calc'},
-  target: {valType: 'data_array', dflt: [], editType: 'calc'},
-  statistic: {valType: 'enumerated', values: ['sd', 'sem', 'ci'], dflt: 'sd', editType: 'calc'},
-  confidence: {valType: 'number', min: 0, max: 1, dflt: 0.95, editType: 'calc'},
-  orientation: {valType: 'enumerated', values: ['v', 'h'], dflt: 'v', editType: 'calc'},
-  shown: {valType: 'boolean', dflt: true, editType: 'calc'},
-  grouporder: {valType: 'enumerated', values: ['first', 'sorted'], dflt: 'first', editType: 'calc'},
-  groupssrc: {valType: 'string', editType: 'none'},
-  targetsrc: {valType: 'string', editType: 'none'},
-  editType: 'calc',
-};
+// A stand-in for Figlinq's `summary` transform. Its attributes come from fixtures/summaryTransformAttributes.json, exported from the real module in Streambed
+// (shelly/plotlyjs/static/plotlyjs/src/addons/summaryTransform.js) by `node scripts/exportSummaryAttributes.js <path to that file>`; re-run it and commit the
+// fixture when the transform changes. The editor only needs the full transform container; the grouping itself is plotly.js work done in Streambed.
+const {attributes} = realAttributes;
 const summaryTransform = {
   moduleType: 'transform',
-  name: 'summary',
+  name: realAttributes.name,
   attributes,
   supplyDefaults(transformIn) {
     const out = {};
@@ -29,16 +20,12 @@ const summaryTransform = {
     if (!coerce('enabled')) {
       return out;
     }
-    coerce('groups');
-    coerce('target');
-    if (coerce('statistic') === 'ci') {
+    Object.keys(attributes)
+      .filter((attr) => !['enabled', 'editType', 'confidence'].includes(attr))
+      .forEach((attr) => coerce(attr));
+    if (out.statistic === 'ci') {
       coerce('confidence');
     }
-    coerce('orientation');
-    coerce('shown');
-    coerce('grouporder');
-    coerce('groupssrc');
-    coerce('targetsrc');
     return out;
   },
   calcTransform() {},
@@ -55,12 +42,12 @@ describe('<GraphTransformsPanel> with a summary transform', () => {
     plotlyCartesian.register(summaryTransform);
   });
 
-  const mountPanel = (transform, onUpdate = jest.fn()) => {
+  const mountPanel = (transform, onUpdate = jest.fn(), extra = {}) => {
     const fixture = fixtures.scatter({
       data: [{type: 'bar', transforms: [transform]}],
     });
     return mount(
-      <TestEditor {...{...fixture, onUpdate}}>
+      <TestEditor {...{...fixture, onUpdate, ...extra}}>
         <GraphTransformsPanel />
       </TestEditor>
     );
@@ -79,12 +66,12 @@ describe('<GraphTransformsPanel> with a summary transform', () => {
       expect(labels).toContain(label)
     );
     // the confidence level only belongs to the interval
-    expect(labels).not.toContain('Confidence level');
+    expect(labels.some((label) => /^Confidence level/.test(label))).toBe(false);
   });
 
   it('shows the confidence level for the confidence interval', () => {
     const editor = mountPanel({type: 'summary', groupssrc: 'x1', statistic: 'ci'});
-    expect(labelsOf(editor)).toContain('Confidence level');
+    expect(labelsOf(editor).some((label) => /^Confidence level/.test(label))).toBe(true);
   });
 
   it('does not show filter or sort controls in the summary fold', () => {
@@ -112,12 +99,50 @@ describe('<GraphTransformsPanel> with a summary transform', () => {
     summarize.handler({fullContainer: {transforms: []}, updateContainer});
     expect(updateContainer.mock.calls[0][0]['transforms[0]']).toEqual({
       type: 'summary',
-      groupssrc: null,
-      groups: null,
-      target: [],
-      targetsrc: null,
       statistic: 'sem',
       shown: true,
     });
+  });
+
+  it('only uses attributes the real transform has (drift check against the exported fixture)', () => {
+    const editor = mountPanel({type: 'summary', groupssrc: 'x1', statistic: 'ci'});
+    const used = editor
+      .find('Field')
+      .map((field) => field.prop('attr'))
+      .filter(Boolean);
+    ['statistic', 'confidence', 'shown', 'grouporder', 'orientation', 'groups', 'target'].forEach(
+      (attr) => {
+        expect(used).toContain(attr);
+        expect(Object.keys(attributes)).toContain(attr);
+      }
+    );
+    // the confidence control accepts the transform's range (0, 1) up to the UI limits
+    expect(attributes.confidence.min).toBe(0);
+    expect(attributes.confidence.max).toBe(1);
+    expect(attributes.statistic.values).toEqual(['sd', 'sem', 'ci']);
+  });
+
+  it('writes groups and groupssrc when a column is chosen in the By selector', () => {
+    const beforeUpdateTraces = jest.fn();
+    const editor = mountPanel({type: 'summary', statistic: 'sem'}, jest.fn(), {beforeUpdateTraces});
+    beforeUpdateTraces.mockClear();
+    editor.find('[attr="groups"]').last().find(DropdownWidget).prop('onChange')('x1');
+    const {update} = beforeUpdateTraces.mock.calls[0][0];
+    expect(update['transforms[0].groups']).toEqual([1, 2, 3]);
+    expect(update['transforms[0].groupssrc']).toBe('x1');
+  });
+
+  it('edits the new controls through updateContainer', () => {
+    const beforeUpdateTraces = jest.fn();
+    const editor = mountPanel({type: 'summary', groupssrc: 'x1', statistic: 'sem'}, jest.fn(), {
+      beforeUpdateTraces,
+    });
+    beforeUpdateTraces.mockClear();
+    const dropdown = editor
+      .find('Dropdown')
+      .filterWhere((n) => n.prop('options') && n.prop('options').some((o) => o.value === 'ci'))
+      .last();
+    dropdown.prop('onChange')('ci');
+    expect(beforeUpdateTraces.mock.calls[0][0].update).toEqual({'transforms[0].statistic': 'ci'});
   });
 });

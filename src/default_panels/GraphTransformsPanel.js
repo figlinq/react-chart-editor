@@ -5,6 +5,7 @@ import {
   TraceAccordion,
   DataSelector,
   Dropdown,
+  Info,
   Numeric,
   PlotlySection,
   FilterOperation,
@@ -130,41 +131,54 @@ const GraphTransformsPanel = (props, {localize: _}) => (
 
       <Aggregations />
 
-      <Dropdown
-        label={_('Error bars')}
-        attr="statistic"
-        options={[
-          {label: _('SD (standard deviation)'), value: 'sd'},
-          {label: _('SEM (standard error of the mean)'), value: 'sem'},
-          {label: _('Confidence interval of the mean'), value: 'ci'},
-        ]}
-        clearable={false}
-      />
-      <Numeric label={_('Confidence level')} attr="confidence" min={0.5} max={0.9999} step={0.01} />
-      <Radio
-        label={_('Show n')}
-        attr="shown"
-        options={[
-          {label: _('Yes'), value: true},
-          {label: _('No'), value: false},
-        ]}
-      />
-      <Radio
-        label={_('Group order')}
-        attr="grouporder"
-        options={[
-          {label: _('First seen'), value: 'first'},
-          {label: _('Sorted'), value: 'sorted'},
-        ]}
-      />
-      <Radio
-        label={_('Orientation')}
-        attr="orientation"
-        options={[
-          {label: _('Vertical'), value: 'v'},
-          {label: _('Horizontal'), value: 'h'},
-        ]}
-      />
+      <PlotlySection name={_('Summary')} attr="statistic">
+        <Info>
+          {_(
+            "Empty By: the trace's own x values are the groups. Empty Target: the trace's own y values (x when horizontal) are summarized."
+          )}
+        </Info>
+        <Dropdown
+          label={_('Error bars')}
+          attr="statistic"
+          options={[
+            {label: _('SD (standard deviation)'), value: 'sd'},
+            {label: _('SEM (standard error of the mean)'), value: 'sem'},
+            {label: _('Confidence interval of the mean'), value: 'ci'},
+          ]}
+          clearable={false}
+        />
+        <Numeric
+          label={_('Confidence level (fraction, 0.95 = 95%)')}
+          attr="confidence"
+          min={0.01}
+          max={0.9999}
+          step={0.01}
+        />
+        <Radio
+          label={_('Show n')}
+          attr="shown"
+          options={[
+            {label: _('Yes'), value: true},
+            {label: _('No'), value: false},
+          ]}
+        />
+        <Radio
+          label={_('Group order')}
+          attr="grouporder"
+          options={[
+            {label: _('First seen'), value: 'first'},
+            {label: _('Sorted'), value: 'sorted'},
+          ]}
+        />
+        <Radio
+          label={_('Orientation')}
+          attr="orientation"
+          options={[
+            {label: _('Vertical'), value: 'v'},
+            {label: _('Horizontal'), value: 'h'},
+          ]}
+        />
+      </PlotlySection>
     </TransformAccordion>
   </TraceAccordion>
 );
