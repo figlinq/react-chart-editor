@@ -33,6 +33,10 @@ const TransformAccordion = (props, context) => {
       label: _('Sort'),
       type: 'sort',
     },
+    {
+      label: _('Summarize'),
+      type: 'summary',
+    },
   ];
 
   const transformBy =
@@ -58,7 +62,7 @@ const TransformAccordion = (props, context) => {
       <TransformFold
         key={i}
         transformIndex={i}
-        name={`${transformTypes.filter(({type}) => type === tr.type)[0].label}${
+        name={`${(transformTypes.find(({type}) => type === tr.type) || {label: tr.type}).label}${
           transformBy && transformBy[i]
         }`}
         canDelete={true}
@@ -93,13 +97,18 @@ const TransformAccordion = (props, context) => {
             if (type === 'filter') {
               payload.target = [];
               payload.targetsrc = null;
-            } else if (type !== 'sort') {
+            } else if (type !== 'sort' && type !== 'summary') {
               payload.groupssrc = null;
               payload.groups = null;
             }
 
             if (type === 'groupby') {
               payload.styles = [];
+            }
+
+            if (type === 'summary') {
+              payload.statistic = 'sem';
+              payload.shown = true;
             }
 
             updateContainer({[key]: payload}, false, EDITOR_ACTIONS.ADD_TRANSFORM);
@@ -134,6 +143,12 @@ const TransformAccordion = (props, context) => {
               <strong>{_('Aggregate')}</strong>{' '}
               {_(
                 ' transforms allow you to summarize a trace using an aggregate function like "average" or "minimum".'
+              )}
+            </p>
+            <p>
+              <strong>{_('Summarize')}</strong>{' '}
+              {_(
+                ' transforms show the mean of each group with error bars (SD, SEM or a confidence interval) and the number of values n.'
               )}
             </p>
             <p>

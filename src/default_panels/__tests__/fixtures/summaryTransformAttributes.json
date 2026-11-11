@@ -1,0 +1,59 @@
+{
+  "name": "summary",
+  "attributes": {
+    "enabled": {
+      "valType": "boolean",
+      "dflt": true
+    },
+    "groups": {
+      "valType": "data_array",
+      "dflt": []
+    },
+    "target": {
+      "valType": "data_array",
+      "dflt": []
+    },
+    "statistic": {
+      "valType": "enumerated",
+      "values": [
+        "sd",
+        "sem",
+        "ci"
+      ],
+      "dflt": "sd"
+    },
+    "confidence": {
+      "valType": "number",
+      "dflt": 0.95,
+      "min": 0,
+      "max": 1
+    },
+    "orientation": {
+      "valType": "enumerated",
+      "values": [
+        "v",
+        "h"
+      ],
+      "dflt": "v"
+    },
+    "shown": {
+      "valType": "boolean",
+      "dflt": true
+    },
+    "grouporder": {
+      "valType": "enumerated",
+      "values": [
+        "first",
+        "sorted"
+      ],
+      "dflt": "first"
+    },
+    "groupssrc": {
+      "valType": "string"
+    },
+    "targetsrc": {
+      "valType": "string"
+    },
+    "editType": "calc"
+  }
+}
