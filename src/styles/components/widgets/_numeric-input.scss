@@ -52,6 +52,10 @@
 }
 
 .numeric-input__caret {
+  // A fixed size: the box takes its width from the icon, and a host page that caps icons at max-width 100% would
+  // otherwise shrink both to nothing (Figlinq's svg[viewBox='0 0 24 24'] rule).
+  width: 15px;
+  box-sizing: border-box;
   cursor: pointer;
   background-color: var(--color-background-light);
   border: var(--border-default);
@@ -62,16 +66,22 @@
 }
 
 .numeric-top-caret-modifier {
-  // to prevent user agent override
+  // to prevent user agent and host page overrides
+  display: block !important;
   width: 13px !important;
   height: 13px !important;
+  max-width: none !important;
+  max-height: none !important;
   fill: var(--color-text-base) !important;
 }
 
 .numeric-bottom-caret-modifier {
-  // to prevent user agent override
+  // to prevent user agent and host page overrides
+  display: block !important;
   width: 13px !important;
   height: 13px !important;
+  max-width: none !important;
+  max-height: none !important;
   fill: var(--color-text-base) !important;
 }
 
