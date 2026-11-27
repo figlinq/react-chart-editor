@@ -416,7 +416,11 @@ export function annotationPositionInRef(fullLayout, letter, fromRef, value, toRe
     return undefined;
   }
   const position = ax.p2r(pixel - ax._offset);
-  return typeof position === 'number' && !isFinite(position) ? undefined : position;
+  if (typeof position !== 'number') {
+    return position;
+  }
+  // Ten significant digits: the field shows 2, not 1.9999999999999996.
+  return isFinite(position) ? Number(position.toPrecision(10)) : undefined;
 }
 
 export const AnnotationRef = connectToContainer(UnconnectedDropdown, {
