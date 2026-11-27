@@ -205,6 +205,9 @@ const StyleAxesPanel = (props, {localize: _}) => (
               {label: _('90'), value: 90},
               {label: _('135'), value: 135},
               {label: _('180'), value: 180},
+              {label: _('225'), value: -135},
+              {label: _('270'), value: -90},
+              {label: _('315'), value: -45},
             ]}
           />
 

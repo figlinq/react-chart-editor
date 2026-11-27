@@ -3,6 +3,29 @@ import {useRef} from 'react';
 
 const ENTER_KEYCODE = 13;
 
+/*
+ * The element the current wheel gesture started on (null once the gesture has
+ * moved off it). A gesture ends after WHEEL_GESTURE_GAP_MS without wheel events.
+ * A field only steps for a gesture that started on it: scrolling the panel
+ * must not change a focused field that passes under the pointer (#12).
+ */
+const WHEEL_GESTURE_GAP_MS = 300;
+const wheelGesture = {target: null, time: -Infinity};
+if (typeof document !== 'undefined') {
+  document.addEventListener(
+    'wheel',
+    (event) => {
+      if (event.timeStamp - wheelGesture.time > WHEEL_GESTURE_GAP_MS) {
+        wheelGesture.target = event.target;
+      } else if (event.target !== wheelGesture.target) {
+        wheelGesture.target = null;
+      }
+      wheelGesture.time = event.timeStamp;
+    },
+    {capture: true, passive: true}
+  );
+}
+
 // A generic component to handle text that can be edited when the user clicks on it.
 const EditableText = ({
   type,
@@ -46,7 +69,11 @@ const EditableText = ({
   };
 
   const handleWheel = (event) => {
-    if (onWheel && document.activeElement === inputRef.current) {
+    if (
+      onWheel &&
+      document.activeElement === inputRef.current &&
+      wheelGesture.target === inputRef.current
+    ) {
       onWheel(event);
     }
   };
