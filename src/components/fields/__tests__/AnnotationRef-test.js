@@ -40,9 +40,11 @@ describe('<AnnotationRef>', () => {
     drop.prop('onChange')('y2');
 
     const {update} = beforeUpdateLayout.mock.calls[0][0];
+    // The annotation keeps its place on the page: its y is converted to the new axis (figlinq/streambed#16).
     expect(update).toEqual({
       'annotations[0].ayref': 'y2',
       'annotations[0].yref': 'y2',
+      'annotations[0].y': expect.any(Number),
     });
   });
 
@@ -57,7 +59,11 @@ describe('<AnnotationRef>', () => {
     const {update} = beforeUpdateLayout.mock.calls[0][0];
     expect(update).toEqual({
       'annotations[0].yref': 'paper',
+      'annotations[0].y': expect.any(Number),
     });
+    // On the canvas the position is a fraction of the plot area.
+    expect(update['annotations[0].y']).toBeGreaterThanOrEqual(0);
+    expect(update['annotations[0].y']).toBeLessThanOrEqual(1);
   });
 
   it('does not send update for a[x|y]ref when a[x|y]ref is pixel', () => {
@@ -71,6 +77,7 @@ describe('<AnnotationRef>', () => {
     const {update} = beforeUpdateLayout.mock.calls[0][0];
     expect(update).toEqual({
       'annotations[0].yref': 'y2',
+      'annotations[0].y': expect.any(Number),
     });
   });
 });
