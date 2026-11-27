@@ -381,6 +381,44 @@ export const AnnotationArrowRef = connectToContainer(UnconnectedDropdown, {
   },
 });
 
+/*
+ * The position, in reference toRef ('paper' or an axis id), of the point that
+ * value has in reference fromRef. letter is 'x' or 'y'. Axis positions are in
+ * the axis' range units (log10 on log axes, dates as strings, categories as
+ * their index), as plotly.js reads annotation positions. Undefined when the
+ * point cannot be placed (no laid out plot, unknown axis, no position).
+ */
+export function annotationPositionInRef(fullLayout, letter, fromRef, value, toRef) {
+  const size = fullLayout && fullLayout._size;
+  if (!size || fromRef === toRef || value === undefined || value === null) {
+    return undefined;
+  }
+  const axisOf = (ref) => fullLayout[axisIdToAxisName(ref)];
+  let pixel;
+  if (fromRef === 'paper') {
+    pixel = letter === 'x' ? size.l + value * size.w : size.t + (1 - value) * size.h;
+  } else {
+    const ax = axisOf(fromRef);
+    if (!ax || !ax.r2p) {
+      return undefined;
+    }
+    pixel = ax._offset + ax.r2p(value);
+  }
+  if (!isFinite(pixel)) {
+    return undefined;
+  }
+  if (toRef === 'paper') {
+    const fraction = letter === 'x' ? (pixel - size.l) / size.w : 1 - (pixel - size.t) / size.h;
+    return isFinite(fraction) ? Math.round(fraction * 1e4) / 1e4 : undefined;
+  }
+  const ax = axisOf(toRef);
+  if (!ax || !ax.p2r) {
+    return undefined;
+  }
+  const position = ax.p2r(pixel - ax._offset);
+  return typeof position === 'number' && !isFinite(position) ? undefined : position;
+}
+
 export const AnnotationRef = connectToContainer(UnconnectedDropdown, {
   modifyPlotProps: (props, context, plotProps) => {
     if (!context.fullContainer) {
@@ -414,25 +452,39 @@ export const AnnotationRef = connectToContainer(UnconnectedDropdown, {
       plotProps.isVisible = false;
     }
 
-    if (currentOffsetRef !== 'pixel') {
-      plotProps.updatePlot = (v) => {
-        if (!plotProps.updateContainer) {
-          return;
-        }
+    plotProps.updatePlot = (v) => {
+      if (!plotProps.updateContainer) {
+        return;
+      }
 
-        /*
-         * If user is changing axis also change their a[x|y]ref arrow axis
-         * reference to match if the value is an axis value.
-         * Behaviour copied from plot.ly/create
-         */
-        const update = {[props.attr]: v};
-        if (v !== 'paper') {
-          update[`a${props.attr}`] = v;
-        }
+      /*
+       * Keep the annotation where it is on the plot: recompute its position
+       * in the new reference (#16; before, x=4 on an axis became 400% of the canvas).
+       */
+      const update = {[props.attr]: v};
+      const letter = props.attr.charAt(0);
+      const position = annotationPositionInRef(
+        context.fullLayout,
+        letter,
+        context.fullContainer[props.attr],
+        context.fullContainer[letter],
+        v
+      );
+      if (position !== undefined) {
+        update[letter] = position;
+      }
 
-        plotProps.updateContainer(update);
-      };
-    }
+      /*
+       * If user is changing axis also change their a[x|y]ref arrow axis
+       * reference to match if the value is an axis value.
+       * Behaviour copied from plot.ly/create
+       */
+      if (currentOffsetRef !== 'pixel' && v !== 'paper') {
+        update[`a${props.attr}`] = v;
+      }
+
+      plotProps.updateContainer(update);
+    };
 
     plotProps.clearable = false;
   },
